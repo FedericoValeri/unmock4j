@@ -1,30 +1,27 @@
 package unicam.phd.unmock.services;
 
 import unicam.phd.unmock.config.Config;
-import unicam.phd.unmock.models.FileType;
 import unicam.phd.unmock.models.PipelineState;
 
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
-import java.nio.file.*;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.StandardOpenOption;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
-import java.util.*;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Locale;
 
 import static unicam.phd.unmock.utils.Pricing.computeCost;
 
 public class Output {
 
-    public static String generate(PipelineState state) {
+    public static String generate(PipelineState state, String sutPackage) {
 
         String summaryFile = "./results/summary.csv";
         LocalDateTime runTimestamp = LocalDateTime.now();
-
-        String sutCode = Loader.loadFile(FileType.SUT.name());
-        String sutPackage = extractSutPackage(sutCode);
-
         int runIdNumber = getNextRunId(summaryFile, sutPackage);
         String runId = sutPackage + "-" + runIdNumber;
 
@@ -148,31 +145,6 @@ public class Output {
                     e
             );
         }
-    }
-
-    private static String extractSutPackage(
-            String javaCode
-    ) {
-
-        Matcher packageMatch = Pattern.compile(
-                "package\\s+([\\w.]+);"
-        ).matcher(javaCode);
-
-        Matcher classMatch = Pattern.compile(
-                "(?:public\\s+)?(?:final\\s+)?class\\s+(\\w+)"
-        ).matcher(javaCode);
-
-        String pkg = packageMatch.find()
-                ? packageMatch.group(1)
-                : "";
-
-        String className = classMatch.find()
-                ? classMatch.group(1)
-                : "UnknownClass";
-
-        return pkg.isEmpty()
-                ? className
-                : pkg + "." + className;
     }
 
     private static int getNextRunId(

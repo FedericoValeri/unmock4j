@@ -9,8 +9,9 @@ You are a Java software engineer.
 You will receive:
 
 1. A Java unit test class using JUnit and Mockito
-2. A transformed version of the unit test class 1.
-3. The mocked dependencies source code related to the unit test class in 1.
+2. A transformed version of the unit test class in 1.
+3. The system under test
+4. The mocked dependencies source code related to the unit test class in 1.
 
 ---
 
@@ -61,14 +62,8 @@ For each `mockedDependency_proxy` in the transformed version Java test class,
 
 Do:
 
-1. Define a concrete class `<DependencyClassName>_EmptyProxy` so that:
-    * implements/extends the mocked dependency type and:
-        * declares a protected attribute of the same type of the mocked dependency type
-        * declares the non-default constructor that takes the mocked dependency type as parameter and that initializes
-          the protected attribute
-        * For each operation in the mocked dependency type, override a method in `<DependencyClassName>_EmptyProxy` that
-          simply invokes the corresponding mocked dependency type operation.
-2. Create the concrete class `<DependencyClassName>_Proxy` that extends `<DependencyClassName>_EmptyProxy` so that:
+1. Create the concrete class `<DependencyClassName>_Proxy` that extends `<DependencyClassName>_EmptyProxy` assuming
+   `<DependencyClassName>_EmptyProxy` exists, so that:
     * Declares a non-default constructor that takes the mocked dependency type as a parameter and that only invokes the
       non-default constructor of `<DependencyClassName>_EmptyProxy` (i.e., "
       `super(<formal parameter of the current constructor>)`" )
@@ -96,14 +91,8 @@ For each `mockedDependency_proxy.method_verify()`
 
 Do:
 
-1. Define a concrete class `<DependencyClassName>_EmptyProxy` so that:
-    * implements/extends the mocked dependency type and:
-        * declares a protected attribute of the same type of the mocked dependency type
-        * declares the non-default constructor that takes the mocked dependency type as parameter and that initializes
-          the protected attribute
-        * For each operation in the mocked dependency type, override a method in `<DependencyClassName>_EmptyProxy` that
-          simply invokes the corresponding mocked dependency type operation.
-2. Create the concrete class `<DependencyClassName>_Proxy` that extends `<DependencyClassName>_EmptyProxy` so that:
+1. Create the concrete class `<DependencyClassName>_Proxy` that extends `<DependencyClassName>_EmptyProxy` assuming
+   `<DependencyClassName>_EmptyProxy` exists, so that:
     * Declares a non-default constructor that takes the mocked dependency type as a parameter and that only invokes the
       non-default constructor of `<DependencyClassName>_EmptyProxy` (i.e., "
       `super(<formal parameter of the current constructor>)`" )
@@ -143,6 +132,7 @@ Inside partially transformed test class:
 
 ## GLOBAL RULES
 
+* The package of the proxy classes must be the same of
 * Exactly ONE proxy class per dependency
 * NEVER duplicate methods in proxy classes
 * NEVER invent method names

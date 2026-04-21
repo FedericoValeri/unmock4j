@@ -51,6 +51,14 @@
             <version>1.5.32</version>
         </dependency>
 
+        <!-- Source: https://mvnrepository.com/artifact/org.apache.dolphinscheduler/dolphinscheduler-dao -->
+        <dependency>
+            <groupId>org.apache.dolphinscheduler</groupId>
+            <artifactId>dolphinscheduler-dao</artifactId>
+            <version>3.4.1</version>
+            <scope>compile</scope>
+        </dependency>
+
     </dependencies>
 
 </project>

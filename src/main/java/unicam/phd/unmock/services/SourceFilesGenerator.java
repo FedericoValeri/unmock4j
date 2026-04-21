@@ -2,14 +2,30 @@ package unicam.phd.unmock.services;
 
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
-import java.nio.file.*;
-import java.util.*;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.util.List;
 
 public class SourceFilesGenerator {
 
-    public static void create(String file) {
+    private final JavaBlockExtractor extractor;
+    private final JavaFileWriter writer;
+    private final EmptyProxyGenerator emptyProxyGenerator;
+
+    public SourceFilesGenerator(
+            JavaBlockExtractor extractor,
+            JavaFileWriter writer,
+            EmptyProxyGenerator emptyProxyGenerator) {
+
+        this.extractor = extractor;
+        this.writer = writer;
+        this.emptyProxyGenerator = emptyProxyGenerator;
+    }
+
+    public void create(
+            String file,
+            List<String> dependencyPackages,
+            String sutPackageOnly) {
 
         try {
             Path inputPath = Path.of(file).toAbsolutePath();
@@ -20,235 +36,63 @@ public class SourceFilesGenerator {
                     StandardCharsets.UTF_8
             );
 
-            String integrationCode = extractBlock(
+            generateBlock(
                     content,
                     "---INTEGRATION_TEST_START---",
-                    "---INTEGRATION_TEST_END---"
+                    "---INTEGRATION_TEST_END---",
+                    outputDir
             );
 
-            String proxiesCode = extractBlock(
+            generateBlock(
                     content,
                     "---PROXIES_START---",
-                    "---PROXIES_END---"
+                    "---PROXIES_END---",
+                    outputDir
             );
 
-            if (integrationCode != null) {
-                List<JavaClassBlock> classes =
-                        extractClasses(integrationCode);
+            for (String className : dependencyPackages) {
 
-                for (JavaClassBlock cls : classes) {
-                    writeJavaFile(
-                            cls.className(),
-                            cls.code(),
-                            outputDir
+                if (className.isBlank()) continue;
+                if (className.startsWith("#")) continue;
+
+                try {
+                    Path fileOut = emptyProxyGenerator.generate(
+                            className,
+                            outputDir,
+                            sutPackageOnly
                     );
-                }
-            }
 
-            if (proxiesCode != null) {
-                List<JavaClassBlock> classes =
-                        extractClasses(proxiesCode);
+                    System.out.println("Generated: " + fileOut);
 
-                for (JavaClassBlock cls : classes) {
-                    writeJavaFile(
-                            cls.className(),
-                            cls.code(),
-                            outputDir
+                } catch (Exception e) {
+                    System.err.println(
+                            "Failed for " + className + ": " + e.getMessage()
                     );
                 }
             }
 
         } catch (IOException e) {
             throw new RuntimeException(
-                    "Failed to generate source files",
-                    e
+                    "Cannot generate source files", e
             );
         }
     }
 
-    private static String extractBlock(
+    private void generateBlock(
             String content,
             String start,
-            String end
-    ) {
+            String end,
+            Path outputDir) {
 
-        Pattern pattern = Pattern.compile(
-                Pattern.quote(start) +
-                        "(.*?)" +
-                        Pattern.quote(end),
-                Pattern.DOTALL
-        );
+        String block = extractor.extractBlock(content, start, end);
 
-        Matcher match = pattern.matcher(content);
+        if (block == null) return;
 
-        return match.find()
-                ? match.group(1).trim()
-                : null;
-    }
+        List<JavaBlockExtractor.JavaClassBlock> classes =
+                extractor.extractClasses(block);
 
-    private static List<JavaClassBlock> extractClasses(
-            String javaCode
-    ) {
-
-        List<JavaClassBlock> results =
-                new ArrayList<>();
-
-        Matcher headerMatch = Pattern.compile(
-                "^(.*?)(?=\\bclass\\s+\\w+)",
-                Pattern.DOTALL
-        ).matcher(javaCode);
-
-        String header = headerMatch.find()
-                ? headerMatch.group(1)
-                : "";
-
-        Matcher matcher = Pattern.compile(
-                "\\b(?:public|protected|private|abstract|final\\s+)*class\\s+(\\w+)"
-        ).matcher(javaCode);
-
-        while (matcher.find()) {
-
-            String className = matcher.group(1);
-            int classStart = matcher.start();
-
-            int start = findClassStart(
-                    javaCode,
-                    classStart
-            );
-
-            int openBrace = javaCode.indexOf(
-                    '{',
-                    classStart
-            );
-
-            if (openBrace < 0) {
-                continue;
-            }
-
-            int end = findMatchingBrace(
-                    javaCode,
-                    openBrace
-            );
-
-            if (end < 0) {
-                continue;
-            }
-
-            String classBody =
-                    javaCode.substring(start, end + 1);
-
-            String fullCode =
-                    (header + classBody).trim();
-
-            results.add(
-                    new JavaClassBlock(
-                            className,
-                            fullCode
-                    )
-            );
+        for (JavaBlockExtractor.JavaClassBlock cls : classes) {
+            writer.write(outputDir, cls.className(), cls.code());
         }
-
-        return results;
-    }
-
-    private static int findClassStart(
-            String javaCode,
-            int classStart
-    ) {
-
-        int start = classStart;
-
-        String before =
-                javaCode.substring(0, classStart);
-
-        String[] lines =
-                before.split("\\R", -1);
-
-        int offset = classStart;
-
-        for (int i = lines.length - 1; i >= 0; i--) {
-
-            String line = lines[i];
-            String trimmed = line.trim();
-
-            offset -= line.length();
-
-            if (i > 0) {
-                offset -= 1;
-            }
-
-            if (trimmed.startsWith("@")
-                    || trimmed.isEmpty()) {
-                start = offset;
-            } else {
-                break;
-            }
-        }
-
-        return Math.max(0, start);
-    }
-
-    private static int findMatchingBrace(
-            String text,
-            int openBrace
-    ) {
-
-        int balance = 1;
-
-        for (int i = openBrace + 1;
-             i < text.length();
-             i++) {
-
-            char c = text.charAt(i);
-
-            if (c == '{') {
-                balance++;
-            } else if (c == '}') {
-                balance--;
-            }
-
-            if (balance == 0) {
-                return i;
-            }
-        }
-
-        return -1;
-    }
-
-    private static void writeJavaFile(
-            String className,
-            String code,
-            Path outputDir
-    ) {
-
-        try {
-            Path filePath = outputDir.resolve(
-                    className + ".java"
-            );
-
-            Files.writeString(
-                    filePath,
-                    code,
-                    StandardCharsets.UTF_8,
-                    StandardOpenOption.CREATE,
-                    StandardOpenOption.TRUNCATE_EXISTING
-            );
-
-            System.out.println(
-                    "Generated: " + filePath
-            );
-
-        } catch (IOException e) {
-            throw new RuntimeException(
-                    "Failed writing file: " + className,
-                    e
-            );
-        }
-    }
-
-    private record JavaClassBlock(
-            String className,
-            String code
-    ) {
     }
 }
