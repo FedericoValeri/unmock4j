@@ -1,0 +1,2 @@
+Run ID,SUT,Provider,Model,Input Tokens,Output Tokens,Total Tokens,Cost (USD),Generation Time (sec),Timestamp
+PythonGateway-0,PythonGateway,openai,gpt-4o-mini,6420,3367,9787,0.002983,55.503,2026-04-21 16:27:33
