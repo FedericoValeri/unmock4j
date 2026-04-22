@@ -1,4 +1,4 @@
-package unicam.phd.unmock.services.infrastructure;
+package unicam.phd.unmock.infrastructure.prompts;
 
 import dev.langchain4j.model.input.PromptTemplate;
 

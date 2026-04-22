@@ -1,7 +1,7 @@
-package unicam.phd.unmock.services.infrastructure;
+package unicam.phd.unmock.infrastructure.reporting;
 
+import unicam.phd.unmock.application.pipeline.PipelineState;
 import unicam.phd.unmock.config.Config;
-import unicam.phd.unmock.models.PipelineState;
 
 import java.io.IOException;
 import java.io.UncheckedIOException;
@@ -15,7 +15,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
 
-import static unicam.phd.unmock.utils.Pricing.computeCost;
+import static unicam.phd.unmock.application.pricing.Pricing.computeCost;
 
 /**
  * Appends run metadata into summary.csv

@@ -1,8 +1,7 @@
-package unicam.phd.unmock.services.application;
+package unicam.phd.unmock.application.codegen;
 
-import unicam.phd.unmock.services.infrastructure.ClassLoaderService;
-import unicam.phd.unmock.services.infrastructure.JavaFileWriter;
-import unicam.phd.unmock.services.infrastructure.ProxyGenerator;
+import unicam.phd.unmock.infrastructure.files.JavaFileWriter;
+import unicam.phd.unmock.infrastructure.reflection.ClassLoaderService;
 
 import java.nio.file.Path;
 
@@ -22,7 +21,7 @@ public class EmptyProxyGenerator {
         this.proxyGenerator = proxyGenerator;
     }
 
-    public Path generate(
+    public void generate(
             String fullClassName,
             Path outputDirectory,
             String targetPackage) {
@@ -31,7 +30,7 @@ public class EmptyProxyGenerator {
 
         String source = proxyGenerator.buildSource(target, targetPackage);
 
-        return javaFileWriter.write(
+        javaFileWriter.write(
                 outputDirectory,
                 target.getSimpleName() + "_EmptyProxy",
                 source

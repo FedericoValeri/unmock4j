@@ -1,4 +1,4 @@
-package unicam.phd.unmock.models;
+package unicam.phd.unmock.application.pipeline;
 
 public record PipelineState(
         String sut,

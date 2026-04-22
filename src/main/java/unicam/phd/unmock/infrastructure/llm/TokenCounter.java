@@ -1,4 +1,4 @@
-package unicam.phd.unmock.utils;
+package unicam.phd.unmock.infrastructure.llm;
 
 import com.knuddels.jtokkit.Encodings;
 import com.knuddels.jtokkit.api.Encoding;
@@ -16,20 +16,15 @@ public class TokenCounter {
             return 0;
         }
 
-        switch (provider.toLowerCase()) {
-
-            case "openai":
-                return countOpenAiTokens(text, model);
-
-            case "ollama":
+        return switch (provider.toLowerCase()) {
+            case "openai" -> countOpenAiTokens(text, model);
+            case "ollama" ->
                 // heuristic fallback
-                return text.length() / 4;
-
-            default:
-                throw new IllegalArgumentException(
-                        "Unsupported provider: " + provider
-                );
-        }
+                    text.length() / 4;
+            default -> throw new IllegalArgumentException(
+                    "Unsupported provider: " + provider
+            );
+        };
     }
 
     private static int countOpenAiTokens(String text, String model) {

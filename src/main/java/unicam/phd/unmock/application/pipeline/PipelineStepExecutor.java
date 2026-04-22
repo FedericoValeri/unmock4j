@@ -1,16 +1,15 @@
-package unicam.phd.unmock.services.infrastructure;
+package unicam.phd.unmock.application.pipeline;
 
 import dev.langchain4j.data.message.UserMessage;
 import dev.langchain4j.model.chat.response.ChatResponse;
 import dev.langchain4j.model.input.Prompt;
 import dev.langchain4j.model.input.PromptTemplate;
 import unicam.phd.unmock.config.Config;
-import unicam.phd.unmock.models.LargeLanguageModelContext;
-import unicam.phd.unmock.models.PipelineState;
+import unicam.phd.unmock.infrastructure.llm.LargeLanguageModelContext;
 
 import java.util.Map;
 
-import static unicam.phd.unmock.utils.TokenCounter.countTokens;
+import static unicam.phd.unmock.infrastructure.llm.TokenCounter.countTokens;
 
 /**
  * Executes one pipeline step against the LLM.
@@ -69,7 +68,7 @@ public class PipelineStepExecutor {
                 Map.of(
                         "sut",
                         state.sut(),
-                        
+
                         "unit_test",
                         state.unitTest(),
 

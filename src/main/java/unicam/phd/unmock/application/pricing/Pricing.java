@@ -1,4 +1,5 @@
-package unicam.phd.unmock.utils;
+package unicam.phd.unmock.application.pricing;
+
 import java.util.Map;
 
 public class Pricing {

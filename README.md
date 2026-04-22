@@ -1,5 +1,6 @@
 # UnMock
 
+![Java](https://img.shields.io/badge/Java-26-orange)
 ![LangChain](https://img.shields.io/badge/LangChain-Framework-green)
 ![OpenAI](https://img.shields.io/badge/OpenAI-API-black)
 ![JUnit](https://img.shields.io/badge/JUnit-Testing-red)

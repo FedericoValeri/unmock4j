@@ -1,9 +1,8 @@
-package unicam.phd.unmock.services.application;
+package unicam.phd.unmock.application.codegen;
 
-import unicam.phd.unmock.models.JavaClassBlock;
-import unicam.phd.unmock.models.PipelineState;
-import unicam.phd.unmock.services.infrastructure.JavaCodeExtractor;
-import unicam.phd.unmock.services.infrastructure.JavaFileWriter;
+import unicam.phd.unmock.application.parser.JavaCodeExtractor;
+import unicam.phd.unmock.application.pipeline.PipelineState;
+import unicam.phd.unmock.infrastructure.files.JavaFileWriter;
 
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
@@ -31,6 +30,7 @@ public class SourceFilesGenerator {
             PipelineState state,
             String file) {
 
+        System.out.println("Generating final source files...");
         List<String> sutNames = extractor.extractFullClassNames(state.sut());
         String sutFullClassName = sutNames.getFirst();
         String sutPackageOnly = sutFullClassName.substring(0, sutFullClassName.lastIndexOf('.'));
@@ -65,13 +65,11 @@ public class SourceFilesGenerator {
                 if (className.startsWith("#")) continue;
 
                 try {
-                    Path fileOut = emptyProxyGenerator.generate(
+                    emptyProxyGenerator.generate(
                             className,
                             outputDir,
                             sutPackageOnly
                     );
-
-                    System.out.println("Generated: " + fileOut);
 
                 } catch (Exception e) {
                     System.err.println(

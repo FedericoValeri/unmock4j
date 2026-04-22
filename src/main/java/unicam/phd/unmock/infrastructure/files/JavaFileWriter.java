@@ -1,4 +1,4 @@
-package unicam.phd.unmock.services.infrastructure;
+package unicam.phd.unmock.infrastructure.files;
 
 import java.io.IOException;
 import java.io.UncheckedIOException;
@@ -9,7 +9,7 @@ import java.nio.file.StandardOpenOption;
 
 public class JavaFileWriter {
 
-    public Path write(Path outputDir, String className, String code) {
+    public void write(Path outputDir, String className, String code) {
         try {
             Files.createDirectories(outputDir);
 
@@ -22,9 +22,6 @@ public class JavaFileWriter {
                     StandardOpenOption.CREATE,
                     StandardOpenOption.TRUNCATE_EXISTING
             );
-
-            return file;
-
         } catch (IOException e) {
             throw new UncheckedIOException(
                     "Cannot write file for class: " + className, e

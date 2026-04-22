@@ -1,13 +1,22 @@
 package unicam.phd.unmock;
 
 import com.github.lalyos.jfiglet.FigletFont;
-import unicam.phd.unmock.models.InputFileType;
-import unicam.phd.unmock.models.PipelineState;
-import unicam.phd.unmock.services.application.EmptyProxyGenerator;
-import unicam.phd.unmock.services.application.LargeLanguageModelOutputGenerator;
-import unicam.phd.unmock.services.application.Pipeline;
-import unicam.phd.unmock.services.application.SourceFilesGenerator;
-import unicam.phd.unmock.services.infrastructure.*;
+import unicam.phd.unmock.application.codegen.EmptyProxyGenerator;
+import unicam.phd.unmock.application.codegen.ProxyGenerator;
+import unicam.phd.unmock.application.codegen.SourceFilesGenerator;
+import unicam.phd.unmock.application.parser.JavaCodeExtractor;
+import unicam.phd.unmock.application.pipeline.LargeLanguageModelOutputGenerator;
+import unicam.phd.unmock.application.pipeline.Pipeline;
+import unicam.phd.unmock.application.pipeline.PipelineState;
+import unicam.phd.unmock.application.pipeline.PipelineStepExecutor;
+import unicam.phd.unmock.infrastructure.files.JavaFileWriter;
+import unicam.phd.unmock.infrastructure.files.ResultFileWriter;
+import unicam.phd.unmock.infrastructure.llm.LargeLanguageModelFactory;
+import unicam.phd.unmock.infrastructure.prompts.HumanPromptFileLoader;
+import unicam.phd.unmock.infrastructure.prompts.PromptService;
+import unicam.phd.unmock.infrastructure.reflection.ClassLoaderService;
+import unicam.phd.unmock.infrastructure.reporting.RunIdGenerator;
+import unicam.phd.unmock.infrastructure.reporting.SummaryWriter;
 
 import java.io.IOException;
 
@@ -20,18 +29,14 @@ public class Main {
 
         App app = buildApp();
 
-        String sut = HumanPromptLoader.getFileContent(InputFileType.SUT);
-        String unitTest = HumanPromptLoader.getFileContent(InputFileType.UNIT);
-        String dependencies = HumanPromptLoader.getFileContent(InputFileType.DEPENDENCIES);
-
         // 1. LLM execution
-        PipelineState state = app.pipeline.run(sut, unitTest, dependencies);
+        PipelineState finalState = app.pipeline.run();
 
         // 2. Create full generated LLM file and summary.csv
-        String llmOutputFilePath = app.largeLanguageModelOutputGenerator.generate(state);
+        String llmOutputFilePath = app.largeLanguageModelOutputGenerator.generate(finalState);
 
         // 3. Create final source files from LLM output
-        app.sourceFilesGenerator.create(state, llmOutputFilePath);
+        app.sourceFilesGenerator.create(finalState, llmOutputFilePath);
 
         System.out.println("Done.");
     }
@@ -64,10 +69,11 @@ public class Main {
                         extractor
                 );
 
+        HumanPromptFileLoader humanPromptFileLoader = new HumanPromptFileLoader();
         PromptService promptService = new PromptService();
         PipelineStepExecutor pipelineStepExecutor = new PipelineStepExecutor();
         LargeLanguageModelFactory llmFactory = new LargeLanguageModelFactory();
-        Pipeline pipeline = new Pipeline(promptService, pipelineStepExecutor, llmFactory.create());
+        Pipeline pipeline = new Pipeline(humanPromptFileLoader, promptService, pipelineStepExecutor, llmFactory.create());
 
         return new App(
                 pipeline,

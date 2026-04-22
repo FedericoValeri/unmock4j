@@ -1,6 +1,6 @@
-package unicam.phd.unmock.services.infrastructure;
+package unicam.phd.unmock.application.parser;
 
-import unicam.phd.unmock.models.JavaClassBlock;
+import unicam.phd.unmock.application.codegen.JavaClassBlock;
 
 import java.util.ArrayList;
 import java.util.List;

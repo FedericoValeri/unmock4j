@@ -1,10 +1,9 @@
-package unicam.phd.unmock.services.infrastructure;
+package unicam.phd.unmock.infrastructure.llm;
 
 import dev.langchain4j.model.chat.ChatModel;
 import dev.langchain4j.model.ollama.OllamaChatModel;
 import dev.langchain4j.model.openai.OpenAiChatModel;
 import unicam.phd.unmock.config.Config;
-import unicam.phd.unmock.models.LargeLanguageModelContext;
 
 public class LargeLanguageModelFactory {
 

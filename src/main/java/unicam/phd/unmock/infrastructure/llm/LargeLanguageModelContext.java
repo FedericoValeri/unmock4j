@@ -1,4 +1,4 @@
-package unicam.phd.unmock.models;
+package unicam.phd.unmock.infrastructure.llm;
 
 import dev.langchain4j.model.chat.ChatModel;
 

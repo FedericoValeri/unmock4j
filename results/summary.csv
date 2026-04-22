@@ -10,3 +10,6 @@ org.apache.dolphinscheduler.api.python.PythonGateway-7,org.apache.dolphinschedul
 org.apache.dolphinscheduler.api.python.PythonGateway-8,org.apache.dolphinscheduler.api.python.PythonGateway,openai,gpt-4o-mini,6259,2062,8321,0.002176,35.248,2026-04-22 12:36:26
 org.apache.dolphinscheduler.api.python.PythonGateway-9,org.apache.dolphinscheduler.api.python.PythonGateway,openai,gpt-4o-mini,6316,2115,8431,0.002216,47.241,2026-04-22 13:02:01
 org.apache.dolphinscheduler.api.python.PythonGateway-10,org.apache.dolphinscheduler.api.python.PythonGateway,openai,gpt-4o-mini,6316,2051,8367,0.002178,36.106,2026-04-22 13:09:56
+org.apache.dolphinscheduler.api.python.PythonGateway-11,org.apache.dolphinscheduler.api.python.PythonGateway,openai,gpt-5.4-mini,6086,1795,7881,0.012642,10.085,2026-04-22 13:14:40
+org.apache.dolphinscheduler.api.python.PythonGateway-12,org.apache.dolphinscheduler.api.python.PythonGateway,openai,gpt-4o-mini,6313,2048,8361,0.002176,33.585,2026-04-22 13:21:40
+org.apache.dolphinscheduler.api.python.PythonGateway-13,org.apache.dolphinscheduler.api.python.PythonGateway,openai,gpt-4o-mini,6316,2115,8431,0.002216,28.785,2026-04-22 13:29:57

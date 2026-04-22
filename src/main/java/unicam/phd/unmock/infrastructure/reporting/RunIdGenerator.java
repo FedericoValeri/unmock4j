@@ -1,4 +1,4 @@
-package unicam.phd.unmock.services.infrastructure;
+package unicam.phd.unmock.infrastructure.reporting;
 
 import java.io.IOException;
 import java.io.UncheckedIOException;

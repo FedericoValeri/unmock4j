@@ -1,10 +1,9 @@
-package unicam.phd.unmock.services.application;
+package unicam.phd.unmock.application.pipeline;
 
-import unicam.phd.unmock.models.PipelineState;
-import unicam.phd.unmock.services.infrastructure.JavaCodeExtractor;
-import unicam.phd.unmock.services.infrastructure.ResultFileWriter;
-import unicam.phd.unmock.services.infrastructure.RunIdGenerator;
-import unicam.phd.unmock.services.infrastructure.SummaryWriter;
+import unicam.phd.unmock.application.parser.JavaCodeExtractor;
+import unicam.phd.unmock.infrastructure.files.ResultFileWriter;
+import unicam.phd.unmock.infrastructure.reporting.RunIdGenerator;
+import unicam.phd.unmock.infrastructure.reporting.SummaryWriter;
 
 import java.nio.file.Path;
 import java.util.List;
@@ -34,6 +33,7 @@ public class LargeLanguageModelOutputGenerator {
 
     public String generate(PipelineState state) {
 
+        System.out.println("Generating llm output and summary...");
         List<String> sutNames = javaCodeExtractor.extractFullClassNames(state.sut());
         String sutFullClassName = sutNames.getFirst();
 
