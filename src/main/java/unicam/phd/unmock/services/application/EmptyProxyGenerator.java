@@ -1,4 +1,8 @@
-package unicam.phd.unmock.services;
+package unicam.phd.unmock.services.application;
+
+import unicam.phd.unmock.services.infrastructure.ClassLoaderService;
+import unicam.phd.unmock.services.infrastructure.JavaFileWriter;
+import unicam.phd.unmock.services.infrastructure.ProxyGenerator;
 
 import java.nio.file.Path;
 

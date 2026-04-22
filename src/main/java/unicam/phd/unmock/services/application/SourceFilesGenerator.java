@@ -1,4 +1,9 @@
-package unicam.phd.unmock.services;
+package unicam.phd.unmock.services.application;
+
+import unicam.phd.unmock.models.JavaClassBlock;
+import unicam.phd.unmock.models.PipelineState;
+import unicam.phd.unmock.services.infrastructure.JavaCodeExtractor;
+import unicam.phd.unmock.services.infrastructure.JavaFileWriter;
 
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
@@ -8,12 +13,12 @@ import java.util.List;
 
 public class SourceFilesGenerator {
 
-    private final JavaBlockExtractor extractor;
+    private final JavaCodeExtractor extractor;
     private final JavaFileWriter writer;
     private final EmptyProxyGenerator emptyProxyGenerator;
 
     public SourceFilesGenerator(
-            JavaBlockExtractor extractor,
+            JavaCodeExtractor extractor,
             JavaFileWriter writer,
             EmptyProxyGenerator emptyProxyGenerator) {
 
@@ -23,9 +28,13 @@ public class SourceFilesGenerator {
     }
 
     public void create(
-            String file,
-            List<String> dependencyPackages,
-            String sutPackageOnly) {
+            PipelineState state,
+            String file) {
+
+        List<String> sutNames = extractor.extractFullClassNames(state.sut());
+        String sutFullClassName = sutNames.getFirst();
+        String sutPackageOnly = sutFullClassName.substring(0, sutFullClassName.lastIndexOf('.'));
+        List<String> dependencyPackages = extractor.extractFullClassNames(state.dependencies());
 
         try {
             Path inputPath = Path.of(file).toAbsolutePath();
@@ -36,14 +45,14 @@ public class SourceFilesGenerator {
                     StandardCharsets.UTF_8
             );
 
-            generateBlock(
+            generateFromBlock(
                     content,
                     "---INTEGRATION_TEST_START---",
                     "---INTEGRATION_TEST_END---",
                     outputDir
             );
 
-            generateBlock(
+            generateFromBlock(
                     content,
                     "---PROXIES_START---",
                     "---PROXIES_END---",
@@ -72,13 +81,11 @@ public class SourceFilesGenerator {
             }
 
         } catch (IOException e) {
-            throw new RuntimeException(
-                    "Cannot generate source files", e
-            );
+            throw new RuntimeException("Cannot generate source files", e);
         }
     }
 
-    private void generateBlock(
+    private void generateFromBlock(
             String content,
             String start,
             String end,
@@ -88,10 +95,9 @@ public class SourceFilesGenerator {
 
         if (block == null) return;
 
-        List<JavaBlockExtractor.JavaClassBlock> classes =
-                extractor.extractClasses(block);
+        List<JavaClassBlock> classes = extractor.extractClasses(block);
 
-        for (JavaBlockExtractor.JavaClassBlock cls : classes) {
+        for (JavaClassBlock cls : classes) {
             writer.write(outputDir, cls.className(), cls.code());
         }
     }

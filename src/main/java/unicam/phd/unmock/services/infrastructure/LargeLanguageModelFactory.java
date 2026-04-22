@@ -1,14 +1,14 @@
-package unicam.phd.unmock.llm;
+package unicam.phd.unmock.services.infrastructure;
 
 import dev.langchain4j.model.chat.ChatModel;
 import dev.langchain4j.model.ollama.OllamaChatModel;
 import dev.langchain4j.model.openai.OpenAiChatModel;
 import unicam.phd.unmock.config.Config;
-import unicam.phd.unmock.models.LLMContext;
+import unicam.phd.unmock.models.LargeLanguageModelContext;
 
-public class Factory {
+public class LargeLanguageModelFactory {
 
-    public static LLMContext getLlmContext() {
+    public LargeLanguageModelContext create() {
         System.out.println("Initializing LLM (" + Config.PROVIDER + " - " + Config.MODEL + ")...");
 
         ChatModel llm = switch (Config.PROVIDER.toLowerCase()) {
@@ -27,6 +27,6 @@ public class Factory {
             );
         };
 
-        return new LLMContext(llm, Config.MODEL, Config.PROVIDER);
+        return new LargeLanguageModelContext(llm, Config.MODEL, Config.PROVIDER);
     }
 }

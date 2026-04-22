@@ -1,117 +1,85 @@
 package unicam.phd.unmock;
 
-
-import dev.langchain4j.model.input.PromptTemplate;
-import unicam.phd.unmock.llm.Factory;
-import unicam.phd.unmock.llm.Pipeline;
-import unicam.phd.unmock.models.FileType;
-import unicam.phd.unmock.models.LLMContext;
+import com.github.lalyos.jfiglet.FigletFont;
+import unicam.phd.unmock.models.InputFileType;
 import unicam.phd.unmock.models.PipelineState;
-import unicam.phd.unmock.services.*;
+import unicam.phd.unmock.services.application.EmptyProxyGenerator;
+import unicam.phd.unmock.services.application.LargeLanguageModelOutputGenerator;
+import unicam.phd.unmock.services.application.Pipeline;
+import unicam.phd.unmock.services.application.SourceFilesGenerator;
+import unicam.phd.unmock.services.infrastructure.*;
 
-import java.util.List;
+import java.io.IOException;
 
 public class Main {
 
-    static void main() {
+    static void main() throws IOException {
 
-        // =====================================================
-        // MANUAL DEPENDENCY INJECTION
-        // =====================================================
+        String ascii = FigletFont.convertOneLine("UnMock");
+        System.out.println(ascii);
 
-        ClassLoaderService classLoaderService = new ClassLoaderService();
+        App app = buildApp();
+
+        String sut = HumanPromptLoader.getFileContent(InputFileType.SUT);
+        String unitTest = HumanPromptLoader.getFileContent(InputFileType.UNIT);
+        String dependencies = HumanPromptLoader.getFileContent(InputFileType.DEPENDENCIES);
+
+        // 1. LLM execution
+        PipelineState state = app.pipeline.run(sut, unitTest, dependencies);
+
+        // 2. Create full generated LLM file and summary.csv
+        String llmOutputFilePath = app.largeLanguageModelOutputGenerator.generate(state);
+
+        // 3. Create final source files from LLM output
+        app.sourceFilesGenerator.create(state, llmOutputFilePath);
+
+        System.out.println("Done.");
+    }
+
+
+    private static App buildApp() {
+
         JavaFileWriter javaFileWriter = new JavaFileWriter();
-        JavaBlockExtractor javaBlockExtractor = new JavaBlockExtractor();
-        ProxyGenerator proxyGenerator = new ProxyGenerator();
+        JavaCodeExtractor extractor = new JavaCodeExtractor();
 
         EmptyProxyGenerator emptyProxyGenerator =
                 new EmptyProxyGenerator(
-                        classLoaderService,
+                        new ClassLoaderService(),
                         javaFileWriter,
-                        proxyGenerator
+                        new ProxyGenerator()
                 );
 
         SourceFilesGenerator sourceFilesGenerator =
                 new SourceFilesGenerator(
-                        javaBlockExtractor,
+                        extractor,
                         javaFileWriter,
                         emptyProxyGenerator
                 );
 
+        LargeLanguageModelOutputGenerator largeLanguageModelOutputGenerator =
+                new LargeLanguageModelOutputGenerator(
+                        new ResultFileWriter(),
+                        new SummaryWriter(),
+                        new RunIdGenerator(),
+                        extractor
+                );
 
-        // =====================================================
-        // PIPELINE
-        // =====================================================
+        PromptService promptService = new PromptService();
+        PipelineStepExecutor pipelineStepExecutor = new PipelineStepExecutor();
+        LargeLanguageModelFactory llmFactory = new LargeLanguageModelFactory();
+        Pipeline pipeline = new Pipeline(promptService, pipelineStepExecutor, llmFactory.create());
 
-        LLMContext llmContext = Factory.getLlmContext();
-
-        String unitTest = HumanPromptLoader.getFileContent(FileType.UNIT.name());
-        String sut = HumanPromptLoader.getFileContent(FileType.SUT.name());
-        String dependencies = HumanPromptLoader.getFileContent(FileType.DEPENDENCIES.name());
-
-
-        PipelineState state = new PipelineState(
-                unitTest,
-                "",
-                ""
+        return new App(
+                pipeline,
+                largeLanguageModelOutputGenerator,
+                sourceFilesGenerator
         );
+    }
 
-        String verifySystemPromptPath = "prompts/system/system_prompt_for_verify.md";
-
-        String proxySystemPromptPath = "prompts/system/system_prompt_for_proxy.md";
-
-        List<String> steps = List.of(
-                "prompts/system/system_prompt_for_stubs.md",
-                verifySystemPromptPath,
-                proxySystemPromptPath
-        );
-
-        for (String stepPath : steps) {
-
-            String currentUnitTest =
-                    stepPath.equals(verifySystemPromptPath)
-                            ? ""
-                            : unitTest;
-
-            String currentDependencies =
-                    stepPath.equals(proxySystemPromptPath)
-                            ? dependencies
-                            : "";
-
-            state = new PipelineState(
-                    currentUnitTest,
-                    state.partiallyTransformedTest(),
-                    currentDependencies,
-                    state.inputTokens(),
-                    state.outputTokens(),
-                    state.elapsed()
-            );
-
-            PromptTemplate prompt = PromptBuilder.buildPrompt(stepPath);
-
-            state = Pipeline.run(
-                    llmContext,
-                    prompt,
-                    state
-            );
-        }
-
-        // =====================================================
-        // OUTPUT + GENERATED JAVA FILES
-        // =====================================================
-        List<String> sutPackageList = javaBlockExtractor.extractFullClassNames(sut);
-        String sutPackage = sutPackageList.getFirst();
-        List<String> dependencyPackages = javaBlockExtractor.extractFullClassNames(dependencies);
-        String sutPackageOnly = sutPackage.substring(0, sutPackage.lastIndexOf('.'));
-
-        String outputPath = Output.generate(state, sutPackage);
-
-        sourceFilesGenerator.create(
-                outputPath,
-                dependencyPackages,
-                sutPackageOnly
-        );
-
-        System.out.println("\nDone. Pipeline finished successfully.");
+    private record App(
+            Pipeline pipeline,
+            LargeLanguageModelOutputGenerator largeLanguageModelOutputGenerator,
+            SourceFilesGenerator sourceFilesGenerator
+    ) {
     }
 }

@@ -1,6 +1,7 @@
 package unicam.phd.unmock.models;
 
 public record PipelineState(
+        String sut,
         String unitTest,
         String partiallyTransformedTest,
         String dependencies,
@@ -9,10 +10,12 @@ public record PipelineState(
         double elapsed
 ) {
 
-    public PipelineState(String unitTest,
+    public PipelineState(String sut,
+                         String unitTest,
                          String partiallyTransformedTest,
                          String dependencies) {
         this(
+                sut,
                 unitTest,
                 partiallyTransformedTest,
                 dependencies,

@@ -1,11 +1,13 @@
-package unicam.phd.unmock.services;
+package unicam.phd.unmock.services.infrastructure;
+
+import unicam.phd.unmock.models.JavaClassBlock;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-public class JavaBlockExtractor {
+public class JavaCodeExtractor {
 
     public List<String> extractFullClassNames(String source) {
         List<String> fullNames = new ArrayList<>();
@@ -122,6 +124,5 @@ public class JavaBlockExtractor {
         return -1;
     }
 
-    public record JavaClassBlock(String className, String code) {
-    }
+
 }

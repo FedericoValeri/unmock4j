@@ -1,4 +1,6 @@
-package unicam.phd.unmock.services;
+package unicam.phd.unmock.services.infrastructure;
+
+import unicam.phd.unmock.models.InputFileType;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -6,8 +8,8 @@ import java.nio.charset.StandardCharsets;
 
 public class HumanPromptLoader {
 
-    public static String getFileContent(String fileType) {
-        return loadTextFile("prompts/human/" + fileType + ".txt");
+    public static String getFileContent(InputFileType fileType) {
+        return loadTextFile("prompts/human/" + fileType.name() + ".txt");
     }
 
     private static String loadTextFile(String resourcePath) {
