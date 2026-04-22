@@ -1,10 +1,7 @@
-# UnMock
+# UnMock4j
 
-![Java](https://img.shields.io/badge/Java-26-orange)
-![LangChain](https://img.shields.io/badge/LangChain-Framework-green)
-![OpenAI](https://img.shields.io/badge/OpenAI-API-black)
-![JUnit](https://img.shields.io/badge/JUnit-Testing-red)
-![Mockito](https://img.shields.io/badge/Mockito-Mocking-orange)
+![Java](https://img.shields.io/badge/Java-%23ED8B00.svg?logo=openjdk&logoColor=white)
+![LangChain](https://img.shields.io/badge/LangChain-1c3c3c.svg?logo=langchain&logoColor=white)
 
 This Java project uses Large Language Models via LangChain4j and OpenAI to automatically transform Java unit tests (
 JUnit + Mockito) into integration tests.
@@ -14,35 +11,60 @@ with proxies that execute real code and validate results.
 
 ---
 
-## Features
+## Prerequisites
 
-- Automatic transformation from unit tests to integration tests
-- Use of LLMs for semantic code analysis
-- Automatic identification of:
-    - mocked dependencies
-    - stubs (`when(...).thenReturn(...)`)
-    - verify statements (`verify(...)`)
-- Generation of proxy classes for each dependency
-- Conversion of:
-    - stubs into assertions on real results
-    - verify statements into verifiable counters
-- Structured, ready-to-use output
+Before running the application, install:
 
----
+- **Java JDK 26**
+- **Apache Maven 3.9+**
 
-## How it works
+Check installed versions:
 
-1. **Input:**
-    - Java test class (JUnit + Mockito)
-    - Related production code
+```bash
+java -version
+mvn -version
+```
 
-2. **The system:**
-    - Analyzes mocks, stubs, and verify statements
-    - Builds proxies for each dependency
-    - Replaces:
-        - stubs with real calls + assertions
-        - verify statements with counters
+### Environment Configuration
 
-3. **Output:**
-    - Transformed integration test
-    - Generated proxy classes
+Before running the application, create a `.env` file in the project root directory with the following content:
+
+```env
+MODEL=gpt-5.4-mini (recommended)
+PROVIDER=openai (recommended)
+OPENAI_API_KEY=secret_key
+```
+
+### LLM inputs
+
+Inside the `src/main/resources/prompts/human` the files:
+
+- `DEPENDENCIES.txt`
+- `SUT.txt`
+- `UNIT.TXT`
+
+must be filled with proper Java code in order to make the tool transform the unit test.
+
+## Run the application
+
+Use the following commands:
+
+1. Build
+
+    ```bash
+    mvn package
+    ```
+
+2. Execute
+
+    - Windows PowerShell:
+
+      ```powershell
+      mvn exec:java "-Dexec.mainClass=unicam.phd.unmock.Main"
+      ```
+
+    - macOS / Linux:
+
+      ```bash
+      mvn exec:java -Dexec.mainClass=unicam.phd.unmock.Main
+      ```
