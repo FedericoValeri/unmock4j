@@ -169,7 +169,7 @@ public class ProxyGenerator {
                     new LinkedHashMap<>(current),
                     selected
             );
-            default -> {
+            case null, default -> {
             }
         }
 
@@ -354,22 +354,8 @@ public class ProxyGenerator {
         return type;
     }
 
-    private static class SimpleParameterizedType
+    private record SimpleParameterizedType(Type raw, Type[] args, Type owner)
             implements ParameterizedType {
-
-        private final Type raw;
-        private final Type[] args;
-        private final Type owner;
-
-        SimpleParameterizedType(
-                Type raw,
-                Type[] args,
-                Type owner) {
-
-            this.raw = raw;
-            this.args = args;
-            this.owner = owner;
-        }
 
         @Override
         public Type @NonNull [] getActualTypeArguments() {
