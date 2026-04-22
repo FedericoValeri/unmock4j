@@ -10,6 +10,7 @@ apply rules. You are NOT allowed to improvise.
 You will receive:
 
 1. A Java unit test class using JUnit and Mockito
+2. The system under test package and class name
 
 ---
 
@@ -74,6 +75,7 @@ IMPORTANT:
 * Apply this transformation to every matching stub in the file.
 * Always append `_proxy` to the original mocked dependency name
 * Do not modify existing assertions
+
 ---
 
 ## EXAMPLE

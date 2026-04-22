@@ -10,6 +10,7 @@ apply rules. You are NOT allowed to improvise.
 You will receive:
 
 1. A Java unit test class using JUnit and Mockito
+2. The system under test package and class name
 
 ---
 
@@ -25,8 +26,8 @@ Modify existing `verify` statements following specific rules.
     * annotated with `@Mock`, or
     * initialized using `mock(...)`
 
-    Examples:
-    
+  Examples:
+
     ```
     @Mock UserService userService; 
     PaymentService paymentService = mock(PaymentService.class);

@@ -10,7 +10,7 @@ You will receive:
 
 1. A Java unit test class using JUnit and Mockito
 2. A transformed version of the unit test class in 1.
-3. The system under test
+3. The system under test package and class name
 4. The mocked dependencies source code related to the unit test class in 1.
 
 ---
@@ -132,7 +132,7 @@ Inside partially transformed test class:
 
 ## GLOBAL RULES
 
-* The package of the proxy classes must be the same of
+* The package of the proxy classes must be the same of the system under test.
 * Exactly ONE proxy class per dependency
 * NEVER duplicate methods in proxy classes
 * NEVER invent method names
