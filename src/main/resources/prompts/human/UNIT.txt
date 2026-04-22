@@ -57,3 +57,40 @@ public class PythonGatewayTest {
                 taskDefinition.getName());
         Assertions.assertEquals(result.get("code").longValue(), taskDefinition.getCode());
     }
+
+     private Project getTestProject() {
+            Project project = new Project();
+            project.setName("ut-project");
+            project.setUserId(111);
+            project.setCode(1L);
+            project.setCreateTime(new Date());
+            project.setUpdateTime(new Date());
+            return project;
+        }
+
+        private WorkflowDefinition getTestProcessDefinition() {
+            WorkflowDefinition workflowDefinition = new WorkflowDefinition();
+            workflowDefinition.setCode(1L);
+            workflowDefinition.setName("ut-process-definition");
+            workflowDefinition.setProjectCode(1L);
+            workflowDefinition.setUserId(111);
+            workflowDefinition.setUpdateTime(new Date());
+            workflowDefinition.setCreateTime(new Date());
+            return workflowDefinition;
+        }
+
+        private TaskDefinition getTestTaskDefinition() {
+            TaskDefinition taskDefinition = new TaskDefinition();
+            taskDefinition.setCode(888888L);
+            taskDefinition.setName("ut-task-definition");
+            taskDefinition.setProjectCode(1L);
+            taskDefinition.setTaskType("SHELL");
+            taskDefinition.setUserId(111);
+            taskDefinition.setResourceIds("1");
+            taskDefinition.setWorkerGroup("default");
+            taskDefinition.setEnvironmentCode(1L);
+            taskDefinition.setVersion(1);
+            taskDefinition.setCreateTime(new Date());
+            taskDefinition.setUpdateTime(new Date());
+            return taskDefinition;
+        }
