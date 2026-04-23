@@ -42,7 +42,7 @@ Inside the `src/main/resources/prompts/human` the files:
 
 - `DEPENDENCIES.txt`
 - `SUT.txt`
-- `UNIT.TXT`
+- `UNIT.txt`
 
 must be filled with proper Java code in order to make the tool transform the unit test.
 
