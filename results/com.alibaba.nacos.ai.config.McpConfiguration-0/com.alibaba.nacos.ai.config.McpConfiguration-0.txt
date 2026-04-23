@@ -1,0 +1,64 @@
+---INTEGRATION_TEST_START---
+package com.alibaba.nacos.ai.config;
+
+import com.alibaba.nacos.core.code.ControllerMethodsCache;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.Mock;
+import org.mockito.junit.jupiter.MockitoExtension;
+
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.mockito.Mockito.verify;
+
+@ExtendWith(MockitoExtension.class)
+class McpConfigurationIntegrationTest {
+
+    @Mock
+    ControllerMethodsCache methodsCache;
+
+    private ControllerMethodsCache methodsCache_proxy = new ControllerMethodsCache_Proxy(methodsCache);
+
+    @Test
+    void testInit() {
+        McpConfiguration mcpConfiguration = new McpConfiguration(methodsCache_proxy);
+        mcpConfiguration.init();
+        assertThat(methodsCache_proxy.method_verify()).isEqualTo(1);
+        verify(methodsCache).initClassMethod("com.alibaba.nacos.ai.controller");
+    }
+}
+---INTEGRATION_TEST_END---
+
+---PROXIES_START---
+package com.alibaba.nacos.ai.config;
+
+import com.alibaba.nacos.core.code.ControllerMethodsCache;
+
+class ControllerMethodsCache_EmptyProxy extends ControllerMethodsCache {
+
+    protected final ControllerMethodsCache dependency;
+
+    public ControllerMethodsCache_EmptyProxy(ControllerMethodsCache dependency) {
+        super();
+        this.dependency = dependency;
+    }
+}
+
+class ControllerMethodsCache_Proxy extends ControllerMethodsCache_EmptyProxy {
+
+    private int methodCounter = 0;
+
+    public ControllerMethodsCache_Proxy(ControllerMethodsCache dependency) {
+        super(dependency);
+    }
+
+    @Override
+    public void initClassMethod(String packageName) {
+        methodCounter++;
+        dependency.initClassMethod(packageName);
+    }
+
+    public int method_verify() {
+        return methodCounter;
+    }
+}
+---PROXIES_END---

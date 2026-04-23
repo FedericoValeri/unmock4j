@@ -1,0 +1,400 @@
+---INTEGRATION_TEST_START---
+package org.apache.dolphinscheduler.api.python;
+
+import org.apache.dolphinscheduler.api.service.ResourcesService;
+import org.apache.dolphinscheduler.dao.entity.Project;
+import org.apache.dolphinscheduler.dao.entity.TaskDefinition;
+import org.apache.dolphinscheduler.dao.entity.User;
+import org.apache.dolphinscheduler.dao.entity.WorkflowDefinition;
+import org.apache.dolphinscheduler.dao.mapper.ProjectMapper;
+import org.apache.dolphinscheduler.dao.mapper.TaskDefinitionMapper;
+import org.apache.dolphinscheduler.dao.mapper.WorkflowDefinitionMapper;
+import org.apache.dolphinscheduler.plugin.storage.api.StorageEntity;
+import org.apache.dolphinscheduler.spi.enums.ResourceType;
+
+import java.util.Date;
+import java.util.Map;
+
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.InjectMocks;
+import org.mockito.Mock;
+import org.mockito.Mockito;
+import org.mockito.junit.jupiter.MockitoExtension;
+
+@ExtendWith(MockitoExtension.class)
+public class PythonGatewayIntegrationTest {
+
+    @InjectMocks
+    private PythonGateway pythonGateway;
+
+    @Mock
+    private ProjectMapper projectMapper;
+
+    @Mock
+    private WorkflowDefinitionMapper workflowDefinitionMapper;
+
+    @Mock
+    private TaskDefinitionMapper taskDefinitionMapper;
+
+    @Mock
+    private ResourcesService resourcesService;
+
+    private ProjectMapper mockedDependency_proxy = new ProjectMapper_Proxy(projectMapper);
+    private WorkflowDefinitionMapper mockedDependency_proxy2 = new WorkflowDefinitionMapper_Proxy(workflowDefinitionMapper);
+    private TaskDefinitionMapper mockedDependency_proxy3 = new TaskDefinitionMapper_Proxy(taskDefinitionMapper);
+
+    @Test
+    public void testGetCodeAndVersion() {
+        Project project = getTestProject();
+        Mockito.when(projectMapper.queryByName(project.getName())).thenReturn(mockedDependency_proxy.queryByName(project.getName()));
+
+        WorkflowDefinition workflowDefinition = getTestProcessDefinition();
+        Mockito.when(workflowDefinitionMapper.queryByDefineName(project.getCode(), workflowDefinition.getName()))
+                .thenReturn(mockedDependency_proxy2.queryByDefineName(project.getCode(), workflowDefinition.getName()));
+
+        TaskDefinition taskDefinition = getTestTaskDefinition();
+        Mockito.when(taskDefinitionMapper.queryByName(project.getCode(), workflowDefinition.getCode(),
+                taskDefinition.getName())).thenReturn(mockedDependency_proxy3.queryByName(project.getCode(), workflowDefinition.getCode(),
+                taskDefinition.getName()));
+
+        Map<String, Long> result = pythonGateway.getCodeAndVersion(project.getName(), workflowDefinition.getName(),
+                taskDefinition.getName());
+        Assertions.assertEquals(result.get("code").longValue(), taskDefinition.getCode());
+    }
+
+     private Project getTestProject() {
+            Project project = new Project();
+            project.setName("ut-project");
+            project.setUserId(111);
+            project.setCode(1L);
+            project.setCreateTime(new Date());
+            project.setUpdateTime(new Date());
+            return project;
+        }
+
+        private WorkflowDefinition getTestProcessDefinition() {
+            WorkflowDefinition workflowDefinition = new WorkflowDefinition();
+            workflowDefinition.setCode(1L);
+            workflowDefinition.setName("ut-process-definition");
+            workflowDefinition.setProjectCode(1L);
+            workflowDefinition.setUserId(111);
+            workflowDefinition.setUpdateTime(new Date());
+            workflowDefinition.setCreateTime(new Date());
+            return workflowDefinition;
+        }
+
+        private TaskDefinition getTestTaskDefinition() {
+            TaskDefinition taskDefinition = new TaskDefinition();
+            taskDefinition.setCode(888888L);
+            taskDefinition.setName("ut-task-definition");
+            taskDefinition.setProjectCode(1L);
+            taskDefinition.setTaskType("SHELL");
+            taskDefinition.setUserId(111);
+            taskDefinition.setResourceIds("1");
+            taskDefinition.setWorkerGroup("default");
+            taskDefinition.setEnvironmentCode(1L);
+            taskDefinition.setVersion(1);
+            taskDefinition.setCreateTime(new Date());
+            taskDefinition.setUpdateTime(new Date());
+            return taskDefinition;
+        }
+}
+---INTEGRATION_TEST_END---
+
+---PROXIES_START---
+package org.apache.dolphinscheduler.api.python;
+
+import org.apache.dolphinscheduler.dao.entity.Project;
+import org.apache.dolphinscheduler.dao.entity.TaskDefinition;
+import org.apache.dolphinscheduler.dao.entity.WorkflowDefinition;
+import org.apache.dolphinscheduler.dao.mapper.ProjectMapper;
+import org.apache.dolphinscheduler.dao.mapper.TaskDefinitionMapper;
+import org.apache.dolphinscheduler.dao.mapper.WorkflowDefinitionMapper;
+
+import java.util.Collections;
+import java.util.List;
+
+public class ProjectMapper_Proxy extends ProjectMapper_EmptyProxy {
+
+    private final ProjectMapper dependency;
+
+    public ProjectMapper_Proxy(ProjectMapper dependency) {
+        super(dependency);
+        this.dependency = dependency;
+    }
+
+    @Override
+    public Project queryByName(String projectName) {
+        Project result = dependency.queryByName(projectName);
+        org.junit.jupiter.api.Assertions.assertNotNull(result);
+        return result;
+    }
+}
+
+class ProjectMapper_EmptyProxy implements ProjectMapper {
+    protected final ProjectMapper dependency;
+
+    public ProjectMapper_EmptyProxy(ProjectMapper dependency) {
+        this.dependency = dependency;
+    }
+
+    @Override
+    public Project queryByName(String projectName) {
+        return dependency.queryByName(projectName);
+    }
+
+    @Override
+    public Project queryByCode(long projectCode) {
+        return dependency.queryByCode(projectCode);
+    }
+
+    @Override
+    public List<Project> queryByCodes(java.util.Collection<Long> codes) {
+        return dependency.queryByCodes(codes);
+    }
+
+    @Override
+    public Project queryDetailById(int projectId) {
+        return dependency.queryDetailById(projectId);
+    }
+
+    @Override
+    public com.baomidou.mybatisplus.core.metadata.IPage<Project> queryProjectListPaging(com.baomidou.mybatisplus.core.metadata.IPage<Project> page, List<Integer> projectsIds, String searchName) {
+        return dependency.queryProjectListPaging(page, projectsIds, searchName);
+    }
+
+    @Override
+    public List<Project> queryProjectCreatedByUser(int userId) {
+        return dependency.queryProjectCreatedByUser(userId);
+    }
+
+    @Override
+    public List<Project> queryAuthedProjectListByUserId(int userId) {
+        return dependency.queryAuthedProjectListByUserId(userId);
+    }
+
+    @Override
+    public List<Project> queryProjectExceptUserId(int userId) {
+        return dependency.queryProjectExceptUserId(userId);
+    }
+
+    @Override
+    public List<Project> queryProjectCreatedAndAuthorizedByUserId(int userId) {
+        return dependency.queryProjectCreatedAndAuthorizedByUserId(userId);
+    }
+
+    @Override
+    public org.apache.dolphinscheduler.dao.entity.ProjectUser queryProjectWithUserByWorkflowInstanceId(int workflowInstanceId) {
+        return dependency.queryProjectWithUserByWorkflowInstanceId(workflowInstanceId);
+    }
+
+    @Override
+    public List<Project> queryAllProject(int userId) {
+        return dependency.queryAllProject(userId);
+    }
+
+    @Override
+    public List<Project> listAuthorizedProjects(int userId, List<Integer> projectsIds) {
+        return dependency.listAuthorizedProjects(userId, projectsIds);
+    }
+
+    @Override
+    public List<Project> queryAllProjectForDependent() {
+        return dependency.queryAllProjectForDependent();
+    }
+
+    @Override
+    public Project queryProjectByTaskInstanceId(int taskInstanceId) {
+        return dependency.queryProjectByTaskInstanceId(taskInstanceId);
+    }
+
+    @Override
+    public int insert(Project entity) { return dependency.insert(entity); }
+    @Override
+    public int deleteById(java.io.Serializable id) { return dependency.deleteById(id); }
+    @Override
+    public int deleteById(Project entity) { return dependency.deleteById(entity); }
+    @Override
+    public int updateById(Project entity) { return dependency.updateById(entity); }
+    @Override
+    public Project selectById(java.io.Serializable id) { return dependency.selectById(id); }
+    @Override
+    public List<Project> selectBatchIds(java.util.Collection<java.io.Serializable> idList) { return dependency.selectBatchIds(idList); }
+    @Override
+    public List<Project> selectByMap(java.util.Map<String, Object> columnMap) { return dependency.selectByMap(columnMap); }
+    @Override
+    public Integer delete(java.util.Map<String, Object> columnMap) { return dependency.delete(columnMap); }
+    @Override
+    public Long selectCount(com.baomidou.mybatisplus.core.conditions.Wrapper<Project> queryWrapper) { return dependency.selectCount(queryWrapper); }
+    @Override
+    public List<Project> selectList(com.baomidou.mybatisplus.core.conditions.Wrapper<Project> queryWrapper) { return dependency.selectList(queryWrapper); }
+    @Override
+    public List<java.util.Map<String, Object>> selectMaps(com.baomidou.mybatisplus.core.conditions.Wrapper<Project> queryWrapper) { return dependency.selectMaps(queryWrapper); }
+    @Override
+    public List<Object> selectObjs(com.baomidou.mybatisplus.core.conditions.Wrapper<Project> queryWrapper) { return dependency.selectObjs(queryWrapper); }
+    @Override
+    public <E extends com.baomidou.mybatisplus.core.metadata.IPage<Project>> E selectPage(E page, com.baomidou.mybatisplus.core.conditions.Wrapper<Project> queryWrapper) { return dependency.selectPage(page, queryWrapper); }
+    @Override
+    public <E extends com.baomidou.mybatisplus.core.metadata.IPage<java.util.Map<String, Object>>> E selectMapsPage(E page, com.baomidou.mybatisplus.core.conditions.Wrapper<Project> queryWrapper) { return dependency.selectMapsPage(page, queryWrapper); }
+}
+
+public class WorkflowDefinitionMapper_Proxy extends WorkflowDefinitionMapper_EmptyProxy {
+
+    private final WorkflowDefinitionMapper dependency;
+
+    public WorkflowDefinitionMapper_Proxy(WorkflowDefinitionMapper dependency) {
+        super(dependency);
+        this.dependency = dependency;
+    }
+
+    @Override
+    public WorkflowDefinition queryByDefineName(long projectCode, String workflowDefinitionName) {
+        WorkflowDefinition result = dependency.queryByDefineName(projectCode, workflowDefinitionName);
+        org.junit.jupiter.api.Assertions.assertNotNull(result);
+        return result;
+    }
+}
+
+class WorkflowDefinitionMapper_EmptyProxy implements WorkflowDefinitionMapper {
+    protected final WorkflowDefinitionMapper dependency;
+
+    public WorkflowDefinitionMapper_EmptyProxy(WorkflowDefinitionMapper dependency) {
+        this.dependency = dependency;
+    }
+
+    @Override
+    public WorkflowDefinition queryByCode(long code) { return dependency.queryByCode(code); }
+    @Override
+    public int updateById(WorkflowDefinition workflowDefinition) { return dependency.updateById(workflowDefinition); }
+    @Override
+    public int deleteByCode(long code) { return dependency.deleteByCode(code); }
+    @Override
+    public List<WorkflowDefinition> queryByCodes(java.util.Collection<Long> codes) { return dependency.queryByCodes(codes); }
+    @Override
+    public WorkflowDefinition verifyByDefineName(long projectCode, String workflowDefinitionName) { return dependency.verifyByDefineName(projectCode, workflowDefinitionName); }
+    @Override
+    public WorkflowDefinition queryByDefineName(long projectCode, String workflowDefinitionName) { return dependency.queryByDefineName(projectCode, workflowDefinitionName); }
+    @Override
+    public WorkflowDefinition queryByDefineId(int workflowDefinitionId) { return dependency.queryByDefineId(workflowDefinitionId); }
+    @Override
+    public com.baomidou.mybatisplus.core.metadata.IPage<WorkflowDefinition> queryDefineListPaging(com.baomidou.mybatisplus.core.metadata.IPage<WorkflowDefinition> page, String searchVal, int userId, long projectCode) { return dependency.queryDefineListPaging(page, searchVal, userId, projectCode); }
+    @Override
+    public List<WorkflowDefinition> queryAllDefinitionList(long projectCode) { return dependency.queryAllDefinitionList(projectCode); }
+    @Override
+    public List<org.apache.dolphinscheduler.dao.entity.DependentSimplifyDefinition> queryDefinitionListByProjectCodeAndWorkflowDefinitionCodes(long projectCode, java.util.Collection<Long> codes) { return dependency.queryDefinitionListByProjectCodeAndWorkflowDefinitionCodes(projectCode, codes); }
+    @Override
+    public List<WorkflowDefinition> queryDefinitionListByIdList(Integer[] ids) { return dependency.queryDefinitionListByIdList(ids); }
+    @Override
+    public List<org.apache.dolphinscheduler.dao.model.WorkflowDefinitionCountDto> countDefinitionByProjectCodes(java.util.Collection<Long> projectCodes) { return dependency.countDefinitionByProjectCodes(projectCodes); }
+    @Override
+    public List<Integer> listProjectIds() { return dependency.listProjectIds(); }
+    @Override
+    public List<Long> queryDefinitionCodeListByProjectCodes(List<Long> projectCodes) { return dependency.queryDefinitionCodeListByProjectCodes(projectCodes); }
+    @Override
+    public List<org.apache.dolphinscheduler.dao.entity.ProjectWorkflowDefinitionCount> queryProjectWorkflowDefinitionCountByProjectCodes(List<Long> projectCodes) { return dependency.queryProjectWorkflowDefinitionCountByProjectCodes(projectCodes); }
+    @Override
+    public int insert(WorkflowDefinition entity) { return dependency.insert(entity); }
+    @Override
+    public int deleteById(java.io.Serializable id) { return dependency.deleteById(id); }
+    @Override
+    public int deleteById(WorkflowDefinition entity) { return dependency.deleteById(entity); }
+    @Override
+    public int updateById(WorkflowDefinition entity) { return dependency.updateById(entity); }
+    @Override
+    public WorkflowDefinition selectById(java.io.Serializable id) { return dependency.selectById(id); }
+    @Override
+    public List<WorkflowDefinition> selectBatchIds(java.util.Collection<java.io.Serializable> idList) { return dependency.selectBatchIds(idList); }
+    @Override
+    public List<WorkflowDefinition> selectByMap(java.util.Map<String, Object> columnMap) { return dependency.selectByMap(columnMap); }
+    @Override
+    public Integer delete(java.util.Map<String, Object> columnMap) { return dependency.delete(columnMap); }
+    @Override
+    public Long selectCount(com.baomidou.mybatisplus.core.conditions.Wrapper<WorkflowDefinition> queryWrapper) { return dependency.selectCount(queryWrapper); }
+    @Override
+    public List<WorkflowDefinition> selectList(com.baomidou.mybatisplus.core.conditions.Wrapper<WorkflowDefinition> queryWrapper) { return dependency.selectList(queryWrapper); }
+    @Override
+    public List<java.util.Map<String, Object>> selectMaps(com.baomidou.mybatisplus.core.conditions.Wrapper<WorkflowDefinition> queryWrapper) { return dependency.selectMaps(queryWrapper); }
+    @Override
+    public List<Object> selectObjs(com.baomidou.mybatisplus.core.conditions.Wrapper<WorkflowDefinition> queryWrapper) { return dependency.selectObjs(queryWrapper); }
+    @Override
+    public <E extends com.baomidou.mybatisplus.core.metadata.IPage<WorkflowDefinition>> E selectPage(E page, com.baomidou.mybatisplus.core.conditions.Wrapper<WorkflowDefinition> queryWrapper) { return dependency.selectPage(page, queryWrapper); }
+    @Override
+    public <E extends com.baomidou.mybatisplus.core.metadata.IPage<java.util.Map<String, Object>>> E selectMapsPage(E page, com.baomidou.mybatisplus.core.conditions.Wrapper<WorkflowDefinition> queryWrapper) { return dependency.selectMapsPage(page, queryWrapper); }
+}
+
+public class TaskDefinitionMapper_Proxy extends TaskDefinitionMapper_EmptyProxy {
+
+    private final TaskDefinitionMapper dependency;
+
+    public TaskDefinitionMapper_Proxy(TaskDefinitionMapper dependency) {
+        super(dependency);
+        this.dependency = dependency;
+    }
+
+    @Override
+    public TaskDefinition queryByName(long projectCode, long workflowDefinitionCode, String name) {
+        TaskDefinition result = dependency.queryByName(projectCode, workflowDefinitionCode, name);
+        org.junit.jupiter.api.Assertions.assertNotNull(result);
+        return result;
+    }
+}
+
+class TaskDefinitionMapper_EmptyProxy implements TaskDefinitionMapper {
+    protected final TaskDefinitionMapper dependency;
+
+    public TaskDefinitionMapper_EmptyProxy(TaskDefinitionMapper dependency) {
+        this.dependency = dependency;
+    }
+
+    @Override
+    public TaskDefinition queryByName(long projectCode, long workflowDefinitionCode, String name) { return dependency.queryByName(projectCode, workflowDefinitionCode, name); }
+    @Override
+    public TaskDefinition queryByCode(long code) { return dependency.queryByCode(code); }
+    @Override
+    public List<String> queryAllTaskDefinitionWorkerGroups(long projectCode) { return dependency.queryAllTaskDefinitionWorkerGroups(projectCode); }
+    @Override
+    public List<org.apache.dolphinscheduler.dao.model.WorkflowDefinitionCountDto> countDefinitionGroupByUser(Long[] projectCodes) { return dependency.countDefinitionGroupByUser(projectCodes); }
+    @Override
+    public int deleteByCode(long code) { return dependency.deleteByCode(code); }
+    @Override
+    public int batchInsert(List<org.apache.dolphinscheduler.dao.entity.TaskDefinitionLog> taskDefinitions) { return dependency.batchInsert(taskDefinitions); }
+    @Override
+    public List<TaskDefinition> queryByCodeList(java.util.Collection<Long> codes) { return dependency.queryByCodeList(codes); }
+    @Override
+    public int deleteByBatchCodes(List<Long> taskCodeList) { return dependency.deleteByBatchCodes(taskCodeList); }
+    @Override
+    public void deleteByWorkflowDefinitionCodeAndVersion(long workflowDefinitionCode, int workflowDefinitionVersion) { dependency.deleteByWorkflowDefinitionCodeAndVersion(workflowDefinitionCode, workflowDefinitionVersion); }
+    @Override
+    public List<TaskDefinition> queryDefinitionsByTaskType(String taskType) { return dependency.queryDefinitionsByTaskType(taskType); }
+    @Override
+    public int insert(TaskDefinition entity) { return dependency.insert(entity); }
+    @Override
+    public int deleteById(java.io.Serializable id) { return dependency.deleteById(id); }
+    @Override
+    public int deleteById(TaskDefinition entity) { return dependency.deleteById(entity); }
+    @Override
+    public int updateById(TaskDefinition entity) { return dependency.updateById(entity); }
+    @Override
+    public TaskDefinition selectById(java.io.Serializable id) { return dependency.selectById(id); }
+    @Override
+    public List<TaskDefinition> selectBatchIds(java.util.Collection<java.io.Serializable> idList) { return dependency.selectBatchIds(idList); }
+    @Override
+    public List<TaskDefinition> selectByMap(java.util.Map<String, Object> columnMap) { return dependency.selectByMap(columnMap); }
+    @Override
+    public Integer delete(java.util.Map<String, Object> columnMap) { return dependency.delete(columnMap); }
+    @Override
+    public Long selectCount(com.baomidou.mybatisplus.core.conditions.Wrapper<TaskDefinition> queryWrapper) { return dependency.selectCount(queryWrapper); }
+    @Override
+    public List<TaskDefinition> selectList(com.baomidou.mybatisplus.core.conditions.Wrapper<TaskDefinition> queryWrapper) { return dependency.selectList(queryWrapper); }
+    @Override
+    public List<java.util.Map<String, Object>> selectMaps(com.baomidou.mybatisplus.core.conditions.Wrapper<TaskDefinition> queryWrapper) { return dependency.selectMaps(queryWrapper); }
+    @Override
+    public List<Object> selectObjs(com.baomidou.mybatisplus.core.conditions.Wrapper<TaskDefinition> queryWrapper) { return dependency.selectObjs(queryWrapper); }
+    @Override
+    public <E extends com.baomidou.mybatisplus.core.metadata.IPage<TaskDefinition>> E selectPage(E page, com.baomidou.mybatisplus.core.conditions.Wrapper<TaskDefinition> queryWrapper) { return dependency.selectPage(page, queryWrapper); }
+    @Override
+    public <E extends com.baomidou.mybatisplus.core.metadata.IPage<java.util.Map<String, Object>>> E selectMapsPage(E page, com.baomidou.mybatisplus.core.conditions.Wrapper<TaskDefinition> queryWrapper) { return dependency.selectMapsPage(page, queryWrapper); }
+}
+---PROXIES_END---
