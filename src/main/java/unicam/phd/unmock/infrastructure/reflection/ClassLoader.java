@@ -1,6 +1,6 @@
 package unicam.phd.unmock.infrastructure.reflection;
 
-public class ClassLoaderService {
+public class ClassLoader {
 
     public Class<?> load(String fullyQualifiedClassName) {
         try {

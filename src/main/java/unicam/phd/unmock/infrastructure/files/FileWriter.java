@@ -7,13 +7,23 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.StandardOpenOption;
 
-public class JavaFileWriter {
+public class FileWriter {
 
-    public void write(Path outputDir, String className, String code) {
+
+    public void writeClass(Path outputDir, String className, String code) {
+        write(outputDir.resolve(className + ".java"), code);
+    }
+
+    public Path writeRunResult(String runId, String code) {
+        return write(
+                Path.of("results", runId, runId + ".txt"),
+                code
+        );
+    }
+
+    private Path write(Path file, String code) {
         try {
-            Files.createDirectories(outputDir);
-
-            Path file = outputDir.resolve(className + ".java");
+            Files.createDirectories(file.getParent());
 
             Files.writeString(
                     file,
@@ -22,10 +32,14 @@ public class JavaFileWriter {
                     StandardOpenOption.CREATE,
                     StandardOpenOption.TRUNCATE_EXISTING
             );
+
+            return file;
+
         } catch (IOException e) {
             throw new UncheckedIOException(
-                    "Cannot write file for class: " + className, e
+                    "Cannot write file: " + file, e
             );
         }
     }
+
 }

@@ -2,7 +2,7 @@ package unicam.phd.unmock.application.codegen;
 
 import unicam.phd.unmock.application.parser.JavaCodeExtractor;
 import unicam.phd.unmock.application.pipeline.PipelineState;
-import unicam.phd.unmock.infrastructure.files.JavaFileWriter;
+import unicam.phd.unmock.infrastructure.files.FileWriter;
 
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
@@ -10,22 +10,46 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.List;
 
+/**
+ * Application service responsible for generating final Java source files
+ * produced by the pipeline output.
+ * <p>
+ * This component reads a generated text file containing structured code blocks,
+ * extracts Java classes from predefined sections, writes them to disk, and
+ * generates additional empty proxy classes for discovered dependencies.
+ * <p>
+ */
 public class SourceFilesGenerator {
 
     private final JavaCodeExtractor extractor;
-    private final JavaFileWriter writer;
-    private final EmptyProxyGenerator emptyProxyGenerator;
+    private final FileWriter writer;
+    private final EmptyProxyService emptyProxyService;
 
     public SourceFilesGenerator(
             JavaCodeExtractor extractor,
-            JavaFileWriter writer,
-            EmptyProxyGenerator emptyProxyGenerator) {
+            FileWriter writer,
+            EmptyProxyService emptyProxyService) {
 
         this.extractor = extractor;
         this.writer = writer;
-        this.emptyProxyGenerator = emptyProxyGenerator;
+        this.emptyProxyService = emptyProxyService;
     }
 
+    /**
+     * Reads the generated pipeline output file and creates all final source files.
+     * <p>
+     * The process performs the following steps:
+     * <ol>
+     *   <li>Extracts the SUT package name from the pipeline state.</li>
+     *   <li>Reads the provided file content.</li>
+     *   <li>Generates source files from known code blocks.</li>
+     *   <li>Generates empty proxies for each declared dependency.</li>
+     * </ol>
+     *
+     * @param state current pipeline state
+     * @param file  path to the generated text file containing code blocks
+     * @throws RuntimeException if the input file cannot be read or processing fails
+     */
     public void create(
             PipelineState state,
             String file) {
@@ -65,7 +89,7 @@ public class SourceFilesGenerator {
                 if (className.startsWith("#")) continue;
 
                 try {
-                    emptyProxyGenerator.generate(
+                    emptyProxyService.generate(
                             className,
                             outputDir,
                             sutPackageOnly
@@ -96,7 +120,7 @@ public class SourceFilesGenerator {
         List<JavaClassBlock> classes = extractor.extractClasses(block);
 
         for (JavaClassBlock cls : classes) {
-            writer.write(outputDir, cls.className(), cls.code());
+            writer.writeClass(outputDir, cls.className(), cls.code());
         }
     }
 }

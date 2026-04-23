@@ -24,7 +24,7 @@ java -version
 mvn -version
 ```
 
-### Environment Configuration
+### Environment configuration
 
 Create a `.env` file in the project root directory with the following content:
 

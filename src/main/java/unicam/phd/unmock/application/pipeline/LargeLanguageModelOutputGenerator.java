@@ -1,7 +1,7 @@
 package unicam.phd.unmock.application.pipeline;
 
 import unicam.phd.unmock.application.parser.JavaCodeExtractor;
-import unicam.phd.unmock.infrastructure.files.ResultFileWriter;
+import unicam.phd.unmock.infrastructure.files.FileWriter;
 import unicam.phd.unmock.infrastructure.reporting.RunIdGenerator;
 import unicam.phd.unmock.infrastructure.reporting.SummaryWriter;
 
@@ -9,28 +9,50 @@ import java.nio.file.Path;
 import java.util.List;
 
 /**
- * High-level orchestrator for writing generated output
- * and updating execution summary.
+ * Application service responsible for persisting the final large language model
+ * output and updating execution summaries.
+ * <p>
+ * This component generates a unique run identifier for the current pipeline
+ * execution, stores the transformed test output, and appends metadata to the
+ * summary report.
+ * <p>
+ * The generated run identifier follows the pattern:
+ * {@code <fullyQualifiedSutName>-<progressiveId>}.
  */
 public class LargeLanguageModelOutputGenerator {
 
-    private final ResultFileWriter resultFileWriter;
+    private final FileWriter fileWriter;
     private final SummaryWriter summaryWriter;
     private final RunIdGenerator runIdGenerator;
     private final JavaCodeExtractor javaCodeExtractor;
 
     public LargeLanguageModelOutputGenerator(
-            ResultFileWriter resultFileWriter,
+            FileWriter fileWriter,
             SummaryWriter summaryWriter,
             RunIdGenerator runIdGenerator,
             JavaCodeExtractor javaCodeExtractor) {
 
-        this.resultFileWriter = resultFileWriter;
+        this.fileWriter = fileWriter;
         this.summaryWriter = summaryWriter;
         this.runIdGenerator = runIdGenerator;
         this.javaCodeExtractor = javaCodeExtractor;
     }
 
+    /**
+     * Generates the persisted output for the current pipeline state and updates
+     * the summary report.
+     * <p>
+     * The process performs the following steps:
+     * <ol>
+     *   <li>Extracts the fully qualified SUT name.</li>
+     *   <li>Computes the next available run identifier.</li>
+     *   <li>Writes the transformed test output to disk.</li>
+     *   <li>Appends execution metadata to {@code results/summary.csv}.</li>
+     * </ol>
+     *
+     * @param state current pipeline state
+     * @return path of the generated output file as a string
+     */
     public String generate(PipelineState state) {
 
         System.out.println("Generating llm output and summary...");
@@ -41,7 +63,7 @@ public class LargeLanguageModelOutputGenerator {
         int nextId = runIdGenerator.next(summaryFile, sutFullClassName);
         String runId = sutFullClassName + "-" + nextId;
 
-        Path outputFile = resultFileWriter.write(
+        Path outputFile = fileWriter.writeRunResult(
                 runId,
                 state.partiallyTransformedTest()
         );

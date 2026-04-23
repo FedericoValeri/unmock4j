@@ -1,20 +1,19 @@
 package unicam.phd.unmock;
 
 import com.github.lalyos.jfiglet.FigletFont;
-import unicam.phd.unmock.application.codegen.EmptyProxyGenerator;
-import unicam.phd.unmock.application.codegen.ProxyGenerator;
+import unicam.phd.unmock.application.codegen.EmptyProxyBuilder;
+import unicam.phd.unmock.application.codegen.EmptyProxyService;
 import unicam.phd.unmock.application.codegen.SourceFilesGenerator;
 import unicam.phd.unmock.application.parser.JavaCodeExtractor;
 import unicam.phd.unmock.application.pipeline.LargeLanguageModelOutputGenerator;
 import unicam.phd.unmock.application.pipeline.Pipeline;
 import unicam.phd.unmock.application.pipeline.PipelineState;
 import unicam.phd.unmock.application.pipeline.PipelineStepExecutor;
-import unicam.phd.unmock.infrastructure.files.JavaFileWriter;
-import unicam.phd.unmock.infrastructure.files.ResultFileWriter;
+import unicam.phd.unmock.infrastructure.files.FileWriter;
 import unicam.phd.unmock.infrastructure.llm.LargeLanguageModelFactory;
 import unicam.phd.unmock.infrastructure.prompts.HumanPromptFileLoader;
 import unicam.phd.unmock.infrastructure.prompts.PromptService;
-import unicam.phd.unmock.infrastructure.reflection.ClassLoaderService;
+import unicam.phd.unmock.infrastructure.reflection.ClassLoader;
 import unicam.phd.unmock.infrastructure.reporting.RunIdGenerator;
 import unicam.phd.unmock.infrastructure.reporting.SummaryWriter;
 
@@ -44,26 +43,26 @@ public class Main {
 
     private static App buildApp() {
 
-        JavaFileWriter javaFileWriter = new JavaFileWriter();
+        FileWriter fileWriter = new FileWriter();
         JavaCodeExtractor extractor = new JavaCodeExtractor();
 
-        EmptyProxyGenerator emptyProxyGenerator =
-                new EmptyProxyGenerator(
-                        new ClassLoaderService(),
-                        javaFileWriter,
-                        new ProxyGenerator()
+        EmptyProxyService emptyProxyService =
+                new EmptyProxyService(
+                        new ClassLoader(),
+                        fileWriter,
+                        new EmptyProxyBuilder()
                 );
 
         SourceFilesGenerator sourceFilesGenerator =
                 new SourceFilesGenerator(
                         extractor,
-                        javaFileWriter,
-                        emptyProxyGenerator
+                        fileWriter,
+                        emptyProxyService
                 );
 
         LargeLanguageModelOutputGenerator largeLanguageModelOutputGenerator =
                 new LargeLanguageModelOutputGenerator(
-                        new ResultFileWriter(),
+                        fileWriter,
                         new SummaryWriter(),
                         new RunIdGenerator(),
                         extractor

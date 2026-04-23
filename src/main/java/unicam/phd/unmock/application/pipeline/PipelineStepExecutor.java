@@ -11,11 +11,34 @@ import java.util.Map;
 
 import static unicam.phd.unmock.infrastructure.llm.TokenCounter.countTokens;
 
+
 /**
- * Executes one pipeline step against the LLM.
+ * Executes a single pipeline step against a configured large language model.
+ * <p>
+ * A step consists of:
+ * <ol>
+ *   <li>Rendering a prompt template using the current {@link PipelineState}.</li>
+ *   <li>Counting and validating input tokens.</li>
+ *   <li>Calling the language model.</li>
+ *   <li>Counting output tokens.</li>
+ *   <li>Returning an updated pipeline state with new content and metrics.</li>
+ * </ol>
  */
 public class PipelineStepExecutor {
 
+    /**
+     * Runs one pipeline step and returns the updated state.
+     *
+     * @param context        language model runtime context, including provider,
+     *                       model, and chat client
+     * @param promptTemplate template used to build the prompt for this step
+     * @param state          current pipeline state
+     * @return updated pipeline state containing generated output, token counts,
+     * and elapsed execution time
+     * @throws IllegalArgumentException if the rendered prompt exceeds the
+     *                                  configured token limit
+     * @throws RuntimeException         if the language model invocation fails
+     */
     public PipelineState run(
             LargeLanguageModelContext context,
             PromptTemplate promptTemplate,

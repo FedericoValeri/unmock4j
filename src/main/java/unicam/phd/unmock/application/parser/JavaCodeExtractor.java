@@ -7,8 +7,26 @@ import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+/**
+ * Component for extracting Java code structures from raw text.
+ * <p>
+ * This class provides lightweight parsing based on regular expressions and
+ * brace matching. It is designed for generated or controlled Java source text,
+ * where a full compiler parser would be unnecessary.
+ * <p>
+ */
 public class JavaCodeExtractor {
 
+    /**
+     * Extracts fully qualified names of classes or interfaces declared in the
+     * provided source code.
+     * <p>
+     * The method detects the package declaration and combines it with each
+     * discovered class or interface name.
+     *
+     * @param source Java source text
+     * @return list of fully qualified names in declaration order
+     */
     public List<String> extractFullClassNames(String source) {
         List<String> fullNames = new ArrayList<>();
 
@@ -30,6 +48,14 @@ public class JavaCodeExtractor {
         return fullNames;
     }
 
+    /**
+     * Extracts the text contained between two marker strings.
+     *
+     * @param content full source text
+     * @param start   start marker
+     * @param end     end marker
+     * @return trimmed content between markers, or {@code null} if not found
+     */
     public String extractBlock(String content, String start, String end) {
 
         Pattern pattern = Pattern.compile(
@@ -42,6 +68,15 @@ public class JavaCodeExtractor {
         return matcher.find() ? matcher.group(1).trim() : null;
     }
 
+    /**
+     * Extracts individual class declarations from a Java code block.
+     * <p>
+     * Shared header content (such as package and imports) is preserved and
+     * prepended to each extracted class.
+     *
+     * @param javaCode Java source block containing one or more classes
+     * @return list of extracted class blocks
+     */
     public List<JavaClassBlock> extractClasses(String javaCode) {
 
         List<JavaClassBlock> results = new ArrayList<>();
@@ -123,6 +158,5 @@ public class JavaCodeExtractor {
 
         return -1;
     }
-
 
 }

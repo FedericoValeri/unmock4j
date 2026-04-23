@@ -7,6 +7,22 @@ import unicam.phd.unmock.infrastructure.prompts.PromptService;
 
 import java.util.List;
 
+/**
+ * Orchestrates the complete transformation pipeline executed through a large
+ * language model.
+ * <p>
+ * This class loads user-provided inputs, executes a predefined sequence of
+ * prompt-driven steps, and returns the final accumulated {@link PipelineState}.
+ * <p>
+ * The pipeline currently consists of:
+ * <ol>
+ *   <li>Stub generation</li>
+ *   <li>Verification</li>
+ *   <li>Proxy generation</li>
+ * </ol>
+ * Each step may use a different subset of the available inputs depending on
+ * its purpose.
+ */
 public class Pipeline {
 
     private final HumanPromptFileLoader humanPromptFileLoader;
@@ -26,6 +42,19 @@ public class Pipeline {
         this.largeLanguageModelContext = largeLanguageModelContext;
     }
 
+    /**
+     * Executes the full pipeline and returns the resulting state.
+     * <p>
+     * The method performs the following operations:
+     * <ol>
+     *   <li>Loads the SUT, unit test, and dependency inputs.</li>
+     *   <li>Initializes the pipeline state.</li>
+     *   <li>Runs each configured prompt step in sequence.</li>
+     *   <li>Accumulates generated content, token usage, and timing data.</li>
+     * </ol>
+     *
+     * @return final pipeline state after all steps have completed
+     */
     public PipelineState run() {
 
         String sut = humanPromptFileLoader.getFileContent(InputFileType.SUT);

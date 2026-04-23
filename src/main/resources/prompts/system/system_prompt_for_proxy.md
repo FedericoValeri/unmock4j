@@ -133,6 +133,7 @@ Inside partially transformed test class:
 ## GLOBAL RULES
 
 * The package of the proxy classes must be the same of the system under test.
+* Use the same Junit version of the original unit test in the proxy classes.
 * Exactly ONE proxy class per dependency
 * NEVER duplicate methods in proxy classes
 * NEVER invent method names

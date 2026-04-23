@@ -8,19 +8,34 @@ import java.util.*;
 import java.util.stream.Collectors;
 
 /**
- * Proxy generator:
- * - implements target interface / extends target class
- * - includes declared methods
- * - includes inherited abstract methods
- * - skips static/private/final/default methods
- * - resolves inherited generics
- * - delegates every call to wrapped instance
+ * Generates Java source code for an "empty proxy" class that delegates all
+ * required method invocations to a wrapped target instance.
+ * <p>
+ * The generated proxy:
+ * <ul>
+ *   <li>Implements an interface or extends an abstract/concrete class.</li>
+ *   <li>Creates a delegate field referencing the wrapped instance.</li>
+ *   <li>Generates constructor injection for the delegate.</li>
+ *   <li>Overrides all abstract/interface methods that must be implemented.</li>
+ *   <li>Preserves generic signatures, bounds, arrays, wildcards, and checked exceptions.</li>
+ *   <li>Automatically collects and renders required imports.</li>
+ * </ul>
+ * <p>
+ * This class uses Java reflection metadata to inspect inheritance hierarchies
+ * and resolve generic substitutions across parent types.
  */
-public class ProxyGenerator {
+public class EmptyProxyBuilder {
 
     private record MethodContext(Method method, Map<String, Type> generics) {
     }
 
+    /**
+     * Builds the complete Java source code for a proxy class targeting the given type.
+     *
+     * @param target      target class or interface to proxy
+     * @param packageName package name for the generated source;
+     * @return generated Java source code
+     */
     public String buildSource(Class<?> target, String packageName) {
 
         String simpleName = target.getSimpleName();
