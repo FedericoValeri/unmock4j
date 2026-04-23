@@ -15,12 +15,15 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
 
-import static unicam.phd.unmock.application.pricing.Pricing.computeCost;
-
 /**
  * Appends run metadata into summary.csv
  */
 public class SummaryWriter {
+    private final CostCalculator costCalculator;
+
+    public SummaryWriter(CostCalculator costCalculator) {
+        this.costCalculator = costCalculator;
+    }
 
     public void append(
             Path summaryFile,
@@ -81,7 +84,7 @@ public class SummaryWriter {
             String sutPackage,
             PipelineState state) {
 
-        Double cost = computeCost(
+        Double cost = costCalculator.compute(
                 Config.MODEL,
                 state.inputTokens(),
                 state.outputTokens()

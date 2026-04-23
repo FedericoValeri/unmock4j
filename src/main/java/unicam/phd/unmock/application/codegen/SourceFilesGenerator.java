@@ -1,5 +1,7 @@
 package unicam.phd.unmock.application.codegen;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import unicam.phd.unmock.application.parser.JavaCodeExtractor;
 import unicam.phd.unmock.application.pipeline.PipelineState;
 import unicam.phd.unmock.infrastructure.files.FileWriter;
@@ -20,6 +22,8 @@ import java.util.List;
  * <p>
  */
 public class SourceFilesGenerator {
+
+    private static final Logger log = LoggerFactory.getLogger(SourceFilesGenerator.class);
 
     private final JavaCodeExtractor extractor;
     private final FileWriter writer;
@@ -54,7 +58,7 @@ public class SourceFilesGenerator {
             PipelineState state,
             String file) {
 
-        System.out.println("Generating final source files...");
+        log.info("Generating final source files...");
         List<String> sutNames = extractor.extractFullClassNames(state.sut());
         String sutFullClassName = sutNames.getFirst();
         String sutPackageOnly = sutFullClassName.substring(0, sutFullClassName.lastIndexOf('.'));

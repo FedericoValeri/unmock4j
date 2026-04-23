@@ -1,5 +1,7 @@
 package unicam.phd.unmock.application.pipeline;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import unicam.phd.unmock.application.parser.JavaCodeExtractor;
 import unicam.phd.unmock.infrastructure.files.FileWriter;
 import unicam.phd.unmock.infrastructure.reporting.RunIdGenerator;
@@ -20,6 +22,8 @@ import java.util.List;
  * {@code <fullyQualifiedSutName>-<progressiveId>}.
  */
 public class LargeLanguageModelOutputGenerator {
+
+    private static final Logger log = LoggerFactory.getLogger(LargeLanguageModelOutputGenerator.class);
 
     private final FileWriter fileWriter;
     private final SummaryWriter summaryWriter;
@@ -55,7 +59,8 @@ public class LargeLanguageModelOutputGenerator {
      */
     public String generate(PipelineState state) {
 
-        System.out.println("Generating llm output and summary...");
+        log.info("Generating llm output and summary...");
+
         List<String> sutNames = javaCodeExtractor.extractFullClassNames(state.sut());
         String sutFullClassName = sutNames.getFirst();
 

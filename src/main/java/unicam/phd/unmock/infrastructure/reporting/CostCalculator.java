@@ -1,8 +1,8 @@
-package unicam.phd.unmock.application.pricing;
+package unicam.phd.unmock.infrastructure.reporting;
 
 import java.util.Map;
 
-public class Pricing {
+public class CostCalculator {
 
     private static final Map<String, Map<String, Double>> MODEL_PRICING = Map.of(
             "gpt-4o-mini", Map.of(
@@ -23,9 +23,9 @@ public class Pricing {
             )
     );
 
-    public static Double computeCost(String model,
-                                     long inputTokens,
-                                     long outputTokens) {
+    public Double compute(String model,
+                          long inputTokens,
+                          long outputTokens) {
 
         if (!MODEL_PRICING.containsKey(model)) {
             return null; // oppure 0.0

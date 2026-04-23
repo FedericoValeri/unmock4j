@@ -3,12 +3,18 @@ package unicam.phd.unmock.infrastructure.llm;
 import dev.langchain4j.model.chat.ChatModel;
 import dev.langchain4j.model.ollama.OllamaChatModel;
 import dev.langchain4j.model.openai.OpenAiChatModel;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import unicam.phd.unmock.config.Config;
 
 public class LargeLanguageModelFactory {
 
+    private static final Logger log = LoggerFactory.getLogger(LargeLanguageModelFactory.class);
+
     public LargeLanguageModelContext create() {
-        System.out.println("Initializing LLM (" + Config.PROVIDER + " - " + Config.MODEL + ")...");
+        log.info("Initializing LLM ({} - {})...",
+                Config.PROVIDER,
+                Config.MODEL);
 
         ChatModel llm = switch (Config.PROVIDER.toLowerCase()) {
             case "openai" -> OpenAiChatModel.builder()

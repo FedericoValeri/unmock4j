@@ -1,6 +1,8 @@
 package unicam.phd.unmock.application.pipeline;
 
 import dev.langchain4j.model.input.PromptTemplate;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import unicam.phd.unmock.infrastructure.llm.LargeLanguageModelContext;
 import unicam.phd.unmock.infrastructure.prompts.HumanPromptFileLoader;
 import unicam.phd.unmock.infrastructure.prompts.PromptService;
@@ -24,6 +26,8 @@ import java.util.List;
  * its purpose.
  */
 public class Pipeline {
+
+    private static final Logger log = LoggerFactory.getLogger(Pipeline.class);
 
     private final HumanPromptFileLoader humanPromptFileLoader;
     private final PromptService promptService;
@@ -89,7 +93,7 @@ public class Pipeline {
 
             PromptTemplate prompt = promptService.build(step);
 
-            System.out.println("Running pipeline step for " + step + "...");
+            log.info("Running pipeline step for {} ...", step);
 
             state = pipelineStepExecutor.run(
                     largeLanguageModelContext,
