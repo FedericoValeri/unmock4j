@@ -46,6 +46,9 @@ Inside the `src/main/resources/prompts/human` the files:
 
 must be filled with proper Java code in order to make the tool transform the unit test.
 
+**IMPORTANT NOTE**: the files belonging to the java code inserted in the previous files must be available to the
+application, so in the `pom.xml` there must be references to the projects of those classes.
+
 ## Run the application
 
 Use the following commands:
