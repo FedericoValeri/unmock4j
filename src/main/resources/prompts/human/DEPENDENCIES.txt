@@ -1,14 +1,384 @@
-package com.alibaba.nacos.common.http.client.request;
-
-import com.alibaba.nacos.common.http.client.response.HttpClientResponse;
-import com.alibaba.nacos.common.model.RequestHttpEntity;
-
-import java.io.Closeable;
-import java.net.URI;
+package org.apache.dolphinscheduler.alert.api;
 
 
-public interface HttpClientRequest extends Closeable {
+public interface AlertChannel {
+
+    AlertResult process(AlertInfo info);
+
+}
+
+package org.apache.dolphinscheduler.alert.plugin;
+
+import org.apache.dolphinscheduler.alert.api.AlertChannel;
+import org.apache.dolphinscheduler.alert.api.AlertChannelFactory;
+import org.apache.dolphinscheduler.alert.api.AlertConstants;
+import org.apache.dolphinscheduler.common.enums.PluginType;
+import org.apache.dolphinscheduler.common.enums.WarningType;
+import org.apache.dolphinscheduler.dao.PluginDao;
+import org.apache.dolphinscheduler.dao.entity.PluginDefine;
+import org.apache.dolphinscheduler.spi.params.PluginParamsTransfer;
+import org.apache.dolphinscheduler.spi.params.base.ParamsOptions;
+import org.apache.dolphinscheduler.spi.params.base.PluginParams;
+import org.apache.dolphinscheduler.spi.params.base.Validate;
+import org.apache.dolphinscheduler.spi.params.radio.RadioParam;
+import org.apache.dolphinscheduler.spi.plugin.PrioritySPIFactory;
+
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Optional;
+
+import lombok.extern.slf4j.Slf4j;
+
+import org.springframework.stereotype.Component;
+
+@Slf4j
+@Component
+public final class AlertPluginManager {
+
+    private final PluginDao pluginDao;
+
+    public AlertPluginManager(PluginDao pluginDao) {
+        this.pluginDao = pluginDao;
+    }
+
+    private final Map<Integer, AlertChannel> alertPluginMap = new HashMap<>();
+
+    public void start() {
+        log.info("AlertPluginManager start...");
+        checkAlertPluginExist();
+        installAlertPlugin();
+        log.info("AlertPluginManager started...");
+    }
+
+    public Optional<AlertChannel> getAlertChannel(int id) {
+        return Optional.ofNullable(alertPluginMap.get(id));
+    }
+
+    public int size() {
+        return alertPluginMap.size();
+    }
+
+    private void checkAlertPluginExist() {
+        if (!pluginDao.checkPluginDefineTableExist()) {
+            log.error("Plugin Define Table t_ds_plugin_define Not Exist. Please Create it First!");
+            System.exit(1);
+        }
+    }
+
+    private void installAlertPlugin() {
+        final PluginParams warningTypeParams = getWarningTypeParams();
+
+        PrioritySPIFactory<AlertChannelFactory> prioritySPIFactory =
+                new PrioritySPIFactory<>(AlertChannelFactory.class);
+        for (Map.Entry<String, AlertChannelFactory> entry : prioritySPIFactory.getSPIMap().entrySet()) {
+            String name = entry.getKey();
+            AlertChannelFactory factory = entry.getValue();
+
+            final AlertChannel alertChannel = factory.create();
+
+            final List<PluginParams> params = new ArrayList<>(factory.params());
+
+            final String paramsJson = PluginParamsTransfer.transferParamsToJson(params);
+            params.add(0, warningTypeParams);
+
+            final PluginDefine pluginDefine = new PluginDefine(name, PluginType.ALERT.getDesc(), paramsJson);
+            final int id = pluginDao.addOrUpdatePluginDefine(pluginDefine);
+
+            alertPluginMap.put(id, alertChannel);
+
+            log.info("Success register alert plugin: {}", name);
+        }
+    }
+
+    private PluginParams getWarningTypeParams() {
+        return RadioParam.newBuilder(AlertConstants.NAME_WARNING_TYPE, AlertConstants.WARNING_TYPE)
+                .addParamsOptions(
+                        new ParamsOptions(WarningType.SUCCESS.getDescp(), WarningType.SUCCESS.getDescp(), false))
+                .addParamsOptions(
+                        new ParamsOptions(WarningType.FAILURE.getDescp(), WarningType.FAILURE.getDescp(), false))
+                .addParamsOptions(new ParamsOptions(WarningType.ALL.getDescp(), WarningType.ALL.getDescp(), false))
+                .setValue(WarningType.ALL.getDescp())
+                .addValidate(Validate.newBuilder().setRequired(true).build())
+                .build();
+    }
+}
+
+package org.apache.dolphinscheduler.dao;
+
+import org.apache.dolphinscheduler.common.enums.AlertEvent;
+import org.apache.dolphinscheduler.common.enums.AlertStatus;
+import org.apache.dolphinscheduler.common.enums.AlertType;
+import org.apache.dolphinscheduler.common.enums.AlertWarnLevel;
+import org.apache.dolphinscheduler.common.enums.WarningType;
+import org.apache.dolphinscheduler.common.utils.JSONUtils;
+import org.apache.dolphinscheduler.dao.entity.Alert;
+import org.apache.dolphinscheduler.dao.entity.AlertPluginInstance;
+import org.apache.dolphinscheduler.dao.entity.AlertSendStatus;
+import org.apache.dolphinscheduler.dao.entity.ProjectUser;
+import org.apache.dolphinscheduler.dao.entity.ServerAlertContent;
+import org.apache.dolphinscheduler.dao.entity.TaskInstance;
+import org.apache.dolphinscheduler.dao.entity.WorkflowAlertContent;
+import org.apache.dolphinscheduler.dao.entity.WorkflowInstance;
+import org.apache.dolphinscheduler.dao.mapper.AlertGroupMapper;
+import org.apache.dolphinscheduler.dao.mapper.AlertMapper;
+import org.apache.dolphinscheduler.dao.mapper.AlertPluginInstanceMapper;
+import org.apache.dolphinscheduler.dao.mapper.AlertSendStatusMapper;
+
+import org.apache.commons.codec.digest.DigestUtils;
+import org.apache.commons.collections4.CollectionUtils;
+import org.apache.commons.lang3.math.NumberUtils;
+
+import java.time.LocalDateTime;
+import java.time.ZoneId;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Date;
+import java.util.List;
+import java.util.Optional;
+import java.util.stream.Collectors;
+
+import lombok.extern.slf4j.Slf4j;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.stereotype.Component;
+
+import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
+import com.google.common.base.Strings;
+import com.google.common.collect.Lists;
+
+@Component
+@Slf4j
+public class AlertDao {
+
+    private static final Integer QUERY_ALERT_THRESHOLD = 100;
+
+    private static final int ADMIN_ALERT_GROUP_ID = 1;
+
+    @Value("${alert.alarm-suppression.crash:60}")
+    private Integer crashAlarmSuppression;
+
+    @Autowired
+    private AlertMapper alertMapper;
+
+    @Autowired
+    private AlertPluginInstanceMapper alertPluginInstanceMapper;
+
+    @Autowired
+    private AlertGroupMapper alertGroupMapper;
+
+    @Autowired
+    private AlertSendStatusMapper alertSendStatusMapper;
 
 
-    HttpClientResponse execute(URI uri, String httpMethod, RequestHttpEntity requestHttpEntity) throws Exception;
+    public int addAlert(Alert alert) {
+        if (null == alert.getAlertGroupId() || NumberUtils.INTEGER_ZERO.equals(alert.getAlertGroupId())) {
+            log.warn("the value of alertGroupId is null or 0 ");
+            return 0;
+        }
+
+        String sign = generateSign(alert);
+        alert.setSign(sign);
+        int count = alertMapper.insert(alert);
+        log.info("add alert to db , alert: {}", alert);
+        return count;
+    }
+
+
+    public int updateAlert(AlertStatus alertStatus, String log, int id) {
+        Alert alert = new Alert();
+        alert.setId(id);
+        alert.setAlertStatus(alertStatus);
+        alert.setUpdateTime(new Date());
+        alert.setLog(log);
+        return alertMapper.updateById(alert);
+    }
+
+
+    private String generateSign(Alert alert) {
+        return Optional.of(alert)
+                .map(Alert::getContent)
+                .map(DigestUtils::sha1Hex)
+                .map(String::toLowerCase)
+                .orElse("");
+    }
+
+    public int addAlertSendStatus(AlertStatus sendStatus, String log, int alertId, int alertPluginInstanceId) {
+        AlertSendStatus alertSendStatus = new AlertSendStatus();
+        alertSendStatus.setAlertId(alertId);
+        alertSendStatus.setAlertPluginInstanceId(alertPluginInstanceId);
+        alertSendStatus.setSendStatus(sendStatus);
+        alertSendStatus.setLog(log);
+        alertSendStatus.setCreateTime(new Date());
+        return alertSendStatusMapper.insert(alertSendStatus);
+    }
+
+    public int insertAlertSendStatus(List<AlertSendStatus> alertSendStatuses) {
+        if (CollectionUtils.isEmpty(alertSendStatuses)) {
+            return 0;
+        }
+        return alertSendStatusMapper.batchInsert(alertSendStatuses);
+    }
+
+    public void sendServerStoppedAlert(String host, String serverType) {
+        ServerAlertContent serverStopAlertContent = ServerAlertContent.newBuilder().type(serverType)
+                .host(host)
+                .event(AlertEvent.SERVER_DOWN)
+                .warningLevel(AlertWarnLevel.SERIOUS).build();
+        String content = JSONUtils.toJsonString(Lists.newArrayList(serverStopAlertContent));
+
+        Alert alert = new Alert();
+        alert.setTitle("Fault tolerance warning");
+        alert.setWarningType(WarningType.FAILURE);
+        alert.setAlertStatus(AlertStatus.WAIT_EXECUTION);
+        alert.setContent(content);
+        alert.setAlertGroupId(ADMIN_ALERT_GROUP_ID);
+        alert.setCreateTime(new Date());
+        alert.setUpdateTime(new Date());
+        alert.setAlertType(AlertType.FAULT_TOLERANCE_WARNING);
+        alert.setSign(generateSign(alert));
+        // we use this method to avoid insert duplicate alert(issue #5525)
+        // we modified this method to optimize performance(issue #9174)
+        Date crashAlarmSuppressionStartTime = Date.from(
+                LocalDateTime.now().plusMinutes(-crashAlarmSuppression).atZone(ZoneId.systemDefault()).toInstant());
+        alertMapper.insertAlertWhenServerCrash(alert, crashAlarmSuppressionStartTime);
+    }
+
+    public void sendWorkflowTimeoutAlert(WorkflowInstance workflowInstance, ProjectUser projectUser) {
+        int alertGroupId = workflowInstance.getWarningGroupId();
+        Alert alert = new Alert();
+        List<WorkflowAlertContent> workflowAlertContentList = new ArrayList<>(1);
+        WorkflowAlertContent workflowAlertContent = WorkflowAlertContent.builder()
+                .projectCode(projectUser.getProjectCode())
+                .projectName(projectUser.getProjectName())
+                .owner(projectUser.getUserName())
+                .workflowInstanceId(workflowInstance.getId())
+                .workflowDefinitionCode(workflowInstance.getWorkflowDefinitionCode())
+                .workflowInstanceName(workflowInstance.getName())
+                .commandType(workflowInstance.getCommandType())
+                .workflowExecutionStatus(workflowInstance.getState())
+                .runTimes(workflowInstance.getRunTimes())
+                .workflowStartTime(workflowInstance.getStartTime())
+                .workflowHost(workflowInstance.getHost())
+                .event(AlertEvent.TIME_OUT)
+                .warnLevel(AlertWarnLevel.MIDDLE)
+                .build();
+        workflowAlertContentList.add(workflowAlertContent);
+        String content = JSONUtils.toJsonString(workflowAlertContentList);
+        alert.setTitle("Workflow Timeout Warn");
+        alert.setProjectCode(projectUser.getProjectCode());
+        alert.setWorkflowDefinitionCode(workflowInstance.getWorkflowDefinitionCode());
+        alert.setWorkflowInstanceId(workflowInstance.getId());
+        alert.setAlertType(AlertType.WORKFLOW_INSTANCE_TIMEOUT);
+        saveTaskTimeoutAlert(alert, content, alertGroupId);
+    }
+
+    private void saveTaskTimeoutAlert(Alert alert, String content, int alertGroupId) {
+        alert.setAlertGroupId(alertGroupId);
+        alert.setWarningType(WarningType.FAILURE);
+        alert.setContent(content);
+        alert.setCreateTime(new Date());
+        alert.setUpdateTime(new Date());
+        String sign = generateSign(alert);
+        alert.setSign(sign);
+        alertMapper.insert(alert);
+    }
+
+    public void sendTaskTimeoutAlert(WorkflowInstance workflowInstance,
+                                     TaskInstance taskInstance,
+                                     ProjectUser projectUser) {
+        if (projectUser == null) {
+            throw new IllegalArgumentException("projectUser must not be null");
+        }
+        if (workflowInstance.getWarningGroupId() == null) {
+            throw new IllegalArgumentException("warningGroupId of the workflow instance must not be null");
+        }
+
+        Alert alert = new Alert();
+        List<WorkflowAlertContent> workflowAlertContentList = new ArrayList<>(1);
+        WorkflowAlertContent workflowAlertContent = WorkflowAlertContent.builder()
+                .projectCode(projectUser.getProjectCode())
+                .projectName(projectUser.getProjectName())
+                .owner(projectUser.getUserName())
+                .workflowInstanceId(workflowInstance.getId())
+                .workflowDefinitionCode(workflowInstance.getWorkflowDefinitionCode())
+                .workflowInstanceName(workflowInstance.getName())
+                .taskCode(taskInstance.getTaskCode())
+                .taskName(taskInstance.getName())
+                .taskType(taskInstance.getTaskType())
+                .taskStartTime(taskInstance.getStartTime())
+                .taskHost(taskInstance.getHost())
+                .event(AlertEvent.TIME_OUT)
+                .warnLevel(AlertWarnLevel.MIDDLE)
+                .build();
+        workflowAlertContentList.add(workflowAlertContent);
+        String content = JSONUtils.toJsonString(workflowAlertContentList);
+        alert.setTitle("Task Timeout Warn");
+        alert.setProjectCode(projectUser.getProjectCode());
+        alert.setWorkflowDefinitionCode(workflowInstance.getWorkflowDefinitionCode());
+        alert.setWorkflowInstanceId(workflowInstance.getId());
+        alert.setAlertType(AlertType.TASK_TIMEOUT);
+        saveTaskTimeoutAlert(alert, content, workflowInstance.getWarningGroupId());
+    }
+
+    public List<Alert> listPendingAlerts(int minAlertId) {
+        return alertMapper.listingAlertByStatus(minAlertId, AlertStatus.WAIT_EXECUTION.getCode(),
+                QUERY_ALERT_THRESHOLD);
+    }
+
+    public List<Alert> listAlerts(int workflowInstanceId) {
+        LambdaQueryWrapper<Alert> wrapper = new LambdaQueryWrapper<Alert>()
+                .eq(Alert::getWorkflowInstanceId, workflowInstanceId);
+        return alertMapper.selectList(wrapper);
+    }
+
+    public List<AlertPluginInstance> listInstanceByAlertGroupId(int alertGroupId) {
+        String alertInstanceIdsParam = alertGroupMapper.queryAlertGroupInstanceIdsById(alertGroupId);
+        if (!Strings.isNullOrEmpty(alertInstanceIdsParam)) {
+            String[] idsArray = alertInstanceIdsParam.split(",");
+            List<Integer> ids = Arrays.stream(idsArray)
+                    .map(s -> Integer.parseInt(s.trim()))
+                    .collect(Collectors.toList());
+            return alertPluginInstanceMapper.queryByIds(ids);
+        }
+        return null;
+    }
+
+    public AlertPluginInstanceMapper getAlertPluginInstanceMapper() {
+        return alertPluginInstanceMapper;
+    }
+
+    public void setAlertPluginInstanceMapper(AlertPluginInstanceMapper alertPluginInstanceMapper) {
+        this.alertPluginInstanceMapper = alertPluginInstanceMapper;
+    }
+
+    public AlertGroupMapper getAlertGroupMapper() {
+        return alertGroupMapper;
+    }
+
+    public void setAlertGroupMapper(AlertGroupMapper alertGroupMapper) {
+        this.alertGroupMapper = alertGroupMapper;
+    }
+
+    public void setCrashAlarmSuppression(Integer crashAlarmSuppression) {
+        this.crashAlarmSuppression = crashAlarmSuppression;
+    }
+
+    public void deleteByWorkflowInstanceId(Integer workflowInstanceId) {
+        if (workflowInstanceId == null) {
+            return;
+        }
+        List<Alert> alertList = alertMapper.selectByWorkflowInstanceId(workflowInstanceId);
+        if (CollectionUtils.isEmpty(alertList)) {
+            return;
+        }
+        alertMapper.deleteByWorkflowInstanceId(workflowInstanceId);
+        List<Integer> alertIds = alertList
+                .stream()
+                .map(Alert::getId)
+                .collect(Collectors.toList());
+        alertSendStatusMapper.deleteByAlertIds(alertIds);
+    }
 }

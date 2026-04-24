@@ -40,9 +40,12 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 @ExtendWith(MockitoExtension.class)
-class AlertSenderTest {
 
-    private static final Logger logger = LoggerFactory.getLogger(AlertSenderTest.class);
+
+@ExtendWith(MockitoExtension.class)
+class AlertSenderIntegrationTest {
+
+    private static final Logger logger = LoggerFactory.getLogger(AlertSenderIntegrationTest.class);
 
     @Mock
     private AlertDao alertDao;
@@ -52,6 +55,11 @@ class AlertSenderTest {
     private AlertPluginManager alertPluginManager;
     @Mock
     private AlertConfig alertConfig;
+
+    private AlertDao_Proxy alertDao_proxy = new AlertDao_Proxy(alertDao);
+    private PluginDao_Proxy pluginDao_proxy = new PluginDao_Proxy(pluginDao);
+    private AlertPluginManager_Proxy alertPluginManager_proxy = new AlertPluginManager_Proxy(alertPluginManager);
+    private AlertConfig_Proxy alertConfig_proxy = new AlertConfig_Proxy(alertConfig);
 
     @InjectMocks
     private AlertSender alertSender;
@@ -78,22 +86,20 @@ class AlertSenderTest {
         alert.setAlertType(AlertType.TASK_FAILURE);
 
         List<AlertPluginInstance> alertInstanceList = new ArrayList<>();
-        when(alertDao.listInstanceByAlertGroupId(ALERT_GROUP_ID)).thenReturn(alertInstanceList);
+        when(alertDao.listInstanceByAlertGroupId(ALERT_GROUP_ID)).thenReturn(alertDao_proxy.listInstanceByAlertGroupId(ALERT_GROUP_ID));
 
-        // 1. alert plugin send success
         AlertPluginInstance alertPluginInstance = new AlertPluginInstance(
                 PLUGIN_DEFINE_ID, PLUGIN_INSTANCE_PARAMS, PLUGIN_INSTANCE_NAME);
         alertPluginInstance.setId(alertPluginInstance.getPluginDefineId());
         alertInstanceList.add(alertPluginInstance);
 
         AlertChannel alertChannelMock = mock(AlertChannel.class);
-        when(alertPluginManager.getAlertChannel(PLUGIN_DEFINE_ID)).thenReturn(Optional.of(alertChannelMock));
+        when(alertPluginManager.getAlertChannel(PLUGIN_DEFINE_ID)).thenReturn(alertPluginManager_proxy.getAlertChannel(PLUGIN_DEFINE_ID));
         AlertResult alertSuccessResult = AlertResult.success();
-        when(alertChannelMock.process(Mockito.any())).thenReturn(alertSuccessResult);
+        when(alertChannelMock.process(Mockito.any())).thenReturn(alertChannelMock_proxy.process(Mockito.any()));
         alertSender.sendEvent(alert);
         verify(alertDao).updateAlert(eq(AlertStatus.EXECUTION_SUCCESS), anyString(), anyInt());
 
-        // 2. alert plugin send failed
         AlertPluginInstance otherAlertPluginInstance = new AlertPluginInstance(
                 PLUGIN_DEFINE_ID + 1, PLUGIN_INSTANCE_PARAMS, PLUGIN_INSTANCE_NAME);
         otherAlertPluginInstance.setId(otherAlertPluginInstance.getPluginDefineId());
@@ -101,14 +107,13 @@ class AlertSenderTest {
         alertInstanceList.add(otherAlertPluginInstance);
 
         AlertChannel otherAlertChannelMock = mock(AlertChannel.class);
-        when(alertPluginManager.getAlertChannel(PLUGIN_DEFINE_ID + 1)).thenReturn(Optional.of(otherAlertChannelMock));
+        when(alertPluginManager.getAlertChannel(PLUGIN_DEFINE_ID + 1)).thenReturn(alertPluginManager_proxy.getAlertChannel(PLUGIN_DEFINE_ID + 1));
         AlertResult alertFailedResult =
                 AlertResult.fail(String.format("Alert Plugin %s send failed", PLUGIN_INSTANCE_NAME));
-        when(otherAlertChannelMock.process(Mockito.any())).thenReturn(alertFailedResult);
+        when(otherAlertChannelMock.process(Mockito.any())).thenReturn(otherAlertChannelMock_proxy.process(Mockito.any()));
         alertSender.sendEvent(alert);
         verify(alertDao).updateAlert(eq(AlertStatus.EXECUTION_FAILURE), anyString(), anyInt());
 
-        // 3. alert plugin send partial success
         alertInstanceList.clear();
         alertInstanceList.add(alertPluginInstance);
         alertInstanceList.add(otherAlertPluginInstance);

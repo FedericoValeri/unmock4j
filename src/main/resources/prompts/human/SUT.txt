@@ -1,3 +1,3 @@
-package com.alibaba.nacos.client.naming.remote.http;
+package org.apache.dolphinscheduler.alert.service;
 
-public class NamingHttpClientManager
+public class AlertSender

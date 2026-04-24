@@ -67,6 +67,14 @@
             <scope>compile</scope>
         </dependency>
 
+        <!-- Source: https://mvnrepository.com/artifact/org.apache.dolphinscheduler/dolphinscheduler-alert-server -->
+        <dependency>
+            <groupId>org.apache.dolphinscheduler</groupId>
+            <artifactId>dolphinscheduler-alert-server</artifactId>
+            <version>3.4.1</version>
+            <scope>compile</scope>
+        </dependency>
+
 
         <!-- Source: https://mvnrepository.com/artifact/io.xuxiaowei.nacos/nacos-core -->
         <dependency>
