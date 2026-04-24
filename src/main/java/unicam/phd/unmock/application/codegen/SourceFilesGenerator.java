@@ -59,9 +59,9 @@ public class SourceFilesGenerator {
             String file) {
 
         log.info("Generating final source files...");
-        List<String> sutNames = extractor.extractFullClassNames(state.sut());
-        String sutFullClassName = sutNames.getFirst();
-        String sutPackageOnly = sutFullClassName.substring(0, sutFullClassName.lastIndexOf('.'));
+        List<String> unitTestNames = extractor.extractFullClassNames(state.unitTest());
+        String unitTestFullClassName = unitTestNames.getFirst();
+        String unitTestPackageOnly = unitTestFullClassName.substring(0, unitTestFullClassName.lastIndexOf('.'));
         List<String> dependencyPackages = extractor.extractFullClassNames(state.dependencies());
 
         try {
@@ -96,7 +96,7 @@ public class SourceFilesGenerator {
                     emptyProxyService.generate(
                             className,
                             outputDir,
-                            sutPackageOnly
+                            unitTestPackageOnly
                     );
 
                 } catch (Exception e) {
