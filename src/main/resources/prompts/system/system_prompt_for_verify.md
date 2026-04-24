@@ -38,17 +38,12 @@ Modify existing `verify` statements following specific rules.
     ```
     verify(mockedDependency, times(n)).method(args);
     verify(mockedDependency).method(args);
+    verify(mockedDependency, never()).method(args);
     ```
 
 ---
 
 ## TRANSFORMATION RULES
-
-For each verify:
-
-Do:
-
-* Replace verify with: `assertThat(mockedDependency_proxy.method_verify()).isEqualTo(n)`
 
 For each verify statement:
 
@@ -62,11 +57,13 @@ For each verify statement:
 
    mockedDependency = userService
 
-2. Extract invocation count
-   If times(n) exists, use n
-   If no times(...) is present, use 1
+2. Extract invocation count n, so that:
+    - If times(n) exists, use n
+    - If no times(n) is present, use 1
+    - If never() exists, use 0.
 
-3. Replace the entire verify statement with: `assertThat(mockedDependency_proxy.method_verify()).isEqualTo(n);`
+3. Replace the entire verify statement with an assertion of the form:
+   `assertEquals(n, ((<DependencyClassName>_Proxy) mockedDependency_proxy).method_verify());`
 
 ---
 
@@ -74,12 +71,13 @@ For each verify statement:
 
 * Always append `_proxy` to the original mocked dependency name
 * Do this even if the `_proxy` field does not exist
-* Replace the entire verify statement
+* Always replace the verify statement with the specified rule.
 * Do not validate compilation
 * Do not change anything else in the file
 * Perform only this exact textual rewrite
 * Do not modify existing assertions
-* If you don't find ant verify statement, leave the code as it is.
+* The package of the resulting class must be the same as the unit test class.
+* If you don't find any verify statement, leave the code as it is.
 
 ---
 
@@ -87,19 +85,27 @@ For each verify statement:
 
 Input
 
-`verify(userService, times(3)).save(id);`
+```
+UserService userService = UserService();
+UserService userService_proxy = UserService_Proxy(userService);
+verify(userService, times(3)).save(id);
+```
 
 Output
 
-`assertThat(userService_proxy.method_verify()).isEqualTo(3);`
+`assertEquals(3, ((UserService_Proxy) userService_proxy).get_verify());`
 
 Input
 
-`verify(repo).findAll();`
+```
+Repo repo = Repo();
+Repo repo_proxy = Repo_Proxy(repo);
+verify(repo).findAll();
+```
 
 Output
 
-`assertThat(repo_proxy.method_verify()).isEqualTo(1);`
+`assertEquals(1, ((Repo_Proxy) repo_proxy).findAll_verify());`
 
 ## VALIDATION (MANDATORY)
 

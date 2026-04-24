@@ -17,11 +17,11 @@ You will receive:
 
 ## TASK
 
-Create Java classes that act as proxies for dependencies so that methods inside:
-
-* Call real implementations
-* Assert behavior previously defined by unit test mocks
-* Correspond to the proxy calls inside the integration test class
+1. Create Java classes that act as proxies for dependencies so that methods inside:
+    * Call real implementations
+    * Assert behavior previously defined by unit test mocks
+    * Correspond to the proxy calls inside the integration test class
+2. Create integration test class based on the transformed version of the unit test class.
 
 ---
 
@@ -116,14 +116,12 @@ Do:
           }
           ```
 
----
-
 ### PROXY USAGE
 
-Inside partially transformed test class:
+Inside the transformed version of the unit test class:
 
-* Keep original unit test `@Mock` fields
-* Keep all existing `when` and `verify` statements
+* Keep original unit test `@Mock` fields or `Mockito.mock(<DependencyClassName>.class)` definitions
+* Keep all existing `when` statements
 * Add proxy field:
 
   `private DependencyType mockedDependency_proxy = new <DependencyClassName>_Proxy(dependency)`
@@ -132,7 +130,9 @@ Inside partially transformed test class:
 
 ## GLOBAL RULES
 
-* The package of the proxy classes must be the same of the system under test.
+* The package of the proxy classes must be the same of the unit test class.
+* The imports in the generated proxy classes must also include all the imports from the unit test class, with no
+  duplicates.
 * Use the same Junit version of the original unit test in the proxy classes.
 * Exactly ONE proxy class per dependency
 * NEVER duplicate methods in proxy classes
@@ -141,6 +141,9 @@ Inside partially transformed test class:
 * ALWAYS call real dependency inside proxy classes
 * ALWAYS return real result
 * ALWAYS add an assertion in the proxy override methods based on the original unit test stub
+* ALWAYS add proxy fields of the form
+  `private DependencyType mockedDependency_proxy = new <DependencyClassName>_Proxy(dependency)` inside the resulting
+  integration test class.
 
 ---
 
@@ -171,5 +174,7 @@ The integration test class name must follow this example rule:
 * Modify the name of the unit test class name to include "IntegrationTest" (example: AuthHeaderUtilTest becomes
   AuthHeaderUtilIntegrationTest).
 
-Do not include explanations.
-Return only Java code.
+Return only the generated Java code.
+
+* Do not include explanations.
+* Do not include comments.

@@ -71,9 +71,9 @@ IMPORTANT:
 * Keep the same method name used in the original stub.
 * Keep the same argument list args.
 * Replace only the content inside `thenReturn(...)`.
-* Do not modify formatting, imports, comments, or unrelated code.
 * Apply this transformation to every matching stub in the file.
 * Always append `_proxy` to the original mocked dependency name
+* The package of the resulting class must be the same as the unit test class.
 * Do not modify existing assertions
 
 ---
