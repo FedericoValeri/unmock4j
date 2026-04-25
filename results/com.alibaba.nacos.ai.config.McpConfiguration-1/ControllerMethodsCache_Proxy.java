@@ -1,0 +1,33 @@
+package com.alibaba.nacos.ai.config;
+
+import com.alibaba.nacos.core.code.ControllerMethodsCache;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.Mock;
+import org.mockito.junit.jupiter.MockitoExtension;
+
+import static org.junit.jupiter.api.Assertions.assertEquals;
+
+
+
+class ControllerMethodsCache_Proxy extends ControllerMethodsCache_EmptyProxy {
+
+    private final ControllerMethodsCache dependency;
+    private int initClassMethodCounter = 0;
+
+    public ControllerMethodsCache_Proxy(ControllerMethodsCache dependency) {
+        super(dependency);
+        this.dependency = dependency;
+    }
+
+    @Override
+    public void initClassMethod(String packageName) {
+        initClassMethodCounter++;
+        dependency.initClassMethod(packageName);
+        assertEquals("com.alibaba.nacos.ai.controller", packageName);
+    }
+
+    public int initClassMethod_verify() {
+        return initClassMethodCounter;
+    }
+}
