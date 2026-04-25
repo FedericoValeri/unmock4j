@@ -56,7 +56,7 @@ Use the following commands:
 1. Build
 
     ```bash
-    mvn package
+    mvn clean package
     ```
 
 2. Execute
