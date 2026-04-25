@@ -9,10 +9,6 @@ public class CostCalculator {
                     "input", 0.15,
                     "output", 0.60
             ),
-            "gpt-5.4-nano", Map.of(
-                    "input", 0.20,
-                    "output", 1.25
-            ),
             "gpt-5.4-mini", Map.of(
                     "input", 0.75,
                     "output", 4.50
