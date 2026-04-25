@@ -58,7 +58,6 @@ public class SourceFilesGenerator {
             PipelineState state,
             String file) {
 
-        log.info("Generating final source files...");
         List<String> unitTestNames = extractor.extractFullClassNames(state.unitTest());
         String unitTestFullClassName = unitTestNames.getFirst();
         String unitTestPackageOnly = unitTestFullClassName.substring(0, unitTestFullClassName.lastIndexOf('.'));
@@ -66,6 +65,7 @@ public class SourceFilesGenerator {
 
         try {
             Path inputPath = Path.of(file).toAbsolutePath();
+            log.info("Generating final source files for {}...", inputPath);
             Path outputDir = inputPath.getParent();
 
             String content = Files.readString(
@@ -87,21 +87,21 @@ public class SourceFilesGenerator {
                     outputDir
             );
 
-            for (String className : dependencyPackages) {
+            for (String mockedDependencyClassName : dependencyPackages) {
 
-                if (className.isBlank()) continue;
-                if (className.startsWith("#")) continue;
+                if (mockedDependencyClassName.isBlank()) continue;
+                if (mockedDependencyClassName.startsWith("#")) continue;
 
                 try {
                     emptyProxyService.generate(
-                            className,
+                            mockedDependencyClassName,
                             outputDir,
                             unitTestPackageOnly
                     );
 
                 } catch (Exception e) {
                     System.err.println(
-                            "Failed for " + className + ": " + e.getMessage()
+                            "Failed for " + mockedDependencyClassName + ": " + e.getMessage()
                     );
                 }
             }
