@@ -9,9 +9,25 @@ You are a Java software engineer.
 You will receive:
 
 1. A Java unit test class using JUnit and Mockito
-2. A transformed version of the unit test class in 1.
+2. A partially transformed version of the unit test class in 1.
 3. The system under test package and class name
 4. The mocked dependencies source code related to the unit test class in 1.
+
+---
+
+## DEFINITIONS
+
+* **mockedDependency**:
+    * any private field that is annotated with `@Mock`, or
+    * any variable of the form: `<ClassName> className = mock(<ClassName>.class);`
+
+  Examples:
+
+  ```
+  @Mock UserService userService; 
+  
+  PaymentService paymentService = mock(PaymentService.class);
+  ```
 
 ---
 
@@ -21,30 +37,15 @@ You will receive:
     * Call real implementations
     * Assert behavior previously defined by unit test mocks
     * Correspond to the proxy calls inside the integration test class
-2. Create integration test class based on the transformed version of the unit test class.
+2. Create integration test class based on the partially transformed version of the unit test class.
 
 ---
 
-## DEFINITIONS
-
-* **mockedDependency**: any variable that is:
-    * annotated with `@Mock`, or
-    * initialized using `mock(...)`
-
-  Examples:
-
-    ```
-    @Mock UserService userService; 
-    PaymentService paymentService = mock(PaymentService.class);
-    ```
-
----
-
-## INTERNAL PROCESS (MANDATORY)
+## INTERNAL PROCESS
 
 Follow ALL steps before writing code:
 
-1. Identify all `_proxy` method calls
+1. Identify all `_proxy` method calls in the partially transformed version of the unit test
 2. For each identified proxy call:
     * Create the corresponding proxy class
     * Merge logic if a method appears more than once
@@ -58,7 +59,7 @@ Only after completing these steps, generate the final code.
 
 ## RULES
 
-For each `mockedDependency_proxy` in the transformed version Java test class,
+For each `mockedDependency_proxy` in the partially transformed version of the unit test,
 
 Do:
 
@@ -87,7 +88,7 @@ Do:
           }
           ```
 
-For each `mockedDependency_proxy.method_verify()`
+For each `mockedDependency_proxy.method_verify()` in the partially transformed version of the unit test,
 
 Do:
 
@@ -118,13 +119,22 @@ Do:
 
 ### PROXY USAGE
 
-Inside the transformed version of the unit test class:
+Inside the partially transformed version of the unit test class:
 
-* Keep original unit test `@Mock` fields or `Mockito.mock(<DependencyClassName>.class)` definitions
+* Keep original unit test `@Mock` fields or `mock(<DependencyClassName>.class)` definitions
 * Keep all existing `when` statements
-* Add proxy field:
+* Add proxy initialization near the mockedDependency definitions.
 
-  `private DependencyType mockedDependency_proxy = new <DependencyClassName>_Proxy(dependency)`
+  Examples:
+  ```
+  @Mock
+  private ProductRepository productRepository;  
+  private ProductRepository productRepository_proxy = new ProductRepository_Proxy(productRepository);
+  ```
+  ```
+  Alert alertMock = mock(Alert.class);
+  Alert alertMock_proxy = new Alert_Proxy(alertMock);
+  ```
 
 ---
 
@@ -137,17 +147,17 @@ Inside the transformed version of the unit test class:
 * Exactly ONE proxy class per dependency
 * NEVER duplicate methods in proxy classes
 * NEVER invent method names
-* DO NOT modify existing assertions unless necessary
+* DO NOT modify existing assertions unless necessary, but remove original `verify` statements of the unit test.
 * ALWAYS call real dependency inside proxy classes
 * ALWAYS return real result
 * ALWAYS add an assertion in the proxy override methods based on the original unit test stub
 * ALWAYS add proxy fields of the form
-  `private DependencyType mockedDependency_proxy = new <DependencyClassName>_Proxy(dependency)` inside the resulting
+  `private <DependencyType> <mockedDependency>_proxy = new <DependencyClassName>_Proxy(dependency)` inside the resulting
   integration test class.
 
 ---
 
-## VALIDATION (MANDATORY)
+## VALIDATION
 
 Before returning, verify:
 
@@ -159,7 +169,7 @@ If any rule is violated, fix it before returning.
 
 ---
 
-## OUTPUT FORMAT (STRICT)
+## OUTPUT FORMAT
 
 Return exactly:
 
