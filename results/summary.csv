@@ -1,8 +1,6 @@
 Run ID,SUT,Provider,Model,Input Tokens,Output Tokens,Total Tokens,Cost (USD),Generation Time (sec),Timestamp
 org.apache.dolphinscheduler.api.python.PythonGateway-0,org.apache.dolphinscheduler.api.python.PythonGateway,openai,gpt-5.4-mini,7165,5376,12541,0.029566,28.108,2026-04-23 12:16:45
 com.alibaba.nacos.ai.config.McpConfiguration-0,com.alibaba.nacos.ai.config.McpConfiguration,openai,gpt-5.4-mini,4501,616,5117,0.006148,6.844,2026-04-23 12:43:56
-com.alibaba.nacos.client.naming.remote.AbstractNamingClientProxy-0,com.alibaba.nacos.client.naming.remote.AbstractNamingClientProxy,openai,gpt-5.4-mini,4619,1378,5997,0.009665,10.422,2026-04-23 12:53:23
-com.alibaba.nacos.client.naming.remote.gprc.NamingPushRequestHandler-0,com.alibaba.nacos.client.naming.remote.gprc.NamingPushRequestHandler,openai,gpt-5.4-mini,4817,1049,5866,0.008333,8.897,2026-04-23 13:13:17
 com.alibaba.nacos.client.naming.remote.http.NamingHttpClientManager-0,com.alibaba.nacos.client.naming.remote.http.NamingHttpClientManager,openai,gpt-5.4-mini,3623,1116,4739,0.007739,14.773,2026-04-24 15:45:00
 org.apache.dolphinscheduler.alert.service.AlertSender-0,org.apache.dolphinscheduler.alert.service.AlertSender,openai,gpt-5.4-mini,9679,4017,13696,0.025336,25.756,2026-04-24 16:28:48
 com.alibaba.nacos.ai.config.McpConfiguration-1,com.alibaba.nacos.ai.config.McpConfiguration,openai,gpt-5.4-mini,4723,635,5358,0.006400,5.373,2026-04-25 09:10:11
