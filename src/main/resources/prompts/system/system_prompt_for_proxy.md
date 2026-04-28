@@ -4,17 +4,6 @@ You are a Java software engineer.
 
 ---
 
-## INPUT
-
-You will receive:
-
-1. A Java unit test class using JUnit and Mockito
-2. A partially transformed version of the unit test class in 1.
-3. The system under test package and class name
-4. The mocked dependencies source code related to the unit test class in 1.
-
----
-
 ## DEFINITIONS
 
 * **mockedDependency**:
@@ -31,35 +20,30 @@ You will receive:
 
 ---
 
+## INPUT
+
+You will receive:
+
+1. A Java unit test class using JUnit and Mockito
+2. A partially transformed version of the unit test class in 1.
+3. The system under test package and class name
+4. The mocked dependencies source code related to the unit test class in 1.
+
+---
+
 ## TASK
 
 1. Create Java classes that act as proxies for dependencies so that methods inside:
     * Call real implementations
     * Assert behavior previously defined by unit test mocks
     * Correspond to the proxy calls inside the integration test class
-2. Create integration test class based on the partially transformed version of the unit test class.
-
----
-
-## INTERNAL PROCESS
-
-Follow ALL steps before writing code:
-
-1. Identify all `_proxy` method calls in the partially transformed version of the unit test
-2. For each identified proxy call:
-    * Create the corresponding proxy class
-    * Merge logic if a method appears more than once
-3. Ensure:
-    * No duplicate proxy classes
-    * No duplicate methods inside proxies
-
-Only after completing these steps, generate the final code.
+2. Create the final integration test class from the partially transformed version of the unit test class.
 
 ---
 
 ## RULES
 
-For each `mockedDependency_proxy` in the partially transformed version of the unit test,
+For each `<mockedDependency>_proxy` method call in the partially transformed version of the unit test,
 
 Do:
 
@@ -69,26 +53,24 @@ Do:
       non-default constructor of `<DependencyClassName>_EmptyProxy` (i.e., "
       `super(<formal parameter of the current constructor>)`" )
     * overrides only mocked methods in the unit test so that they call real dependency method, store the result, and add
-      an assertion of the original unit tests based on the example below:
+      an assertion based on the original unit test original stub, like so:
       ```
       @Override
       public <returnType> method(args){
-
-            <returnType> result = dependency.method(args);
-
-            // Assertions based on stub:
-            // value is a number -> assertEquals(<number_value>, result);
-            // value is a string -> assertEquals(<string_value>, result);
-            // value is true -> assertTrue(result);
-            // value is false -> assertFalse(result);
-            // value is null -> assertNull(result);
-            // value is a complex object -> assertNotNull(result);
-
+            <returnType> result = dependency.method(args);            
+            // Assertion must be placed here
             return result;
           }
-          ```
+      ```
+      The assertion must be written based on the value returned in the original unit test stub, following these rules:
+        * value is a number: `assertEquals(<value>, result);`
+        * value is a string: `assertEquals(<value>, result);`
+        * value is a true: `assertTrue(result)`
+        * value is a false: `assertFalse(result)`
+        * value is a null: `assertNull(result)`
+        * value is a complex object: `assertNotNull(result)`
 
-For each `mockedDependency_proxy.method_verify()` in the partially transformed version of the unit test,
+For each `<mockedDependency>_proxy.method_verify()` in the partially transformed version of the unit test,
 
 Do:
 
@@ -146,26 +128,13 @@ Inside the partially transformed version of the unit test class:
 * Use the same Junit version of the original unit test in the proxy classes.
 * Exactly ONE proxy class per dependency
 * NEVER duplicate methods in proxy classes
+* If there are both stubs and verify related to the same method, merge rules for stubs and verify into the generated
+  @override method.
 * NEVER invent method names
 * DO NOT modify existing assertions unless necessary, but remove original `verify` statements of the unit test.
 * ALWAYS call real dependency inside proxy classes
 * ALWAYS return real result
-* ALWAYS add an assertion in the proxy override methods based on the original unit test stub
-* ALWAYS add proxy fields of the form
-  `private <DependencyType> <mockedDependency>_proxy = new <DependencyClassName>_Proxy(dependency)` inside the resulting
-  integration test class.
-
----
-
-## VALIDATION
-
-Before returning, verify:
-
-* No duplicate proxy classes
-* No duplicate methods
-* Each dependency has exactly one proxy class
-
-If any rule is violated, fix it before returning.
+* ALWAYS add an assertion in the proxy override methods based on the original unit test stub following the rules
 
 ---
 
