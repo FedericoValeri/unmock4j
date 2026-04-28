@@ -62,13 +62,14 @@ Do:
             return result;
           }
       ```
-      The assertion must be written based on the value returned by the statement`thenReturn` in the original unit test stub, following these rules:
-        * `<value>` is a number: `thenreturn(<value>);` becomes `assertEquals(<value>, result);`
-        * value is a string: `assertEquals(<value>, result);`
-        * value is a true: `assertTrue(result)`
-        * value is a false: `assertFalse(result)`
-        * value is a null: `assertNull(result)`
-        * value is a complex object: `assertNotNull(result)`
+      The assertion must be written based on the value returned by the statement`thenReturn` in the original unit test
+      stub, following these rules:
+        * `<value>` is a number: `thenReturn(<value>);` becomes `assertEquals(<value>, result);`
+        * `<value>` is a string: `thenReturn(<value>);` becomes `assertEquals(<value>, result);`
+        * `<value>` is a true: `thenReturn(<value>);` becomes `assertTrue(result)`
+        * `<value>` is a false: `thenReturn(<value>);` becomes `assertFalse(result)`
+        * `<value>` is a null: `thenReturn(<value>);` becomes `assertNull(result)`
+        * `<value>` is a complex object: `thenReturn(<value>);` becomes `assertNotNull(result)`
 
 For each `<mockedDependency>_proxy.method_verify()` in the partially transformed version of the unit test,
 
