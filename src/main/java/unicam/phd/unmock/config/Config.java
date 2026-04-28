@@ -1,4 +1,5 @@
 package unicam.phd.unmock.config;
+
 import io.github.cdimascio.dotenv.Dotenv;
 
 public class Config {
@@ -9,7 +10,7 @@ public class Config {
             dotenv.get("PROVIDER", "openai");
 
     public static final String MODEL =
-            dotenv.get("MODEL", "gpt-4o-mini");
+            dotenv.get("MODEL", "gpt-5.4-mini");
 
     public static final String OPENAI_API_KEY =
             dotenv.get("OPENAI_API_KEY");
