@@ -49,9 +49,9 @@ public class PythonGatewayIntegrationTest {
     private TaskDefinitionMapper mockedDependency_proxy3;
 
     public PythonGatewayIntegrationTest (ProjectMapper projectMapper, WorkflowDefinitionMapper workflowDefinitionMapper, TaskDefinitionMapper taskDefinitionMapper){
-        this.mockedDependency_proxy = projectMapper;
-        this.mockedDependency_proxy2 = workflowDefinitionMapper;
-        this.mockedDependency_proxy3 = taskDefinitionMapper;        
+        this.mockedDependency_proxy = new ProjectMapper_Proxy(projectMapper);
+        this.mockedDependency_proxy2 = new WorkflowDefinitionMapper_Proxy(workflowDefinitionMapper);
+        this.mockedDependency_proxy3 = new TaskDefinitionMapper_Proxy(taskDefinitionMapper);        
     }
     
     @Test
