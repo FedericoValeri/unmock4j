@@ -1,0 +1,16 @@
+package com.alibaba.nacos.api.naming.selector;
+
+import com.alibaba.nacos.api.naming.pojo.Instance;
+
+import java.util.List;
+
+public interface NamingContext {
+
+    String getServiceName();
+
+    String getGroupName();
+
+    String getClusters();
+
+    List<Instance> getInstances();
+}

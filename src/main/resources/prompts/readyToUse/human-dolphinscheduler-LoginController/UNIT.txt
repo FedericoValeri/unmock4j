@@ -1,0 +1,101 @@
+    package org.apache.dolphinscheduler.api.controller;
+
+    import static org.mockito.ArgumentMatchers.any;
+    import static org.mockito.ArgumentMatchers.anyInt;
+    import static org.mockito.ArgumentMatchers.eq;
+    import static org.mockito.Mockito.mock;
+    import static org.mockito.Mockito.verify;
+    import static org.mockito.Mockito.when;
+    import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
+    import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
+    import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+    import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
+    import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
+    import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
+
+    import org.apache.dolphinscheduler.api.configuration.ApiConfig;
+    import org.apache.dolphinscheduler.api.configuration.OAuth2Configuration;
+    import org.apache.dolphinscheduler.api.configuration.OAuth2Configuration.OAuth2ClientProperties;
+    import org.apache.dolphinscheduler.api.enums.Status;
+    import org.apache.dolphinscheduler.api.security.Authenticator;
+    import org.apache.dolphinscheduler.api.security.impl.AbstractSsoAuthenticator;
+    import org.apache.dolphinscheduler.api.service.SessionService;
+    import org.apache.dolphinscheduler.api.service.UsersService;
+    import org.apache.dolphinscheduler.api.utils.Result;
+    import org.apache.dolphinscheduler.common.constants.Constants;
+    import org.apache.dolphinscheduler.common.enums.UserType;
+    import org.apache.dolphinscheduler.common.model.OkHttpResponse;
+    import org.apache.dolphinscheduler.common.utils.JSONUtils;
+    import org.apache.dolphinscheduler.common.utils.OkHttpUtils;
+    import org.apache.dolphinscheduler.dao.entity.Session;
+    import org.apache.dolphinscheduler.dao.entity.User;
+    import org.apache.dolphinscheduler.dao.repository.SessionDao;
+
+    import org.apache.http.HttpStatus;
+
+    import java.util.Date;
+    import java.util.HashMap;
+    import java.util.List;
+    import java.util.Map;
+    import java.util.Optional;
+
+    import javax.servlet.http.Cookie;
+    import javax.servlet.http.HttpServletRequest;
+    import javax.servlet.http.HttpServletResponse;
+    import javax.servlet.http.HttpSession;
+
+    import org.junit.jupiter.api.Assertions;
+    import org.junit.jupiter.api.Test;
+    import org.mockito.MockedStatic;
+    import org.mockito.Mockito;
+    import org.slf4j.Logger;
+    import org.slf4j.LoggerFactory;
+    import org.springframework.beans.factory.annotation.Autowired;
+    import org.springframework.http.MediaType;
+    import org.springframework.lang.NonNull;
+    import org.springframework.mock.web.MockHttpServletResponse;
+    import org.springframework.test.web.servlet.MvcResult;
+    import org.springframework.util.LinkedMultiValueMap;
+    import org.springframework.util.MultiValueMap;
+
+    public class LoginControllerTest extends AbstractControllerTest {
+
+        private static final Logger logger = LoggerFactory.getLogger(LoginControllerTest.class);
+
+        @Autowired
+        private SessionDao sessionDao;
+
+    private static class DummySsoAuthenticator extends AbstractSsoAuthenticator {
+
+        @Override
+        public User login(@org.springframework.lang.NonNull String state, String code) {
+            return null;
+        }
+
+        @Override
+        public String getSignInUrl(String state) {
+            return "http://sso.example.com/auth?state=" + state;
+        }
+    }
+
+
+    @Test
+    public void testSsoLogin_WithAbstractSsoAuthenticator_ReturnsSignInUrl() {
+        DummySsoAuthenticator dummy = new DummySsoAuthenticator();
+        SessionService sessionService = mock(SessionService.class);
+        UsersService usersService = mock(UsersService.class);
+        ApiConfig apiConfig = mock(ApiConfig.class);
+        LoginController controller =
+                new LoginController(sessionService, dummy, usersService, Optional.empty(), Optional.empty(),
+                        apiConfig);
+        HttpServletRequest request = mock(HttpServletRequest.class);
+        HttpSession session = mock(HttpSession.class);
+        when(request.getSession()).thenReturn(session);
+        when(session.getAttribute(Constants.SSO_LOGIN_USER_STATE)).thenReturn(null);
+
+        Result result = controller.ssoLogin(request);
+        Assertions.assertEquals(Status.SUCCESS.getCode(), result.getCode());
+        Assertions.assertNotNull(result.getData());
+        verify(session).setAttribute(eq(Constants.SSO_LOGIN_USER_STATE), Mockito.any());
+    }
+}

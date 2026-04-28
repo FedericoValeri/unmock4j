@@ -1,0 +1,3 @@
+package com.alibaba.nacos.ai.config;
+
+public class McpConfiguration
