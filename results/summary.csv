@@ -2,6 +2,14 @@ Run ID,SUT,Provider,Model,Input Tokens,Output Tokens,Total Tokens,Cost (USD),Gen
 org.apache.dolphinscheduler.api.python.PythonGateway-0,org.apache.dolphinscheduler.api.python.PythonGateway,openai,gpt-5.4-mini,7165,5376,12541,0.029566,28.108,2026-04-23 12:16:45
 com.alibaba.nacos.ai.config.McpConfiguration-0,com.alibaba.nacos.ai.config.McpConfiguration,openai,gpt-5.4-mini,4501,616,5117,0.006148,6.844,2026-04-23 12:43:56
 com.alibaba.nacos.client.naming.remote.http.NamingHttpClientManager-0,com.alibaba.nacos.client.naming.remote.http.NamingHttpClientManager,openai,gpt-5.4-mini,3623,1116,4739,0.007739,14.773,2026-04-24 15:45:00
-org.apache.dolphinscheduler.alert.service.AlertSender-0,org.apache.dolphinscheduler.alert.service.AlertSender,openai,gpt-5.4-mini,9679,4017,13696,0.025336,25.756,2026-04-24 16:28:48
 com.alibaba.nacos.ai.config.McpConfiguration-1,com.alibaba.nacos.ai.config.McpConfiguration,openai,gpt-5.4-mini,4723,635,5358,0.006400,5.373,2026-04-25 09:10:11
-org.apache.dolphinscheduler.alert.service.AlertSender-1,org.apache.dolphinscheduler.alert.service.AlertSender,openai,gpt-5.4-mini,9802,3443,13245,0.022845,16.271,2026-04-25 10:36:30
+com.alibaba.nacos.client.naming.selector.DefaultNamingSelector-0,com.alibaba.nacos.client.naming.selector.DefaultNamingSelector,openai,gpt-5.4-mini,4084,1228,5312,0.008589,11.390,2026-04-27 18:07:45
+com.alibaba.nacos.client.naming.selector.DefaultNamingSelector-1,com.alibaba.nacos.client.naming.selector.DefaultNamingSelector,openai,gpt-5.4-mini,4084,1226,5310,0.008580,8.656,2026-04-27 18:09:11
+org.apache.dolphinscheduler.api.python.PythonGateway-1,org.apache.dolphinscheduler.api.python.PythonGateway,openai,gpt-5.4-mini,7383,2644,10027,0.017435,16.630,2026-04-28 09:20:51
+org.apache.dolphinscheduler.api.service.impl.EnvironmentWorkerGroupRelationServiceImpl-0,org.apache.dolphinscheduler.api.service.impl.EnvironmentWorkerGroupRelationServiceImpl,openai,gpt-5.4-mini,3799,1178,4977,0.008150,8.727,2026-04-28 09:24:42
+org.apache.dolphinscheduler.api.controller.LoginController-0,org.apache.dolphinscheduler.api.controller.LoginController,openai,gpt-5.4-mini,7169,2695,9864,0.017504,18.018,2026-04-28 09:46:46
+org.apache.dolphinscheduler.api.controller.LoginController-1,org.apache.dolphinscheduler.api.controller.LoginController,openai,gpt-5.4-mini,7169,3114,10283,0.019390,21.495,2026-04-28 09:58:05
+org.apache.dolphinscheduler.api.service.impl.WorkflowLineageServiceImpl-0,org.apache.dolphinscheduler.api.service.impl.WorkflowLineageServiceImpl,openai,gpt-5.4-mini,5552,2508,8060,0.015450,15.108,2026-04-28 10:16:19
+org.apache.dolphinscheduler.api.service.impl.WorkflowLineageServiceImpl-1,org.apache.dolphinscheduler.api.service.impl.WorkflowLineageServiceImpl,openai,gpt-5.4-mini,5603,2259,7862,0.014368,13.415,2026-04-28 10:25:50
+com.alibaba.nacos.client.naming.remote.http.NamingHttpClientManager-1,com.alibaba.nacos.client.naming.remote.http.NamingHttpClientManager,openai,gpt-5.4-mini,3715,1223,4938,0.008290,11.143,2026-04-28 11:04:33
+com.alibaba.nacos.lock.remote.rpc.handler.LockRequestHandler-0,com.alibaba.nacos.lock.remote.rpc.handler.LockRequestHandler,openai,gpt-5.4-mini,3744,1150,4894,0.007983,7.927,2026-04-28 11:41:14

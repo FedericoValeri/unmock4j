@@ -16,10 +16,11 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 @ExtendWith(MockitoExtension.class)
-public class LockRequestHandlerTest {
+public class LockRequestHandlerIntegrationTest {
 
     @Mock
     private LockOperationService lockOperationService;
+    private LockOperationService lockOperationService_proxy = new LockOperationService_Proxy(lockOperationService);
 
     private LockRequestHandler lockRequestHandler;
 
@@ -31,8 +32,8 @@ public class LockRequestHandlerTest {
         LockOperationRequest request = new LockOperationRequest();
         request.setLockInstance(lockInstance);
         request.setLockOperationEnum(LockOperationEnum.ACQUIRE);
-        Mockito.when(lockOperationService.lock(lockInstance)).thenReturn(true);
+        Mockito.when(lockOperationService.lock(lockInstance)).thenReturn(lockOperationService_proxy.lock(lockInstance));
         LockOperationResponse response = lockRequestHandler.handle(request, null);
         assertTrue((Boolean) response.getResult());
     }
-    }
+}

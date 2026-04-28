@@ -1,12 +1,14 @@
-package com.alibaba.nacos.common.http.client.request;
+package com.alibaba.nacos.lock.service;
 
-import com.alibaba.nacos.common.http.client.response.HttpClientResponse;
-import com.alibaba.nacos.common.model.RequestHttpEntity;
+import com.alibaba.nacos.api.lock.model.LockInstance;
 
-import java.io.Closeable;
-import java.net.URI;
 
-public interface HttpClientRequest extends Closeable {
+public interface LockOperationService {
 
-    HttpClientResponse execute(URI uri, String httpMethod, RequestHttpEntity requestHttpEntity) throws Exception;
+
+    Boolean lock(LockInstance lockInstance);
+
+
+    Boolean unLock(LockInstance lockInstance);
+
 }

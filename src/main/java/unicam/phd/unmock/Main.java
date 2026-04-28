@@ -6,6 +6,7 @@ import org.slf4j.LoggerFactory;
 import unicam.phd.unmock.bootstrap.ApplicationBootstrap;
 import unicam.phd.unmock.bootstrap.UnmockApplication;
 
+
 public class Main {
     private static final Logger log = LoggerFactory.getLogger(Main.class);
 
