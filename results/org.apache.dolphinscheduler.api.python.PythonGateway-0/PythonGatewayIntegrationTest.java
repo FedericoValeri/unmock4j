@@ -40,10 +40,20 @@ public class PythonGatewayIntegrationTest {
     @Mock
     private ResourcesService resourcesService;
 
-    private ProjectMapper mockedDependency_proxy = new ProjectMapper_Proxy(projectMapper);
-    private WorkflowDefinitionMapper mockedDependency_proxy2 = new WorkflowDefinitionMapper_Proxy(workflowDefinitionMapper);
-    private TaskDefinitionMapper mockedDependency_proxy3 = new TaskDefinitionMapper_Proxy(taskDefinitionMapper);
+//    private ProjectMapper mockedDependency_proxy = new ProjectMapper_Proxy(projectMapper);
+//    private WorkflowDefinitionMapper mockedDependency_proxy2 = new WorkflowDefinitionMapper_Proxy(workflowDefinitionMapper);
+//    private TaskDefinitionMapper mockedDependency_proxy3 = new TaskDefinitionMapper_Proxy(taskDefinitionMapper);
 
+    private ProjectMapper mockedDependency_proxy;
+    private WorkflowDefinitionMapper mockedDependency_proxy2;
+    private TaskDefinitionMapper mockedDependency_proxy3;
+
+    public PythonGatewayIntegrationTest (ProjectMapper projectMapper, WorkflowDefinitionMapper workflowDefinitionMapper, TaskDefinitionMapper taskDefinitionMapper){
+        this.mockedDependency_proxy = projectMapper;
+        this.mockedDependency_proxy2 = workflowDefinitionMapper;
+        this.mockedDependency_proxy3 = taskDefinitionMapper;        
+    }
+    
     @Test
     public void testGetCodeAndVersion() {
         Project project = getTestProject();
