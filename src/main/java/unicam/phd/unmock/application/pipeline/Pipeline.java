@@ -78,7 +78,10 @@ public class Pipeline {
 
         for (String step : steps) {
 
+            // I pass original unit test file only to the system prompt for stubs and proxy
             String currentUnitTest = step.equals(verifyPromptPath) ? "" : unitTest;
+
+            // I pass dependencies file only to the system prompt for proxy
             String currentDependencies = step.equals(proxyPromptPath) ? dependencies : "";
 
             state = new PipelineState(
