@@ -9,7 +9,7 @@ apply rules. You are NOT allowed to improvise.
 
 You will receive:
 
-1. A Java unit test class using JUnit and Mockito
+1. A partially transformed Java unit test class using JUnit and Mockito
 2. The system under test package and class name
 
 ---
@@ -22,32 +22,33 @@ You will receive:
 
   Examples:
 
-  ```
-  @Mock UserService userService; 
-  
-  PaymentService paymentService = mock(PaymentService.class);
-  ```
+    * `@Mock UserService userService;`
+    * `PaymentService paymentService = mock(PaymentService.class);`
 
-* **verify**: any statement in one of these forms:
+* **verify**: a statement is a verify statement ONLY if the source text literally starts with one of these forms:
 
+    * `verify(`
+    * `Mockito.verify(`
+
+  Examples:
     ```
-    verify(mockedDependency, times(n)).method(args);
-    verify(mockedDependency).method(args);
-    verify(mockedDependency, never()).method(args);
+    verify(repo).findAll();
+    verify(repo, times(3)).save(id);
+    verify(repo, never()).clear();
     ```
 
 ---
 
 ## TASK
 
-Replace existing `verify` statements following specific rules.
+Replace only statements whose outermost call is literally `verify(...)` or `Mockito.verify(...)` following the specified
+rules.
 
 ---
 
-## TRANSFORMATION RULES
+## RULES
 
-For each verify statement, extract the mockedDependency, extract the invocation count and replace the entire verify
-statement with an assertion of the form:
+For each verify statement in the unit test class, replace the entire verify statement with an assertion of the form:
 `assertEquals(n, ((<DependencyClassName>_Proxy) mockedDependency_proxy).method_verify());`
 
 ### EXAMPLES
@@ -56,8 +57,9 @@ statement with an assertion of the form:
 
   Input:
     ```
-    UserService userService = new UserService();
-    UserService userService_proxy = new UserService_Proxy(userService);
+    @Mock
+    UserService userService;
+  
     verify(userService, times(3)).save(id);
     ```
 
@@ -69,8 +71,7 @@ statement with an assertion of the form:
   Input:
 
     ```
-    Repo repo = new Repo();
-    Repo repo_proxy = new Repo_Proxy(repo);
+    Repo repo = mock(Repo.class);
     verify(repo).findAll();
     ```
 
@@ -83,8 +84,9 @@ statement with an assertion of the form:
   Input:
 
     ```
-    GarbageCollector garbageCollector = new GarbageCollector();
-    GarbageCollector garbageCollector_proxy = GarbageCollector_Proxy(garbageCollector);
+    @Mock
+    GarbageCollector garbageCollector;
+  
     verify(garbageCollector, never()).clear();
     ```
 
@@ -98,12 +100,13 @@ statement with an assertion of the form:
 
 * Always append `_proxy` to the original mocked dependency name
 * Do this even if the `_proxy` field does not exist
-* Always replace the verify statement with the specified rule.
+* Do not transform proxy method calls
+* Do not transform calls on mocked fields unless wrapped inside `verify(...)`.
 * Do not validate compilation
 * Do not change anything else in the file
 * Perform only this exact textual rewrite
 * Do not modify existing assertions
-* The package of the resulting class must be the same as the unit test class.
+* The package of the resulting class must be the same as the unit test class
 * If you don't find any verify statement, leave the code as it is.
 
 ---
