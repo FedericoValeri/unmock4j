@@ -1,6 +1,6 @@
 ## ROLE
 
-You are a Java expert.
+You are a Java software engineer.
 
 ---
 
