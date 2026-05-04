@@ -1,6 +1,5 @@
 package unicam.phd.unmock.infrastructure.reporting;
 
-import unicam.phd.unmock.application.pipeline.PipelineState;
 import unicam.phd.unmock.config.Config;
 
 import java.io.IOException;
@@ -29,7 +28,9 @@ public class SummaryWriter {
             Path summaryFile,
             String runId,
             String sutPackage,
-            PipelineState state) {
+            int inputTokens,
+            int outputToken,
+            double elapsed) {
 
         try {
             Files.createDirectories(summaryFile.getParent());
@@ -45,7 +46,9 @@ public class SummaryWriter {
             lines.add(buildRow(
                     runId,
                     sutPackage,
-                    state
+                    inputTokens,
+                    outputToken,
+                    elapsed
             ));
 
             Files.write(
@@ -82,12 +85,14 @@ public class SummaryWriter {
     private String buildRow(
             String runId,
             String sutPackage,
-            PipelineState state) {
+            int inputTokens,
+            int outputTokens,
+            double elapsed) {
 
         Double cost = costCalculator.compute(
                 Config.MODEL,
-                state.inputTokens(),
-                state.outputTokens()
+                inputTokens,
+                outputTokens
         );
 
         String timestamp = LocalDateTime.now()
@@ -102,12 +107,9 @@ public class SummaryWriter {
                 sutPackage,
                 Config.PROVIDER,
                 Config.MODEL,
-                String.valueOf(state.inputTokens()),
-                String.valueOf(state.outputTokens()),
-                String.valueOf(
-                        state.inputTokens()
-                                + state.outputTokens()
-                ),
+                String.valueOf(inputTokens),
+                String.valueOf(outputTokens),
+                String.valueOf(inputTokens + outputTokens),
                 cost != null
                         ? String.format(
                         Locale.US,
@@ -118,7 +120,7 @@ public class SummaryWriter {
                 String.format(
                         Locale.US,
                         "%.3f",
-                        state.elapsed()
+                        elapsed
                 ),
                 timestamp
         );

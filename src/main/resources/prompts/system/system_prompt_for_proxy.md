@@ -12,11 +12,8 @@ You are a Java software engineer.
 
   Examples:
 
-  ```
-  @Mock UserService userService; 
-  
-  PaymentService paymentService = mock(PaymentService.class);
-  ```
+    * `@Mock UserService userService;`
+    * `PaymentService paymentService = mock(PaymentService.class);`
 
 ---
 
@@ -24,20 +21,23 @@ You are a Java software engineer.
 
 You will receive:
 
-1. A Java unit test class using JUnit and Mockito
-2. A partially transformed version of the unit test class in 1.
-3. The system under test package and class name
+1. The system under test package and class name
+2. A Java unit test class using JUnit and Mockito
+3. A partially transformed version of the unit test class in 1.
 4. The mocked dependencies source code related to the unit test class in 1.
 
 ---
 
 ## TASK
 
-1. Create Java classes that act as proxies for dependencies so that methods inside:
+1. Copy the partially transformed version of the unit test as it is into a section delimited by
+   ---INTEGRATION_TEST_START-- ----INTEGRATION_TEST_END---
+2. Create Java classes that act as proxies for dependencies so that methods inside:
+
     * Call real implementations
     * Assert behavior previously defined by unit test mocks
     * Correspond to the proxy calls inside the integration test class
-2. Create the final integration test class from the partially transformed version of the unit test class.
+    * write the classes into a section delimited by ---PROXIES_START-- ----PROXIES_END---
 
 ---
 
@@ -47,8 +47,8 @@ For each `<mockedDependency>_proxy` method call in the partially transformed ver
 
 Do:
 
-1. Create the concrete class `<DependencyClassName>_Proxy` that extends `<DependencyClassName>_EmptyProxy` assuming
-   `<DependencyClassName>_EmptyProxy` exists, so that:
+* Create the concrete class `<DependencyClassName>_Proxy` that extends `<DependencyClassName>_EmptyProxy` assuming
+  `<DependencyClassName>_EmptyProxy` exists, so that:
     * Declares a non-default constructor that takes the mocked dependency type as a parameter and that only invokes the
       non-default constructor of `<DependencyClassName>_EmptyProxy` (i.e., "
       `super(<formal parameter of the current constructor>)`" )
@@ -75,8 +75,8 @@ For each `<mockedDependency>_proxy.method_verify()` in the partially transformed
 
 Do:
 
-1. Create the concrete class `<DependencyClassName>_Proxy` that extends `<DependencyClassName>_EmptyProxy` assuming
-   `<DependencyClassName>_EmptyProxy` exists, so that:
+* Create the concrete class `<DependencyClassName>_Proxy` that extends `<DependencyClassName>_EmptyProxy` assuming
+  `<DependencyClassName>_EmptyProxy` exists, so that:
     * Declares a non-default constructor that takes the mocked dependency type as a parameter and that only invokes the
       non-default constructor of `<DependencyClassName>_EmptyProxy` (i.e., "
       `super(<formal parameter of the current constructor>)`" )
@@ -100,25 +100,6 @@ Do:
           }
           ```
 
-### PROXY USAGE
-
-Inside the partially transformed version of the unit test class:
-
-* Keep original unit test `@Mock` fields or `mock(<DependencyClassName>.class)` definitions
-* Keep all existing `when` statements
-* Add proxy initialization near the mockedDependency definitions.
-
-  Examples:
-  ```
-  @Mock
-  private ProductRepository productRepository;  
-  private ProductRepository productRepository_proxy = new ProductRepository_Proxy(productRepository);
-  ```
-  ```
-  Alert alertMock = mock(Alert.class);
-  Alert alertMock_proxy = new Alert_Proxy(alertMock);
-  ```
-
 ---
 
 ## GLOBAL RULES
@@ -130,9 +111,8 @@ Inside the partially transformed version of the unit test class:
 * Exactly ONE proxy class per dependency
 * NEVER duplicate methods in proxy classes
 * If there are both stubs and verify related to the same method, merge rules for stubs and verify into the generated
-  @override method.
+  `@override` method.
 * NEVER invent method names
-* DO NOT modify existing assertions unless necessary, but remove original `verify` statements of the unit test.
 * ALWAYS call real dependency inside proxy classes
 * ALWAYS return real result
 * ALWAYS add an assertion in the proxy override methods based on the original unit test stub following the rules
@@ -149,12 +129,9 @@ Return exactly:
 ---PROXIES_START--- <java code>
 ---PROXIES_END---
 
-The integration test class name must follow this example rule:
-
-* Modify the name of the unit test class name to include "IntegrationTest" (example: AuthHeaderUtilTest becomes
-  AuthHeaderUtilIntegrationTest).
-
 Return only the generated Java code.
 
 * Do not include explanations.
 * Do not include comments.
+
+---

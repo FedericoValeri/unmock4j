@@ -3,6 +3,7 @@ package unicam.phd.unmock.bootstrap;
 import unicam.phd.unmock.application.codegen.EmptyProxyBuilder;
 import unicam.phd.unmock.application.codegen.EmptyProxyService;
 import unicam.phd.unmock.application.codegen.SourceFilesGenerator;
+import unicam.phd.unmock.application.parser.FullClassNamesExtractor;
 import unicam.phd.unmock.application.parser.JavaCodeExtractor;
 import unicam.phd.unmock.application.pipeline.LargeLanguageModelOutputGenerator;
 import unicam.phd.unmock.application.pipeline.Pipeline;
@@ -20,14 +21,13 @@ public class ApplicationBootstrap {
 
     public UnmockApplication create() {
         FileWriter fileWriter = new FileWriter();
-        JavaCodeExtractor extractor = new JavaCodeExtractor();
         CostCalculator costCalculator = new CostCalculator();
 
         EmptyProxyService proxyService = new EmptyProxyService(
                 new ClassLoader(), fileWriter, new EmptyProxyBuilder());
 
         SourceFilesGenerator sourceFilesGenerator = new SourceFilesGenerator(
-                extractor, fileWriter, proxyService);
+                new JavaCodeExtractor(), fileWriter, proxyService);
 
         SummaryWriter summaryWriter = new SummaryWriter(costCalculator);
 
@@ -35,8 +35,7 @@ public class ApplicationBootstrap {
                 new LargeLanguageModelOutputGenerator(
                         fileWriter,
                         summaryWriter,
-                        new RunIdGenerator(),
-                        extractor);
+                        new RunIdGenerator());
 
         Pipeline pipeline = new Pipeline(
                 new HumanPromptFileLoader(),
@@ -45,6 +44,8 @@ public class ApplicationBootstrap {
                 new LargeLanguageModelFactory().create()
         );
 
-        return new UnmockApplication(pipeline, outputGenerator, sourceFilesGenerator);
+        FullClassNamesExtractor fullClassNamesExtractor = new FullClassNamesExtractor();
+
+        return new UnmockApplication(pipeline, outputGenerator, sourceFilesGenerator, fullClassNamesExtractor);
     }
 }

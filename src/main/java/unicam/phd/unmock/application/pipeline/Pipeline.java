@@ -65,38 +65,15 @@ public class Pipeline {
         String unitTest = humanPromptFileLoader.getFileContent(InputFileType.UNIT);
         String dependencies = humanPromptFileLoader.getFileContent(InputFileType.DEPENDENCIES);
 
-        PipelineState state = new PipelineState(sut, unitTest, "", "");
+        PipelineState state = new PipelineState(sut, unitTest, "", dependencies);
 
-        String verifyPromptPath = "prompts/system/system_prompt_for_verify.md";
-        String proxyPromptPath = "prompts/system/system_prompt_for_proxy.md";
+        List<PipelineStepConfig> steps = getPipelineStepConfigs();
 
-        List<String> steps = List.of(
-                "prompts/system/system_prompt_for_stubs.md",
-                verifyPromptPath,
-                proxyPromptPath
-        );
+        for (PipelineStepConfig step : steps) {
 
-        for (String step : steps) {
+            PromptTemplate prompt = promptService.build(step.promptPath(), step);
 
-            // I pass original unit test file only to the system prompt for stubs and proxy
-            String currentUnitTest = step.equals(verifyPromptPath) ? "" : unitTest;
-
-            // I pass dependencies file only to the system prompt for proxy
-            String currentDependencies = step.equals(proxyPromptPath) ? dependencies : "";
-
-            state = new PipelineState(
-                    sut,
-                    currentUnitTest,
-                    state.partiallyTransformedTest(),
-                    currentDependencies,
-                    state.inputTokens(),
-                    state.outputTokens(),
-                    state.elapsed()
-            );
-
-            PromptTemplate prompt = promptService.build(step);
-
-            log.info("Running pipeline step for {} ...", step);
+            log.info("Running pipeline step for {} ...", step.promptPath());
 
             state = pipelineStepExecutor.run(
                     largeLanguageModelContext,
@@ -106,5 +83,20 @@ public class Pipeline {
         }
 
         return state;
+    }
+
+    private static List<PipelineStepConfig> getPipelineStepConfigs() {
+        String baseSystemPromptPath = "prompts/system/";
+        String stubsPromptPath = baseSystemPromptPath + "system_prompt_for_stubs.md";
+        String verifyPromptPath = baseSystemPromptPath + "system_prompt_for_verify.md";
+        String proxyPromptPath = baseSystemPromptPath + "system_prompt_for_proxy.md";
+        String integrationTestPromptPath = baseSystemPromptPath + "system_prompt_for_integrationTest.md";
+
+        return List.of(
+                new PipelineStepConfig(stubsPromptPath, true, true, false, false),
+                new PipelineStepConfig(verifyPromptPath, true, false, true, false),
+                new PipelineStepConfig(proxyPromptPath, true, true, true, true),
+                new PipelineStepConfig(integrationTestPromptPath, true, false, true, false)
+        );
     }
 }

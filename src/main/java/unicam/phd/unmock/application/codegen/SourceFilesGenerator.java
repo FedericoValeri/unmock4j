@@ -3,7 +3,6 @@ package unicam.phd.unmock.application.codegen;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import unicam.phd.unmock.application.parser.JavaCodeExtractor;
-import unicam.phd.unmock.application.pipeline.PipelineState;
 import unicam.phd.unmock.infrastructure.files.FileWriter;
 
 import java.io.IOException;
@@ -25,16 +24,16 @@ public class SourceFilesGenerator {
 
     private static final Logger log = LoggerFactory.getLogger(SourceFilesGenerator.class);
 
-    private final JavaCodeExtractor extractor;
+    private final JavaCodeExtractor javaCodeExtractor;
     private final FileWriter writer;
     private final EmptyProxyService emptyProxyService;
 
     public SourceFilesGenerator(
-            JavaCodeExtractor extractor,
+            JavaCodeExtractor javaCodeExtractor,
             FileWriter writer,
             EmptyProxyService emptyProxyService) {
 
-        this.extractor = extractor;
+        this.javaCodeExtractor = javaCodeExtractor;
         this.writer = writer;
         this.emptyProxyService = emptyProxyService;
     }
@@ -50,18 +49,13 @@ public class SourceFilesGenerator {
      *   <li>Generates empty proxies for each declared dependency.</li>
      * </ol>
      *
-     * @param state current pipeline state
-     * @param file  path to the generated text file containing code blocks
+     * @param file path to the generated text file containing code blocks
      * @throws RuntimeException if the input file cannot be read or processing fails
      */
     public void create(
-            PipelineState state,
+            String unitTestPackage,
+            List<String> dependencyPackages,
             String file) {
-
-        List<String> unitTestNames = extractor.extractFullClassNames(state.unitTest());
-        String unitTestFullClassName = unitTestNames.getFirst();
-        String unitTestPackageOnly = unitTestFullClassName.substring(0, unitTestFullClassName.lastIndexOf('.'));
-        List<String> dependencyPackages = extractor.extractFullClassNames(state.dependencies());
 
         try {
             Path inputPath = Path.of(file).toAbsolutePath();
@@ -96,7 +90,7 @@ public class SourceFilesGenerator {
                     emptyProxyService.generate(
                             mockedDependencyClassName,
                             outputDir,
-                            unitTestPackageOnly
+                            unitTestPackage
                     );
 
                 } catch (Exception e) {
@@ -117,11 +111,11 @@ public class SourceFilesGenerator {
             String end,
             Path outputDir) {
 
-        String block = extractor.extractBlock(content, start, end);
+        String block = javaCodeExtractor.extractBlock(content, start, end);
 
         if (block == null) return;
 
-        List<JavaClassBlock> classes = extractor.extractClasses(block);
+        List<JavaClassBlock> classes = javaCodeExtractor.extractClasses(block);
 
         for (JavaClassBlock cls : classes) {
             writer.writeClass(outputDir, cls.className(), cls.code());

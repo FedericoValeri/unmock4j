@@ -2,13 +2,11 @@ package unicam.phd.unmock.application.pipeline;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import unicam.phd.unmock.application.parser.JavaCodeExtractor;
 import unicam.phd.unmock.infrastructure.files.FileWriter;
 import unicam.phd.unmock.infrastructure.reporting.RunIdGenerator;
 import unicam.phd.unmock.infrastructure.reporting.SummaryWriter;
 
 import java.nio.file.Path;
-import java.util.List;
 
 /**
  * Application service responsible for persisting the final large language model
@@ -28,18 +26,15 @@ public class LargeLanguageModelOutputGenerator {
     private final FileWriter fileWriter;
     private final SummaryWriter summaryWriter;
     private final RunIdGenerator runIdGenerator;
-    private final JavaCodeExtractor javaCodeExtractor;
 
     public LargeLanguageModelOutputGenerator(
             FileWriter fileWriter,
             SummaryWriter summaryWriter,
-            RunIdGenerator runIdGenerator,
-            JavaCodeExtractor javaCodeExtractor) {
+            RunIdGenerator runIdGenerator) {
 
         this.fileWriter = fileWriter;
         this.summaryWriter = summaryWriter;
         this.runIdGenerator = runIdGenerator;
-        this.javaCodeExtractor = javaCodeExtractor;
     }
 
     /**
@@ -54,15 +49,12 @@ public class LargeLanguageModelOutputGenerator {
      *   <li>Appends execution metadata to {@code results/summary.csv}.</li>
      * </ol>
      *
-     * @param state current pipeline state
      * @return path of the generated output file as a string
      */
-    public String generate(PipelineState state) {
+    public String generate(String sutFullClassName, String partialResult, int inputTokens, int outputTokens, double elapsed) {
 
         log.info("Generating llm output and summary...");
 
-        List<String> sutNames = javaCodeExtractor.extractFullClassNames(state.sut());
-        String sutFullClassName = sutNames.getFirst();
 
         Path summaryFile = Path.of("results", "summary.csv");
         int nextId = runIdGenerator.next(summaryFile, sutFullClassName);
@@ -70,14 +62,16 @@ public class LargeLanguageModelOutputGenerator {
 
         Path outputFile = fileWriter.writeRunResult(
                 runId,
-                state.partiallyTransformedTest()
+                partialResult
         );
 
         summaryWriter.append(
                 summaryFile,
                 runId,
                 sutFullClassName,
-                state
+                inputTokens,
+                outputTokens,
+                elapsed
         );
 
         return outputFile.toString();
