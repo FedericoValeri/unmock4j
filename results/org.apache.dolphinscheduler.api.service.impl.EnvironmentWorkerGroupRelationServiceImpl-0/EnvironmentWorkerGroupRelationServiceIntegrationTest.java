@@ -23,9 +23,9 @@ import org.slf4j.LoggerFactory;
  * environment service test
  */
 @ExtendWith(MockitoExtension.class)
-public class EnvironmentWorkerGroupRelationServiceTest {
+public class EnvironmentWorkerGroupRelationServiceIntegrationTest {
 
-    public static final Logger logger = LoggerFactory.getLogger(EnvironmentWorkerGroupRelationServiceTest.class);
+    public static final Logger logger = LoggerFactory.getLogger(EnvironmentWorkerGroupRelationServiceIntegrationTest.class);
 
     @InjectMocks
     private EnvironmentWorkerGroupRelationServiceImpl relationService;
@@ -33,10 +33,15 @@ public class EnvironmentWorkerGroupRelationServiceTest {
     @Mock
     private EnvironmentWorkerGroupRelationMapper relationMapper;
 
+    private EnvironmentWorkerGroupRelationMapper relationMapper_proxy;
+
+    public EnvironmentWorkerGroupRelationServiceIntegrationTest(EnvironmentWorkerGroupRelationMapper relationMapper) {
+        this.relationMapper_proxy = new EnvironmentWorkerGroupRelationMapper_Proxy(relationMapper);
+    }
+
     @Test
     public void testQueryEnvironmentWorkerGroupRelation() {
-        Mockito.when(relationMapper.queryByEnvironmentCode(1L))
-                .thenReturn(Lists.newArrayList(new EnvironmentWorkerGroupRelation()));
+        relationMapper_proxy.queryByEnvironmentCode(1L);
         Map<String, Object> result = relationService.queryEnvironmentWorkerGroupRelation(1L);
         logger.info(result.toString());
         Assertions.assertEquals(Status.SUCCESS, result.get(Constants.STATUS));
