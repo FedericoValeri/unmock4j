@@ -72,3 +72,28 @@ Use the following commands:
       ```bash
       mvn exec:java -Dexec.mainClass=unicam.phd.unmock.Main
       ```
+
+## Insights
+
+Assertions derived from `verify` statements transformation must call the corresponding `_verify` proxy method, so
+we must replace all the mock references with the proxy otherwise the count won't work.
+If we had only been interested in `when` statements this would not have been necessary.
+
+In the following example the `methodsCache` reference have been replaced with `mockedDependency_proxy`:
+
+```java
+class McpConfigurationIntegrationTest {
+
+    @Mock
+    ControllerMethodsCache methodsCache;
+
+    private ControllerMethodsCache mockedDependency_proxy = new ControllerMethodsCache_Proxy(methodsCache);
+
+    @Test
+    void testInit() {
+        McpConfiguration mcpConfiguration = new McpConfiguration(mockedDependency_proxy);
+        mcpConfiguration.init();
+        assertEquals(1, ((ControllerMethodsCache_Proxy) mockedDependency_proxy).initClassMethod_verify());
+    }
+}
+```
