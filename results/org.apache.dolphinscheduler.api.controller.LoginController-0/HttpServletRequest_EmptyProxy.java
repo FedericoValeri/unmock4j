@@ -37,23 +37,18 @@ public class HttpServletRequest_EmptyProxy implements HttpServletRequest {
     }
 
     @Override
+    public boolean authenticate(HttpServletResponse arg0) throws IOException, ServletException {
+        return httpServletRequest.authenticate(arg0);
+    }
+
+    @Override
+    public Enumeration<String> getHeaders(String arg0) {
+        return httpServletRequest.getHeaders(arg0);
+    }
+
+    @Override
     public <T extends HttpUpgradeHandler> T upgrade(Class<T> arg0) throws IOException, ServletException {
         return httpServletRequest.upgrade(arg0);
-    }
-
-    @Override
-    public void login(String arg0, String arg1) throws ServletException {
-        httpServletRequest.login(arg0, arg1);
-    }
-
-    @Override
-    public void logout() throws ServletException {
-        httpServletRequest.logout();
-    }
-
-    @Override
-    public HttpSession getSession(boolean arg0) {
-        return httpServletRequest.getSession(arg0);
     }
 
     @Override
@@ -62,48 +57,8 @@ public class HttpServletRequest_EmptyProxy implements HttpServletRequest {
     }
 
     @Override
-    public String getPathInfo() {
-        return httpServletRequest.getPathInfo();
-    }
-
-    @Override
-    public String getRemoteUser() {
-        return httpServletRequest.getRemoteUser();
-    }
-
-    @Override
-    public String getServletPath() {
-        return httpServletRequest.getServletPath();
-    }
-
-    @Override
-    public String getRequestedSessionId() {
-        return httpServletRequest.getRequestedSessionId();
-    }
-
-    @Override
-    public String getRequestURI() {
-        return httpServletRequest.getRequestURI();
-    }
-
-    @Override
-    public Principal getUserPrincipal() {
-        return httpServletRequest.getUserPrincipal();
-    }
-
-    @Override
-    public int getIntHeader(String arg0) {
-        return httpServletRequest.getIntHeader(arg0);
-    }
-
-    @Override
-    public Enumeration<String> getHeaderNames() {
-        return httpServletRequest.getHeaderNames();
-    }
-
-    @Override
-    public String getAuthType() {
-        return httpServletRequest.getAuthType();
+    public HttpSession getSession(boolean arg0) {
+        return httpServletRequest.getSession(arg0);
     }
 
     @Override
@@ -112,13 +67,18 @@ public class HttpServletRequest_EmptyProxy implements HttpServletRequest {
     }
 
     @Override
-    public String getPathTranslated() {
-        return httpServletRequest.getPathTranslated();
+    public int getIntHeader(String arg0) {
+        return httpServletRequest.getIntHeader(arg0);
     }
 
     @Override
-    public String getContextPath() {
-        return httpServletRequest.getContextPath();
+    public String getAuthType() {
+        return httpServletRequest.getAuthType();
+    }
+
+    @Override
+    public Enumeration<String> getHeaderNames() {
+        return httpServletRequest.getHeaderNames();
     }
 
     @Override
@@ -132,8 +92,23 @@ public class HttpServletRequest_EmptyProxy implements HttpServletRequest {
     }
 
     @Override
+    public boolean isRequestedSessionIdValid() {
+        return httpServletRequest.isRequestedSessionIdValid();
+    }
+
+    @Override
+    public String getRequestedSessionId() {
+        return httpServletRequest.getRequestedSessionId();
+    }
+
+    @Override
     public StringBuffer getRequestURL() {
         return httpServletRequest.getRequestURL();
+    }
+
+    @Override
+    public String getRemoteUser() {
+        return httpServletRequest.getRemoteUser();
     }
 
     @Override
@@ -142,8 +117,43 @@ public class HttpServletRequest_EmptyProxy implements HttpServletRequest {
     }
 
     @Override
-    public boolean isRequestedSessionIdValid() {
-        return httpServletRequest.isRequestedSessionIdValid();
+    public String getServletPath() {
+        return httpServletRequest.getServletPath();
+    }
+
+    @Override
+    public Principal getUserPrincipal() {
+        return httpServletRequest.getUserPrincipal();
+    }
+
+    @Override
+    public String getPathTranslated() {
+        return httpServletRequest.getPathTranslated();
+    }
+
+    @Override
+    public String getRequestURI() {
+        return httpServletRequest.getRequestURI();
+    }
+
+    @Override
+    public String getContextPath() {
+        return httpServletRequest.getContextPath();
+    }
+
+    @Override
+    public String getPathInfo() {
+        return httpServletRequest.getPathInfo();
+    }
+
+    @Override
+    public void login(String arg0, String arg1) throws ServletException {
+        httpServletRequest.login(arg0, arg1);
+    }
+
+    @Override
+    public void logout() throws ServletException {
+        httpServletRequest.logout();
     }
 
     @Override
@@ -167,23 +177,13 @@ public class HttpServletRequest_EmptyProxy implements HttpServletRequest {
     }
 
     @Override
-    public Cookie[] getCookies() {
-        return httpServletRequest.getCookies();
-    }
-
-    @Override
     public Part getPart(String arg0) throws IOException, ServletException {
         return httpServletRequest.getPart(arg0);
     }
 
     @Override
-    public Enumeration<String> getHeaders(String arg0) {
-        return httpServletRequest.getHeaders(arg0);
-    }
-
-    @Override
-    public boolean authenticate(HttpServletResponse arg0) throws IOException, ServletException {
-        return httpServletRequest.authenticate(arg0);
+    public Cookie[] getCookies() {
+        return httpServletRequest.getCookies();
     }
 
     @Override
@@ -227,131 +227,6 @@ public class HttpServletRequest_EmptyProxy implements HttpServletRequest {
     }
 
     @Override
-    public String getLocalName() {
-        return httpServletRequest.getLocalName();
-    }
-
-    @Override
-    public boolean isSecure() {
-        return httpServletRequest.isSecure();
-    }
-
-    @Override
-    public String getParameter(String arg0) {
-        return httpServletRequest.getParameter(arg0);
-    }
-
-    @Override
-    public String getServerName() {
-        return httpServletRequest.getServerName();
-    }
-
-    @Override
-    public Enumeration<String> getAttributeNames() {
-        return httpServletRequest.getAttributeNames();
-    }
-
-    @Override
-    public String getCharacterEncoding() {
-        return httpServletRequest.getCharacterEncoding();
-    }
-
-    @Override
-    public void setCharacterEncoding(String arg0) throws UnsupportedEncodingException {
-        httpServletRequest.setCharacterEncoding(arg0);
-    }
-
-    @Override
-    public Enumeration<String> getParameterNames() {
-        return httpServletRequest.getParameterNames();
-    }
-
-    @Override
-    public Map<String, String[]> getParameterMap() {
-        return httpServletRequest.getParameterMap();
-    }
-
-    @Override
-    public AsyncContext getAsyncContext() {
-        return httpServletRequest.getAsyncContext();
-    }
-
-    @Override
-    public String[] getParameterValues(String arg0) {
-        return httpServletRequest.getParameterValues(arg0);
-    }
-
-    @Override
-    public int getServerPort() {
-        return httpServletRequest.getServerPort();
-    }
-
-    @Override
-    public int getRemotePort() {
-        return httpServletRequest.getRemotePort();
-    }
-
-    @Override
-    public DispatcherType getDispatcherType() {
-        return httpServletRequest.getDispatcherType();
-    }
-
-    @Override
-    public ServletContext getServletContext() {
-        return httpServletRequest.getServletContext();
-    }
-
-    @Override
-    public String getRemoteAddr() {
-        return httpServletRequest.getRemoteAddr();
-    }
-
-    @Override
-    public boolean isAsyncSupported() {
-        return httpServletRequest.isAsyncSupported();
-    }
-
-    @Override
-    public String getRemoteHost() {
-        return httpServletRequest.getRemoteHost();
-    }
-
-    @Override
-    public RequestDispatcher getRequestDispatcher(String arg0) {
-        return httpServletRequest.getRequestDispatcher(arg0);
-    }
-
-    @Override
-    public String getLocalAddr() {
-        return httpServletRequest.getLocalAddr();
-    }
-
-    @Override
-    public boolean isAsyncStarted() {
-        return httpServletRequest.isAsyncStarted();
-    }
-
-    @Override
-    public Enumeration<Locale> getLocales() {
-        return httpServletRequest.getLocales();
-    }
-
-    @Override
-    public AsyncContext startAsync() throws IllegalStateException {
-        return httpServletRequest.startAsync();
-    }
-
-    @Override
-    public AsyncContext startAsync(ServletRequest arg0, ServletResponse arg1) throws IllegalStateException {
-        return httpServletRequest.startAsync(arg0, arg1);
-    }
-
-    @Override
-    public BufferedReader getReader() throws IOException {
-        return httpServletRequest.getReader();
-    }
-
-    @Override
     public int getLocalPort() {
         return httpServletRequest.getLocalPort();
     }
@@ -369,6 +244,131 @@ public class HttpServletRequest_EmptyProxy implements HttpServletRequest {
     @Override
     public void removeAttribute(String arg0) {
         httpServletRequest.removeAttribute(arg0);
+    }
+
+    @Override
+    public boolean isSecure() {
+        return httpServletRequest.isSecure();
+    }
+
+    @Override
+    public String getParameter(String arg0) {
+        return httpServletRequest.getParameter(arg0);
+    }
+
+    @Override
+    public String getLocalName() {
+        return httpServletRequest.getLocalName();
+    }
+
+    @Override
+    public void setCharacterEncoding(String arg0) throws UnsupportedEncodingException {
+        httpServletRequest.setCharacterEncoding(arg0);
+    }
+
+    @Override
+    public boolean isAsyncStarted() {
+        return httpServletRequest.isAsyncStarted();
+    }
+
+    @Override
+    public Enumeration<String> getParameterNames() {
+        return httpServletRequest.getParameterNames();
+    }
+
+    @Override
+    public boolean isAsyncSupported() {
+        return httpServletRequest.isAsyncSupported();
+    }
+
+    @Override
+    public String getRemoteAddr() {
+        return httpServletRequest.getRemoteAddr();
+    }
+
+    @Override
+    public Enumeration<String> getAttributeNames() {
+        return httpServletRequest.getAttributeNames();
+    }
+
+    @Override
+    public String getCharacterEncoding() {
+        return httpServletRequest.getCharacterEncoding();
+    }
+
+    @Override
+    public RequestDispatcher getRequestDispatcher(String arg0) {
+        return httpServletRequest.getRequestDispatcher(arg0);
+    }
+
+    @Override
+    public AsyncContext getAsyncContext() {
+        return httpServletRequest.getAsyncContext();
+    }
+
+    @Override
+    public DispatcherType getDispatcherType() {
+        return httpServletRequest.getDispatcherType();
+    }
+
+    @Override
+    public Map<String, String[]> getParameterMap() {
+        return httpServletRequest.getParameterMap();
+    }
+
+    @Override
+    public String[] getParameterValues(String arg0) {
+        return httpServletRequest.getParameterValues(arg0);
+    }
+
+    @Override
+    public String getRemoteHost() {
+        return httpServletRequest.getRemoteHost();
+    }
+
+    @Override
+    public int getRemotePort() {
+        return httpServletRequest.getRemotePort();
+    }
+
+    @Override
+    public int getServerPort() {
+        return httpServletRequest.getServerPort();
+    }
+
+    @Override
+    public String getLocalAddr() {
+        return httpServletRequest.getLocalAddr();
+    }
+
+    @Override
+    public ServletContext getServletContext() {
+        return httpServletRequest.getServletContext();
+    }
+
+    @Override
+    public String getServerName() {
+        return httpServletRequest.getServerName();
+    }
+
+    @Override
+    public BufferedReader getReader() throws IOException {
+        return httpServletRequest.getReader();
+    }
+
+    @Override
+    public AsyncContext startAsync() throws IllegalStateException {
+        return httpServletRequest.startAsync();
+    }
+
+    @Override
+    public AsyncContext startAsync(ServletRequest arg0, ServletResponse arg1) throws IllegalStateException {
+        return httpServletRequest.startAsync(arg0, arg1);
+    }
+
+    @Override
+    public Enumeration<Locale> getLocales() {
+        return httpServletRequest.getLocales();
     }
 
 }

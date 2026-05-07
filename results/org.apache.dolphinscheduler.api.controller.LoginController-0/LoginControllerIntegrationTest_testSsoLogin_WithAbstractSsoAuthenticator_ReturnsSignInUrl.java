@@ -58,9 +58,9 @@ import org.springframework.test.web.servlet.MvcResult;
 import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.util.MultiValueMap;
 
-public class LoginControllerIntegrationTest extends AbstractControllerTest {
+public class LoginControllerIntegrationTest_testSsoLogin_WithAbstractSsoAuthenticator_ReturnsSignInUrl extends AbstractControllerTest {
 
-    private static final Logger logger = LoggerFactory.getLogger(LoginControllerIntegrationTest.class);
+    private static final Logger logger = LoggerFactory.getLogger(LoginControllerIntegrationTest_testSsoLogin_WithAbstractSsoAuthenticator_ReturnsSignInUrl.class);
 
     @Autowired
     private SessionDao sessionDao;
@@ -78,6 +78,7 @@ public class LoginControllerIntegrationTest extends AbstractControllerTest {
         }
     }
 
+
     @Test
     public void testSsoLogin_WithAbstractSsoAuthenticator_ReturnsSignInUrl() {
         DummySsoAuthenticator dummy = new DummySsoAuthenticator();
@@ -91,15 +92,15 @@ public class LoginControllerIntegrationTest extends AbstractControllerTest {
                 new LoginController(sessionService_proxy, dummy, usersService_proxy, Optional.empty(), Optional.empty(),
                         apiConfig_proxy);
         HttpServletRequest request = mock(HttpServletRequest.class);
-        HttpServletRequest_Proxy request_proxy = new HttpServletRequest_Proxy(request);
+        HttpServletRequest request_proxy = new HttpServletRequest_Proxy(request);
         HttpSession session = mock(HttpSession.class);
-        HttpSession_Proxy session_proxy = new HttpSession_Proxy(session);
+        HttpSession session_proxy = new HttpSession_Proxy(session);
         request_proxy.getSession();
         session_proxy.getAttribute(Constants.SSO_LOGIN_USER_STATE);
 
         Result result = controller.ssoLogin(request_proxy);
         Assertions.assertEquals(Status.SUCCESS.getCode(), result.getCode());
         Assertions.assertNotNull(result.getData());
-        assertEquals(1, session_proxy.setAttribute_verify());
+        assertEquals(1, ((HttpSession_Proxy) session_proxy).setAttribute_verify());
     }
 }
