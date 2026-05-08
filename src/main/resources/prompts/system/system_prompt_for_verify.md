@@ -48,7 +48,8 @@ rules.
 
 ## RULES
 
-For each verify statement in the unit test class, replace the entire verify statement with an assertion of the form:
+For each verify statement in the partially transformed unit test class, replace the entire verify statement with an
+assertion of the form:
 `assertEquals(n, ((<DependencyClassName>_Proxy) mockedDependency_proxy).method_verify());`
 
 ### EXAMPLES
