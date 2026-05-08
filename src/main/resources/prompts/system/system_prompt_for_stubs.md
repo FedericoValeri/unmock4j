@@ -46,14 +46,16 @@ rules.
 For each stub of the form `when(mockedDependency.method(args)).thenReturn(value)`, replace it with:
 `mockedDependency_proxy.method(args)`.
 
-If `args` of method are given with argument matchers (i.e. `anyInt()`, `anyStr()`, `Mockito.any()` etc...), the call of
+If `args` of method are given with argument matchers (i.e. `anyInt()`, `anyStr()`, `Mockito.any()`, `anyList()`,
+etc...), the call of
 `mockedDependency_proxy.method(args)` must be done with random arguments of the same type of the
 argument matcher. Examples:
 
-- `anyInt()`: replace with a random int
-- `anyString()`: replace with a random string
-- `anyBoolean()`: replace with a random boolean
-- `anyList()`: replace with a random list of the specified type
+- `anyInt()`: replace with a random int (example: 123 )
+- `anyString()`: replace with a random string (example: "RANDOM_STRING" )
+- `anyBoolean()`: replace with a random boolean (example: True )
+- `anyList()`: replace with a random list of the specified type (example - if type is long: `List<Long> numbers = new
+  ArrayList<>(Arrays.asList(1L, 2L, 3L));` )
 
 ### EXAMPLE
 
