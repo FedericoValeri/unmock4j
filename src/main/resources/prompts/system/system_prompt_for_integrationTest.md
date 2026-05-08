@@ -91,9 +91,10 @@ Return exactly:
 
 The integration test class name must follow this example rule:
 
-* Modify the name of the unit test class name to include "IntegrationTest_<unitTestMethodName>" (example:
-  AuthHeaderUtilTest becomes
-  AuthHeaderUtilIntegrationTest_<unitTestMethodName>) where <unitTestMethodName> is the name of the unit test method.
+* Modify the name of the unit test class name to include `IntegrationTest_<unitTestMethodName>` (example:
+  `AuthHeaderUtilTest` becomes
+  `AuthHeaderUtilIntegrationTest_<unitTestMethodName>`) where `<unitTestMethodName>` is the name of the unit test
+  method.
 
 Return only the generated Java code.
 
