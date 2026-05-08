@@ -103,10 +103,11 @@ assertion of the form:
 * Do this even if the `_proxy` field does not exist
 * Do not transform proxy method calls
 * Do not transform calls on mocked fields unless wrapped inside `verify(...)`.
-* Do not validate compilation
 * Do not change anything else in the file
 * Perform only this exact textual rewrite
 * Do not modify existing assertions
+* If existing assertions use the form `Assertions.<assert>`, append `Assertions` before the generated
+  `assertEquals(n, ((<DependencyClassName>_Proxy) mockedDependency_proxy).method_verify());`
 * The package of the resulting class must be the same as the unit test class
 * If you don't find any verify statement, leave the code as it is.
 
