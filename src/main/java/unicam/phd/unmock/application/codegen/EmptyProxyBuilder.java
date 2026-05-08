@@ -2,7 +2,6 @@ package unicam.phd.unmock.application.codegen;
 
 import org.jspecify.annotations.NonNull;
 
-import java.beans.Introspector;
 import java.lang.reflect.*;
 import java.util.*;
 import java.util.stream.Collectors;
@@ -40,7 +39,8 @@ public class EmptyProxyBuilder {
 
         String simpleName = target.getSimpleName();
         String proxyName = simpleName + "_EmptyProxy";
-        String fieldName = Introspector.decapitalize(simpleName);
+        //String fieldName = Introspector.decapitalize(simpleName);
+        String fieldName = "dependency";
 
         List<MethodContext> methods = collectMethodsToImplement(target);
 
