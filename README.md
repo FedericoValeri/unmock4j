@@ -75,6 +75,16 @@ Use the following commands:
 
 ## Insights
 
+We focus only on unit test classes that have as mocked dependencies the following types:
+
+* Interface
+* Concrete class with default constructor
+
+Selecting mocked dependencies that are concrete classes with a non default constructor will give problems in the proxy
+classes creation phase.
+
+___
+
 Assertions derived from `verify` statements transformation must call the corresponding `_verify` proxy method, so
 we must replace all the mock references with the proxy otherwise the count won't work.
 If we had only been interested in `when` statements this would not have been necessary.
