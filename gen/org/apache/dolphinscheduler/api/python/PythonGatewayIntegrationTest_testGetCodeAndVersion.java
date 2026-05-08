@@ -23,7 +23,7 @@ import org.mockito.Mockito;
 import org.mockito.junit.jupiter.MockitoExtension;
 
 @ExtendWith(MockitoExtension.class)
-public class PythonGatewayTest {
+public class PythonGatewayIntegrationTest_testGetCodeAndVersion {
 
     @InjectMocks
     private PythonGateway pythonGateway;
@@ -31,27 +31,38 @@ public class PythonGatewayTest {
     @Mock
     private ProjectMapper projectMapper;
 
+    private ProjectMapper projectMapper_proxy;
+
     @Mock
     private WorkflowDefinitionMapper workflowDefinitionMapper;
+
+    private WorkflowDefinitionMapper workflowDefinitionMapper_proxy;
 
     @Mock
     private TaskDefinitionMapper taskDefinitionMapper;
 
+    private TaskDefinitionMapper taskDefinitionMapper_proxy;
+
     @Mock
     private ResourcesService resourcesService;
+
+    public PythonGatewayIntegrationTest_testGetCodeAndVersion(ProjectMapper projectMapper, WorkflowDefinitionMapper workflowDefinitionMapper, TaskDefinitionMapper taskDefinitionMapper, ResourcesService resourcesService) {
+        this.projectMapper_proxy = new ProjectMapper_Proxy(projectMapper);
+        this.workflowDefinitionMapper_proxy = new WorkflowDefinitionMapper_Proxy(workflowDefinitionMapper);
+        this.taskDefinitionMapper_proxy = new TaskDefinitionMapper_Proxy(taskDefinitionMapper);
+    }
 
     @Test
     public void testGetCodeAndVersion() {
         Project project = getTestProject();
-        Mockito.when(projectMapper.queryByName(project.getName())).thenReturn(project);
+        projectMapper_proxy.queryByName(project.getName());
 
         WorkflowDefinition workflowDefinition = getTestProcessDefinition();
-        Mockito.when(workflowDefinitionMapper.queryByDefineName(project.getCode(), workflowDefinition.getName()))
-                .thenReturn(workflowDefinition);
+        workflowDefinitionMapper_proxy.queryByDefineName(project.getCode(), workflowDefinition.getName());
 
         TaskDefinition taskDefinition = getTestTaskDefinition();
-        Mockito.when(taskDefinitionMapper.queryByName(project.getCode(), workflowDefinition.getCode(),
-                taskDefinition.getName())).thenReturn(taskDefinition);
+        taskDefinitionMapper_proxy.queryByName(project.getCode(), workflowDefinition.getCode(),
+                taskDefinition.getName());
 
         Map<String, Long> result = pythonGateway.getCodeAndVersion(project.getName(), workflowDefinition.getName(),
                 taskDefinition.getName());
@@ -94,3 +105,4 @@ public class PythonGatewayTest {
             taskDefinition.setUpdateTime(new Date());
             return taskDefinition;
         }
+}

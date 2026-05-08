@@ -52,13 +52,43 @@ public class HttpServletRequest_EmptyProxy implements HttpServletRequest {
     }
 
     @Override
-    public HttpSession getSession() {
-        return httpServletRequest.getSession();
+    public void login(String arg0, String arg1) throws ServletException {
+        httpServletRequest.login(arg0, arg1);
+    }
+
+    @Override
+    public void logout() throws ServletException {
+        httpServletRequest.logout();
     }
 
     @Override
     public HttpSession getSession(boolean arg0) {
         return httpServletRequest.getSession(arg0);
+    }
+
+    @Override
+    public HttpSession getSession() {
+        return httpServletRequest.getSession();
+    }
+
+    @Override
+    public boolean isRequestedSessionIdFromCookie() {
+        return httpServletRequest.isRequestedSessionIdFromCookie();
+    }
+
+    @Override
+    public boolean isRequestedSessionIdFromUrl() {
+        return httpServletRequest.isRequestedSessionIdFromUrl();
+    }
+
+    @Override
+    public boolean isRequestedSessionIdFromURL() {
+        return httpServletRequest.isRequestedSessionIdFromURL();
+    }
+
+    @Override
+    public Enumeration<String> getHeaderNames() {
+        return httpServletRequest.getHeaderNames();
     }
 
     @Override
@@ -72,23 +102,23 @@ public class HttpServletRequest_EmptyProxy implements HttpServletRequest {
     }
 
     @Override
+    public String getPathInfo() {
+        return httpServletRequest.getPathInfo();
+    }
+
+    @Override
     public String getAuthType() {
         return httpServletRequest.getAuthType();
     }
 
     @Override
-    public Enumeration<String> getHeaderNames() {
-        return httpServletRequest.getHeaderNames();
+    public Principal getUserPrincipal() {
+        return httpServletRequest.getUserPrincipal();
     }
 
     @Override
-    public String getQueryString() {
-        return httpServletRequest.getQueryString();
-    }
-
-    @Override
-    public boolean isUserInRole(String arg0) {
-        return httpServletRequest.isUserInRole(arg0);
+    public String getRequestURI() {
+        return httpServletRequest.getRequestURI();
     }
 
     @Override
@@ -97,13 +127,38 @@ public class HttpServletRequest_EmptyProxy implements HttpServletRequest {
     }
 
     @Override
-    public String getRequestedSessionId() {
-        return httpServletRequest.getRequestedSessionId();
+    public String getQueryString() {
+        return httpServletRequest.getQueryString();
+    }
+
+    @Override
+    public String getServletPath() {
+        return httpServletRequest.getServletPath();
     }
 
     @Override
     public StringBuffer getRequestURL() {
         return httpServletRequest.getRequestURL();
+    }
+
+    @Override
+    public String getPathTranslated() {
+        return httpServletRequest.getPathTranslated();
+    }
+
+    @Override
+    public boolean isUserInRole(String arg0) {
+        return httpServletRequest.isUserInRole(arg0);
+    }
+
+    @Override
+    public String getContextPath() {
+        return httpServletRequest.getContextPath();
+    }
+
+    @Override
+    public String getRequestedSessionId() {
+        return httpServletRequest.getRequestedSessionId();
     }
 
     @Override
@@ -117,66 +172,6 @@ public class HttpServletRequest_EmptyProxy implements HttpServletRequest {
     }
 
     @Override
-    public String getServletPath() {
-        return httpServletRequest.getServletPath();
-    }
-
-    @Override
-    public Principal getUserPrincipal() {
-        return httpServletRequest.getUserPrincipal();
-    }
-
-    @Override
-    public String getPathTranslated() {
-        return httpServletRequest.getPathTranslated();
-    }
-
-    @Override
-    public String getRequestURI() {
-        return httpServletRequest.getRequestURI();
-    }
-
-    @Override
-    public String getContextPath() {
-        return httpServletRequest.getContextPath();
-    }
-
-    @Override
-    public String getPathInfo() {
-        return httpServletRequest.getPathInfo();
-    }
-
-    @Override
-    public void login(String arg0, String arg1) throws ServletException {
-        httpServletRequest.login(arg0, arg1);
-    }
-
-    @Override
-    public void logout() throws ServletException {
-        httpServletRequest.logout();
-    }
-
-    @Override
-    public boolean isRequestedSessionIdFromCookie() {
-        return httpServletRequest.isRequestedSessionIdFromCookie();
-    }
-
-    @Override
-    public boolean isRequestedSessionIdFromURL() {
-        return httpServletRequest.isRequestedSessionIdFromURL();
-    }
-
-    @Override
-    public boolean isRequestedSessionIdFromUrl() {
-        return httpServletRequest.isRequestedSessionIdFromUrl();
-    }
-
-    @Override
-    public Collection<Part> getParts() throws IOException, ServletException {
-        return httpServletRequest.getParts();
-    }
-
-    @Override
     public Part getPart(String arg0) throws IOException, ServletException {
         return httpServletRequest.getPart(arg0);
     }
@@ -184,6 +179,11 @@ public class HttpServletRequest_EmptyProxy implements HttpServletRequest {
     @Override
     public Cookie[] getCookies() {
         return httpServletRequest.getCookies();
+    }
+
+    @Override
+    public Collection<Part> getParts() throws IOException, ServletException {
+        return httpServletRequest.getParts();
     }
 
     @Override
@@ -247,6 +247,16 @@ public class HttpServletRequest_EmptyProxy implements HttpServletRequest {
     }
 
     @Override
+    public String getServerName() {
+        return httpServletRequest.getServerName();
+    }
+
+    @Override
+    public String getLocalName() {
+        return httpServletRequest.getLocalName();
+    }
+
+    @Override
     public boolean isSecure() {
         return httpServletRequest.isSecure();
     }
@@ -257,48 +267,8 @@ public class HttpServletRequest_EmptyProxy implements HttpServletRequest {
     }
 
     @Override
-    public String getLocalName() {
-        return httpServletRequest.getLocalName();
-    }
-
-    @Override
-    public void setCharacterEncoding(String arg0) throws UnsupportedEncodingException {
-        httpServletRequest.setCharacterEncoding(arg0);
-    }
-
-    @Override
-    public boolean isAsyncStarted() {
-        return httpServletRequest.isAsyncStarted();
-    }
-
-    @Override
-    public Enumeration<String> getParameterNames() {
-        return httpServletRequest.getParameterNames();
-    }
-
-    @Override
-    public boolean isAsyncSupported() {
-        return httpServletRequest.isAsyncSupported();
-    }
-
-    @Override
-    public String getRemoteAddr() {
-        return httpServletRequest.getRemoteAddr();
-    }
-
-    @Override
-    public Enumeration<String> getAttributeNames() {
-        return httpServletRequest.getAttributeNames();
-    }
-
-    @Override
-    public String getCharacterEncoding() {
-        return httpServletRequest.getCharacterEncoding();
-    }
-
-    @Override
-    public RequestDispatcher getRequestDispatcher(String arg0) {
-        return httpServletRequest.getRequestDispatcher(arg0);
+    public int getRemotePort() {
+        return httpServletRequest.getRemotePort();
     }
 
     @Override
@@ -307,8 +277,13 @@ public class HttpServletRequest_EmptyProxy implements HttpServletRequest {
     }
 
     @Override
-    public DispatcherType getDispatcherType() {
-        return httpServletRequest.getDispatcherType();
+    public boolean isAsyncStarted() {
+        return httpServletRequest.isAsyncStarted();
+    }
+
+    @Override
+    public Enumeration<String> getAttributeNames() {
+        return httpServletRequest.getAttributeNames();
     }
 
     @Override
@@ -317,23 +292,8 @@ public class HttpServletRequest_EmptyProxy implements HttpServletRequest {
     }
 
     @Override
-    public String[] getParameterValues(String arg0) {
-        return httpServletRequest.getParameterValues(arg0);
-    }
-
-    @Override
-    public String getRemoteHost() {
-        return httpServletRequest.getRemoteHost();
-    }
-
-    @Override
-    public int getRemotePort() {
-        return httpServletRequest.getRemotePort();
-    }
-
-    @Override
-    public int getServerPort() {
-        return httpServletRequest.getServerPort();
+    public RequestDispatcher getRequestDispatcher(String arg0) {
+        return httpServletRequest.getRequestDispatcher(arg0);
     }
 
     @Override
@@ -342,13 +302,53 @@ public class HttpServletRequest_EmptyProxy implements HttpServletRequest {
     }
 
     @Override
+    public String[] getParameterValues(String arg0) {
+        return httpServletRequest.getParameterValues(arg0);
+    }
+
+    @Override
+    public Enumeration<String> getParameterNames() {
+        return httpServletRequest.getParameterNames();
+    }
+
+    @Override
+    public String getRemoteAddr() {
+        return httpServletRequest.getRemoteAddr();
+    }
+
+    @Override
+    public String getRemoteHost() {
+        return httpServletRequest.getRemoteHost();
+    }
+
+    @Override
+    public boolean isAsyncSupported() {
+        return httpServletRequest.isAsyncSupported();
+    }
+
+    @Override
+    public String getCharacterEncoding() {
+        return httpServletRequest.getCharacterEncoding();
+    }
+
+    @Override
     public ServletContext getServletContext() {
         return httpServletRequest.getServletContext();
     }
 
     @Override
-    public String getServerName() {
-        return httpServletRequest.getServerName();
+    public void setCharacterEncoding(String arg0) throws UnsupportedEncodingException {
+        httpServletRequest.setCharacterEncoding(arg0);
+    }
+
+    @Override
+    public int getServerPort() {
+        return httpServletRequest.getServerPort();
+    }
+
+    @Override
+    public DispatcherType getDispatcherType() {
+        return httpServletRequest.getDispatcherType();
     }
 
     @Override
@@ -357,13 +357,13 @@ public class HttpServletRequest_EmptyProxy implements HttpServletRequest {
     }
 
     @Override
-    public AsyncContext startAsync() throws IllegalStateException {
-        return httpServletRequest.startAsync();
+    public AsyncContext startAsync(ServletRequest arg0, ServletResponse arg1) throws IllegalStateException {
+        return httpServletRequest.startAsync(arg0, arg1);
     }
 
     @Override
-    public AsyncContext startAsync(ServletRequest arg0, ServletResponse arg1) throws IllegalStateException {
-        return httpServletRequest.startAsync(arg0, arg1);
+    public AsyncContext startAsync() throws IllegalStateException {
+        return httpServletRequest.startAsync();
     }
 
     @Override

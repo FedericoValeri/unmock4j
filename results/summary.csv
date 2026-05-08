@@ -1,2 +1,9 @@
 Run ID,SUT,Provider,Model,Input Tokens,Output Tokens,Total Tokens,Cost (USD),Generation Time (sec),Timestamp
-org.apache.dolphinscheduler.api.controller.LoginController-0,org.apache.dolphinscheduler.api.controller.LoginController,openai,gpt-5.4-mini,9050,3855,12905,0.024135,26.645,2026-05-07 10:08:16
+org.apache.dolphinscheduler.api.python.PythonGateway-0,org.apache.dolphinscheduler.api.python.PythonGateway,openai,gpt-5.4-mini,9570,4340,13910,0.026708,40.574,2026-05-07 17:45:24
+org.apache.dolphinscheduler.api.python.PythonGateway-1,org.apache.dolphinscheduler.api.python.PythonGateway,openai,gpt-5.4-mini,9345,3883,13228,0.024482,23.792,2026-05-07 17:46:40
+org.apache.dolphinscheduler.api.controller.LoginController-0,org.apache.dolphinscheduler.api.controller.LoginController,openai,gpt-5.4-mini,9056,3855,12911,0.024139,25.569,2026-05-07 17:47:51
+org.apache.dolphinscheduler.api.service.impl.WorkflowLineageServiceImpl-0,org.apache.dolphinscheduler.api.service.impl.WorkflowLineageServiceImpl,openai,gpt-5.4-mini,7443,3701,11144,0.022237,19.913,2026-05-07 17:53:47
+org.apache.dolphinscheduler.api.service.impl.EnvironmentWorkerGroupRelationServiceImpl-0,org.apache.dolphinscheduler.api.service.impl.EnvironmentWorkerGroupRelationServiceImpl,openai,gpt-5.4-mini,5151,1725,6876,0.011626,12.406,2026-05-07 17:56:14
+org.apache.dolphinscheduler.api.service.impl.EnvironmentWorkerGroupRelationServiceImpl-1,org.apache.dolphinscheduler.api.service.impl.EnvironmentWorkerGroupRelationServiceImpl,openai,gpt-5.4-mini,5231,1885,7116,0.012406,14.453,2026-05-07 18:43:01
+org.apache.dolphinscheduler.api.service.impl.EnvironmentWorkerGroupRelationServiceImpl-2,org.apache.dolphinscheduler.api.service.impl.EnvironmentWorkerGroupRelationServiceImpl,openai,gpt-5.4-mini,5231,1885,7116,0.012406,11.444,2026-05-07 18:43:54
+org.apache.dolphinscheduler.api.python.PythonGateway-2,org.apache.dolphinscheduler.api.python.PythonGateway,openai,gpt-5.4-mini,9272,3747,13019,0.023815,20.356,2026-05-07 18:45:24

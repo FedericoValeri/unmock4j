@@ -26,13 +26,13 @@ public class HttpServletResponse_EmptyProxy implements HttpServletResponse {
     }
 
     @Override
-    public void addHeader(String arg0, String arg1) {
-        httpServletResponse.addHeader(arg0, arg1);
+    public void setHeader(String arg0, String arg1) {
+        httpServletResponse.setHeader(arg0, arg1);
     }
 
     @Override
-    public void setHeader(String arg0, String arg1) {
-        httpServletResponse.setHeader(arg0, arg1);
+    public void addHeader(String arg0, String arg1) {
+        httpServletResponse.addHeader(arg0, arg1);
     }
 
     @Override
@@ -41,58 +41,8 @@ public class HttpServletResponse_EmptyProxy implements HttpServletResponse {
     }
 
     @Override
-    public int getStatus() {
-        return httpServletResponse.getStatus();
-    }
-
-    @Override
-    public void addCookie(Cookie arg0) {
-        httpServletResponse.addCookie(arg0);
-    }
-
-    @Override
-    public void sendError(int arg0, String arg1) throws IOException {
-        httpServletResponse.sendError(arg0, arg1);
-    }
-
-    @Override
-    public void sendError(int arg0) throws IOException {
-        httpServletResponse.sendError(arg0);
-    }
-
-    @Override
-    public String encodeUrl(String arg0) {
-        return httpServletResponse.encodeUrl(arg0);
-    }
-
-    @Override
-    public String encodeURL(String arg0) {
-        return httpServletResponse.encodeURL(arg0);
-    }
-
-    @Override
-    public void setStatus(int arg0) {
-        httpServletResponse.setStatus(arg0);
-    }
-
-    @Override
-    public void setStatus(int arg0, String arg1) {
-        httpServletResponse.setStatus(arg0, arg1);
-    }
-
-    @Override
-    public void addIntHeader(String arg0, int arg1) {
-        httpServletResponse.addIntHeader(arg0, arg1);
-    }
-
-    @Override
-    public String encodeRedirectUrl(String arg0) {
-        return httpServletResponse.encodeRedirectUrl(arg0);
-    }
-
-    @Override
-    public boolean containsHeader(String arg0) {
-        return httpServletResponse.containsHeader(arg0);
+    public void setDateHeader(String arg0, long arg1) {
+        httpServletResponse.setDateHeader(arg0, arg1);
     }
 
     @Override
@@ -101,13 +51,8 @@ public class HttpServletResponse_EmptyProxy implements HttpServletResponse {
     }
 
     @Override
-    public void setDateHeader(String arg0, long arg1) {
-        httpServletResponse.setDateHeader(arg0, arg1);
-    }
-
-    @Override
-    public void addDateHeader(String arg0, long arg1) {
-        httpServletResponse.addDateHeader(arg0, arg1);
+    public boolean containsHeader(String arg0) {
+        return httpServletResponse.containsHeader(arg0);
     }
 
     @Override
@@ -116,8 +61,63 @@ public class HttpServletResponse_EmptyProxy implements HttpServletResponse {
     }
 
     @Override
+    public String encodeRedirectUrl(String arg0) {
+        return httpServletResponse.encodeRedirectUrl(arg0);
+    }
+
+    @Override
+    public void addIntHeader(String arg0, int arg1) {
+        httpServletResponse.addIntHeader(arg0, arg1);
+    }
+
+    @Override
     public void setIntHeader(String arg0, int arg1) {
         httpServletResponse.setIntHeader(arg0, arg1);
+    }
+
+    @Override
+    public void addDateHeader(String arg0, long arg1) {
+        httpServletResponse.addDateHeader(arg0, arg1);
+    }
+
+    @Override
+    public int getStatus() {
+        return httpServletResponse.getStatus();
+    }
+
+    @Override
+    public void setStatus(int arg0, String arg1) {
+        httpServletResponse.setStatus(arg0, arg1);
+    }
+
+    @Override
+    public void setStatus(int arg0) {
+        httpServletResponse.setStatus(arg0);
+    }
+
+    @Override
+    public void addCookie(Cookie arg0) {
+        httpServletResponse.addCookie(arg0);
+    }
+
+    @Override
+    public String encodeURL(String arg0) {
+        return httpServletResponse.encodeURL(arg0);
+    }
+
+    @Override
+    public String encodeUrl(String arg0) {
+        return httpServletResponse.encodeUrl(arg0);
+    }
+
+    @Override
+    public void sendError(int arg0) throws IOException {
+        httpServletResponse.sendError(arg0);
+    }
+
+    @Override
+    public void sendError(int arg0, String arg1) throws IOException {
+        httpServletResponse.sendError(arg0, arg1);
     }
 
     @Override
@@ -161,23 +161,18 @@ public class HttpServletResponse_EmptyProxy implements HttpServletResponse {
     }
 
     @Override
-    public void setCharacterEncoding(String arg0) {
-        httpServletResponse.setCharacterEncoding(arg0);
-    }
-
-    @Override
     public String getCharacterEncoding() {
         return httpServletResponse.getCharacterEncoding();
     }
 
     @Override
-    public PrintWriter getWriter() throws IOException {
-        return httpServletResponse.getWriter();
+    public void setCharacterEncoding(String arg0) {
+        httpServletResponse.setCharacterEncoding(arg0);
     }
 
     @Override
-    public void setBufferSize(int arg0) {
-        httpServletResponse.setBufferSize(arg0);
+    public boolean isCommitted() {
+        return httpServletResponse.isCommitted();
     }
 
     @Override
@@ -186,8 +181,8 @@ public class HttpServletResponse_EmptyProxy implements HttpServletResponse {
     }
 
     @Override
-    public boolean isCommitted() {
-        return httpServletResponse.isCommitted();
+    public void setBufferSize(int arg0) {
+        httpServletResponse.setBufferSize(arg0);
     }
 
     @Override
@@ -198,6 +193,11 @@ public class HttpServletResponse_EmptyProxy implements HttpServletResponse {
     @Override
     public int getBufferSize() {
         return httpServletResponse.getBufferSize();
+    }
+
+    @Override
+    public PrintWriter getWriter() throws IOException {
+        return httpServletResponse.getWriter();
     }
 
 }
