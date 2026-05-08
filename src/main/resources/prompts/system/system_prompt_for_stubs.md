@@ -53,6 +53,7 @@ argument matcher. Examples:
 - `anyInt()`: replace with a random int
 - `anyString()`: replace with a random string
 - `anyBoolean()`: replace with a random boolean
+- `anyList()`: replace with a random list of the specified type
 
 ### EXAMPLE
 
@@ -73,23 +74,6 @@ argument matcher. Examples:
   private Service service;
   
   service_proxy.getUser(1));
-  ```
-
-* Input
-
-  ```
-  ProductRepository productRepository = mock(ProductRepository.class);
-  
-  Product product = new Product();
-  when(productRepository.fetchById(anyInt())).thenReturn(product);
-  ```
-
-  Output
-
-  ```
-  ProductRepository productRepository = mock(ProductRepository.class);
-  
-  productRepository_proxy.fetchById(3);
   ```
 
 * Input
