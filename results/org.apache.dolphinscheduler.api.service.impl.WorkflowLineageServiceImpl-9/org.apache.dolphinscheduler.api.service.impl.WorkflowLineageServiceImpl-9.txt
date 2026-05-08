@@ -1,0 +1,121 @@
+---INTEGRATION_TEST_START---
+package org.apache.dolphinscheduler.api.service;
+
+import static org.mockito.ArgumentMatchers.anyList;
+import static org.mockito.ArgumentMatchers.eq;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
+
+import org.apache.dolphinscheduler.api.enums.Status;
+import org.apache.dolphinscheduler.api.exceptions.ServiceException;
+import org.apache.dolphinscheduler.api.service.impl.WorkflowLineageServiceImpl;
+import org.apache.dolphinscheduler.dao.entity.Project;
+import org.apache.dolphinscheduler.dao.entity.TaskDefinition;
+import org.apache.dolphinscheduler.dao.entity.WorkFlowLineage;
+import org.apache.dolphinscheduler.dao.entity.WorkFlowRelation;
+import org.apache.dolphinscheduler.dao.entity.WorkFlowRelationDetail;
+import org.apache.dolphinscheduler.dao.entity.WorkflowDefinition;
+import org.apache.dolphinscheduler.dao.entity.WorkflowTaskLineage;
+import org.apache.dolphinscheduler.dao.mapper.ProjectMapper;
+import org.apache.dolphinscheduler.dao.mapper.TaskDefinitionLogMapper;
+import org.apache.dolphinscheduler.dao.mapper.TaskDefinitionMapper;
+import org.apache.dolphinscheduler.dao.mapper.WorkflowDefinitionMapper;
+import org.apache.dolphinscheduler.dao.repository.WorkflowTaskLineageDao;
+
+import org.apache.commons.collections4.CollectionUtils;
+
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Optional;
+
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.InjectMocks;
+import org.mockito.Mock;
+import org.mockito.Mockito;
+import org.mockito.junit.jupiter.MockitoExtension;
+
+@ExtendWith(MockitoExtension.class)
+public class WorkflowTaskLineageIntegrationTest_testUpdateWorkflowLineageWithNonEmptyList {
+
+    @InjectMocks
+    private WorkflowLineageServiceImpl workflowLineageService;
+
+    private WorkflowTaskLineageDao workflowTaskLineageDao_proxy;
+
+    public WorkflowTaskLineageIntegrationTest_testUpdateWorkflowLineageWithNonEmptyList(WorkflowTaskLineageDao workflowTaskLineageDao) {
+        this.workflowTaskLineageDao_proxy = new WorkflowTaskLineageDao_Proxy(workflowTaskLineageDao);
+    }
+
+@Test
+public void testUpdateWorkflowLineageWithNonEmptyList() {
+    long workflowDefinitionCode = 100L;
+    List<WorkflowTaskLineage> workflowTaskLineages = new ArrayList<>();
+
+    WorkflowTaskLineage lineage1 = new WorkflowTaskLineage();
+    lineage1.setWorkflowDefinitionCode(workflowDefinitionCode);
+    lineage1.setTaskDefinitionCode(200L);
+    workflowTaskLineages.add(lineage1);
+
+    WorkflowTaskLineage lineage2 = new WorkflowTaskLineage();
+    lineage2.setWorkflowDefinitionCode(workflowDefinitionCode);
+    lineage2.setTaskDefinitionCode(300L);
+    workflowTaskLineages.add(lineage2);
+
+    workflowTaskLineageDao_proxy.batchDeleteByWorkflowDefinitionCode(123);
+    workflowTaskLineageDao_proxy.batchInsert(workflowTaskLineages);
+
+    int result = workflowLineageService.updateWorkflowLineage(workflowDefinitionCode, workflowTaskLineages);
+
+    Assertions.assertEquals(2, result);
+    Assertions.assertEquals(1, ((WorkflowTaskLineageDao_Proxy) workflowTaskLineageDao_proxy).batchDeleteByWorkflowDefinitionCode_verify());
+    Assertions.assertEquals(1, ((WorkflowTaskLineageDao_Proxy) workflowTaskLineageDao_proxy).batchInsert_verify());
+}
+}
+---INTEGRATION_TEST_END---
+
+---PROXIES_START---
+package org.apache.dolphinscheduler.api.service;
+
+import static org.junit.jupiter.api.Assertions.assertEquals;
+
+import java.util.List;
+
+import org.apache.dolphinscheduler.dao.entity.WorkflowTaskLineage;
+import org.apache.dolphinscheduler.dao.repository.WorkflowTaskLineageDao;
+
+public class WorkflowTaskLineageDao_Proxy extends WorkflowTaskLineageDao_EmptyProxy {
+
+    private int batchDeleteByWorkflowDefinitionCodeCounter = 0;
+    private int batchInsertCounter = 0;
+
+    public WorkflowTaskLineageDao_Proxy(WorkflowTaskLineageDao workflowTaskLineageDao) {
+        super(workflowTaskLineageDao);
+    }
+
+    @Override
+    public int batchDeleteByWorkflowDefinitionCode(List<Long> workflowDefinitionCodes) {
+        batchDeleteByWorkflowDefinitionCodeCounter++;
+        int result = dependency.batchDeleteByWorkflowDefinitionCode(workflowDefinitionCodes);
+        assertEquals(2, result);
+        return result;
+    }
+
+    @Override
+    public int batchInsert(List<WorkflowTaskLineage> workflowTaskLineages) {
+        batchInsertCounter++;
+        int result = dependency.batchInsert(workflowTaskLineageList);
+        assertEquals(2, result);
+        return result;
+    }
+
+    public int batchDeleteByWorkflowDefinitionCode_verify() {
+        return batchDeleteByWorkflowDefinitionCodeCounter;
+    }
+
+    public int batchInsert_verify() {
+        return batchInsertCounter;
+    }
+}
+---PROXIES_END---

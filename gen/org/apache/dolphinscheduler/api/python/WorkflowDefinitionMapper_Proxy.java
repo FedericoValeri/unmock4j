@@ -25,15 +25,10 @@ import org.mockito.junit.jupiter.MockitoExtension;
 
 
 class WorkflowDefinitionMapper_Proxy extends WorkflowDefinitionMapper_EmptyProxy {
-
-    private final WorkflowDefinitionMapper dependency;
-
     public WorkflowDefinitionMapper_Proxy(WorkflowDefinitionMapper dependency) {
         super(dependency);
-        this.dependency = dependency;
     }
 
-    @Override
     public WorkflowDefinition queryByDefineName(long projectCode, String workflowDefinitionName) {
         WorkflowDefinition result = dependency.queryByDefineName(projectCode, workflowDefinitionName);
         Assertions.assertNotNull(result);

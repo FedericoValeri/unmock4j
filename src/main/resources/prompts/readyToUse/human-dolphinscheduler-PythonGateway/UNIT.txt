@@ -37,9 +37,6 @@ public class PythonGatewayTest {
     @Mock
     private TaskDefinitionMapper taskDefinitionMapper;
 
-    @Mock
-    private ResourcesService resourcesService;
-
     @Test
     public void testGetCodeAndVersion() {
         Project project = getTestProject();

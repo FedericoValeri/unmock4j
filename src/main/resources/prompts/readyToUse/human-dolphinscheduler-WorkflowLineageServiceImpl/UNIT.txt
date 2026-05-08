@@ -44,17 +44,6 @@
         @Mock
         private WorkflowTaskLineageDao workflowTaskLineageDao;
 
-        @Mock
-        private ProjectMapper projectMapper;
-
-        @Mock
-        private TaskDefinitionLogMapper taskDefinitionLogMapper;
-
-        @Mock
-        private TaskDefinitionMapper taskDefinitionMapper;
-
-        @Mock
-
     @Test
     public void testUpdateWorkflowLineageWithNonEmptyList() {
         // Test case: Normal update with non-empty lineage list

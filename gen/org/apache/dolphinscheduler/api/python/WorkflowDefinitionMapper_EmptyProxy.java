@@ -21,18 +21,13 @@ public class WorkflowDefinitionMapper_EmptyProxy implements WorkflowDefinitionMa
     }
 
     @Override
-    public int updateById(WorkflowDefinition arg0) {
-        return dependency.updateById(arg0);
+    public List<WorkflowDefinitionCountDto> countDefinitionByProjectCodesV2(List<Long> arg0, Integer arg1, Integer arg2) {
+        return dependency.countDefinitionByProjectCodesV2(arg0, arg1, arg2);
     }
 
     @Override
-    public List<DependentSimplifyDefinition> queryDefinitionListByProjectCodeAndWorkflowDefinitionCodes(long arg0, Collection<Long> arg1) {
-        return dependency.queryDefinitionListByProjectCodeAndWorkflowDefinitionCodes(arg0, arg1);
-    }
-
-    @Override
-    public List<ProjectWorkflowDefinitionCount> queryProjectWorkflowDefinitionCountByProjectCodes(List<Long> arg0) {
-        return dependency.queryProjectWorkflowDefinitionCountByProjectCodes(arg0);
+    public List<WorkflowDefinition> queryDefinitionListByIdList(Integer[] arg0) {
+        return dependency.queryDefinitionListByIdList(arg0);
     }
 
     @Override
@@ -46,53 +41,8 @@ public class WorkflowDefinitionMapper_EmptyProxy implements WorkflowDefinitionMa
     }
 
     @Override
-    public List<WorkflowDefinition> queryDefinitionListByIdList(Integer[] arg0) {
-        return dependency.queryDefinitionListByIdList(arg0);
-    }
-
-    @Override
-    public List<WorkflowDefinitionCountDto> countDefinitionByProjectCodesV2(List<Long> arg0, Integer arg1, Integer arg2) {
-        return dependency.countDefinitionByProjectCodesV2(arg0, arg1, arg2);
-    }
-
-    @Override
     public List<WorkflowDefinition> queryByCodes(Collection<Long> arg0) {
         return dependency.queryByCodes(arg0);
-    }
-
-    @Override
-    public WorkflowDefinition queryByDefineName(long arg0, String arg1) {
-        return dependency.queryByDefineName(arg0, arg1);
-    }
-
-    @Override
-    public List<WorkflowDefinition> queryAllDefinitionList(long arg0) {
-        return dependency.queryAllDefinitionList(arg0);
-    }
-
-    @Override
-    public WorkflowDefinition queryByDefineId(int arg0) {
-        return dependency.queryByDefineId(arg0);
-    }
-
-    @Override
-    public List<Integer> listProjectIds() {
-        return dependency.listProjectIds();
-    }
-
-    @Override
-    public IPage<WorkflowDefinition> filterWorkflowDefinition(IPage<WorkflowDefinition> arg0, WorkflowDefinition arg1) {
-        return dependency.filterWorkflowDefinition(arg0, arg1);
-    }
-
-    @Override
-    public WorkflowDefinition queryByCode(long arg0) {
-        return dependency.queryByCode(arg0);
-    }
-
-    @Override
-    public int deleteByCode(long arg0) {
-        return dependency.deleteByCode(arg0);
     }
 
     @Override
@@ -101,8 +51,58 @@ public class WorkflowDefinitionMapper_EmptyProxy implements WorkflowDefinitionMa
     }
 
     @Override
+    public WorkflowDefinition queryByDefineName(long arg0, String arg1) {
+        return dependency.queryByDefineName(arg0, arg1);
+    }
+
+    @Override
+    public WorkflowDefinition queryByDefineId(int arg0) {
+        return dependency.queryByDefineId(arg0);
+    }
+
+    @Override
     public IPage<WorkflowDefinition> queryDefineListPaging(IPage<WorkflowDefinition> arg0, String arg1, int arg2, long arg3) {
         return dependency.queryDefineListPaging(arg0, arg1, arg2, arg3);
+    }
+
+    @Override
+    public IPage<WorkflowDefinition> filterWorkflowDefinition(IPage<WorkflowDefinition> arg0, WorkflowDefinition arg1) {
+        return dependency.filterWorkflowDefinition(arg0, arg1);
+    }
+
+    @Override
+    public int deleteByCode(long arg0) {
+        return dependency.deleteByCode(arg0);
+    }
+
+    @Override
+    public WorkflowDefinition queryByCode(long arg0) {
+        return dependency.queryByCode(arg0);
+    }
+
+    @Override
+    public List<WorkflowDefinition> queryAllDefinitionList(long arg0) {
+        return dependency.queryAllDefinitionList(arg0);
+    }
+
+    @Override
+    public List<Integer> listProjectIds() {
+        return dependency.listProjectIds();
+    }
+
+    @Override
+    public List<DependentSimplifyDefinition> queryDefinitionListByProjectCodeAndWorkflowDefinitionCodes(long arg0, Collection<Long> arg1) {
+        return dependency.queryDefinitionListByProjectCodeAndWorkflowDefinitionCodes(arg0, arg1);
+    }
+
+    @Override
+    public List<ProjectWorkflowDefinitionCount> queryProjectWorkflowDefinitionCountByProjectCodes(List<Long> arg0) {
+        return dependency.queryProjectWorkflowDefinitionCountByProjectCodes(arg0);
+    }
+
+    @Override
+    public int updateById(WorkflowDefinition arg0) {
+        return dependency.updateById(arg0);
     }
 
     @Override
@@ -121,8 +121,48 @@ public class WorkflowDefinitionMapper_EmptyProxy implements WorkflowDefinitionMa
     }
 
     @Override
+    public List<WorkflowDefinition> selectBatchIds(Collection<? extends Serializable> idList) {
+        return dependency.selectBatchIds(idList);
+    }
+
+    @Override
+    public <P extends IPage<Map<String, Object>>> P selectMapsPage(P page, Wrapper<WorkflowDefinition> queryWrapper) {
+        return dependency.selectMapsPage(page, queryWrapper);
+    }
+
+    @Override
+    public Long selectCount(Wrapper<WorkflowDefinition> queryWrapper) {
+        return dependency.selectCount(queryWrapper);
+    }
+
+    @Override
+    public int deleteBatchIds(Collection<?> idList) {
+        return dependency.deleteBatchIds(idList);
+    }
+
+    @Override
+    public List<WorkflowDefinition> selectByMap(Map<String, Object> columnMap) {
+        return dependency.selectByMap(columnMap);
+    }
+
+    @Override
+    public int deleteByMap(Map<String, Object> columnMap) {
+        return dependency.deleteByMap(columnMap);
+    }
+
+    @Override
     public List<Object> selectObjs(Wrapper<WorkflowDefinition> queryWrapper) {
         return dependency.selectObjs(queryWrapper);
+    }
+
+    @Override
+    public int deleteById(Serializable id) {
+        return dependency.deleteById(id);
+    }
+
+    @Override
+    public int deleteById(WorkflowDefinition entity) {
+        return dependency.deleteById(entity);
     }
 
     @Override
@@ -143,46 +183,6 @@ public class WorkflowDefinitionMapper_EmptyProxy implements WorkflowDefinitionMa
     @Override
     public List<Map<String, Object>> selectMaps(Wrapper<WorkflowDefinition> queryWrapper) {
         return dependency.selectMaps(queryWrapper);
-    }
-
-    @Override
-    public int deleteById(WorkflowDefinition entity) {
-        return dependency.deleteById(entity);
-    }
-
-    @Override
-    public int deleteById(Serializable id) {
-        return dependency.deleteById(id);
-    }
-
-    @Override
-    public int deleteBatchIds(Collection<?> idList) {
-        return dependency.deleteBatchIds(idList);
-    }
-
-    @Override
-    public List<WorkflowDefinition> selectBatchIds(Collection<? extends Serializable> idList) {
-        return dependency.selectBatchIds(idList);
-    }
-
-    @Override
-    public Long selectCount(Wrapper<WorkflowDefinition> queryWrapper) {
-        return dependency.selectCount(queryWrapper);
-    }
-
-    @Override
-    public List<WorkflowDefinition> selectByMap(Map<String, Object> columnMap) {
-        return dependency.selectByMap(columnMap);
-    }
-
-    @Override
-    public <P extends IPage<Map<String, Object>>> P selectMapsPage(P page, Wrapper<WorkflowDefinition> queryWrapper) {
-        return dependency.selectMapsPage(page, queryWrapper);
-    }
-
-    @Override
-    public int deleteByMap(Map<String, Object> columnMap) {
-        return dependency.deleteByMap(columnMap);
     }
 
 }

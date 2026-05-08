@@ -25,15 +25,10 @@ import org.mockito.junit.jupiter.MockitoExtension;
 
 
 class ProjectMapper_Proxy extends ProjectMapper_EmptyProxy {
-
-    private final ProjectMapper dependency;
-
     public ProjectMapper_Proxy(ProjectMapper dependency) {
         super(dependency);
-        this.dependency = dependency;
     }
 
-    @Override
     public Project queryByName(String projectName) {
         Project result = dependency.queryByName(projectName);
         Assertions.assertNotNull(result);

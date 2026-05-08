@@ -1,14 +1,13 @@
+---INTEGRATION_TEST_START---
 package org.apache.dolphinscheduler.api.python;
 
 import org.apache.dolphinscheduler.api.service.ResourcesService;
 import org.apache.dolphinscheduler.dao.entity.Project;
 import org.apache.dolphinscheduler.dao.entity.TaskDefinition;
-import org.apache.dolphinscheduler.dao.entity.User;
 import org.apache.dolphinscheduler.dao.entity.WorkflowDefinition;
 import org.apache.dolphinscheduler.dao.mapper.ProjectMapper;
 import org.apache.dolphinscheduler.dao.mapper.TaskDefinitionMapper;
 import org.apache.dolphinscheduler.dao.mapper.WorkflowDefinitionMapper;
-import org.apache.dolphinscheduler.plugin.storage.api.StorageEntity;
 import org.apache.dolphinscheduler.spi.enums.ResourceType;
 
 import java.util.Date;
@@ -18,7 +17,7 @@ import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
-import org.mockito.Mockito;
+import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
 @ExtendWith(MockitoExtension.class)
@@ -27,16 +26,31 @@ public class PythonGatewayIntegrationTest_testGetCodeAndVersion {
     @InjectMocks
     private PythonGateway pythonGateway;
 
+    @Mock
+    private ProjectMapper projectMapper;
+
     private ProjectMapper projectMapper_proxy;
+
+    @Mock
+    private WorkflowDefinitionMapper workflowDefinitionMapper;
 
     private WorkflowDefinitionMapper workflowDefinitionMapper_proxy;
 
+    @Mock
+    private TaskDefinitionMapper taskDefinitionMapper;
+
     private TaskDefinitionMapper taskDefinitionMapper_proxy;
 
-    public PythonGatewayIntegrationTest_testGetCodeAndVersion(ProjectMapper projectMapper, WorkflowDefinitionMapper workflowDefinitionMapper, TaskDefinitionMapper taskDefinitionMapper) {
+    @Mock
+    private ResourcesService resourcesService;
+
+    private ResourcesService resourcesService_proxy;
+
+    public PythonGatewayIntegrationTest_testGetCodeAndVersion(ProjectMapper projectMapper, WorkflowDefinitionMapper workflowDefinitionMapper, TaskDefinitionMapper taskDefinitionMapper, ResourcesService resourcesService) {
         this.projectMapper_proxy = new ProjectMapper_Proxy(projectMapper);
         this.workflowDefinitionMapper_proxy = new WorkflowDefinitionMapper_Proxy(workflowDefinitionMapper);
         this.taskDefinitionMapper_proxy = new TaskDefinitionMapper_Proxy(taskDefinitionMapper);
+        this.resourcesService_proxy = new ResourcesService_Proxy(resourcesService);
     }
 
     @Test
@@ -93,3 +107,86 @@ public class PythonGatewayIntegrationTest_testGetCodeAndVersion {
             return taskDefinition;
         }
 }
+---INTEGRATION_TEST_END---
+---PROXIES_START---
+package org.apache.dolphinscheduler.api.python;
+
+import org.apache.dolphinscheduler.api.service.ResourcesService;
+import org.apache.dolphinscheduler.dao.entity.Project;
+import org.apache.dolphinscheduler.dao.entity.TaskDefinition;
+import org.apache.dolphinscheduler.dao.entity.WorkflowDefinition;
+import org.apache.dolphinscheduler.dao.mapper.ProjectMapper;
+import org.apache.dolphinscheduler.dao.mapper.TaskDefinitionMapper;
+import org.apache.dolphinscheduler.dao.mapper.WorkflowDefinitionMapper;
+import org.apache.dolphinscheduler.spi.enums.ResourceType;
+
+import java.util.Date;
+import java.util.Map;
+
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.InjectMocks;
+import org.mockito.Mock;
+import org.mockito.junit.jupiter.MockitoExtension;
+
+class ProjectMapper_EmptyProxy {
+    protected final ProjectMapper dependency;
+
+    ProjectMapper_EmptyProxy(ProjectMapper dependency) {
+        this.dependency = dependency;
+    }
+}
+
+class WorkflowDefinitionMapper_EmptyProxy {
+    protected final WorkflowDefinitionMapper dependency;
+
+    WorkflowDefinitionMapper_EmptyProxy(WorkflowDefinitionMapper dependency) {
+        this.dependency = dependency;
+    }
+}
+
+class TaskDefinitionMapper_EmptyProxy {
+    protected final TaskDefinitionMapper dependency;
+
+    TaskDefinitionMapper_EmptyProxy(TaskDefinitionMapper dependency) {
+        this.dependency = dependency;
+    }
+}
+
+class ProjectMapper_Proxy extends ProjectMapper_EmptyProxy {
+    ProjectMapper_Proxy(ProjectMapper dependency) {
+        super(dependency);
+    }
+
+    public Project queryByName(String projectName) {
+        Project result = dependency.queryByName(projectName);
+        Assertions.assertNotNull(result);
+        return result;
+    }
+}
+
+class WorkflowDefinitionMapper_Proxy extends WorkflowDefinitionMapper_EmptyProxy {
+    WorkflowDefinitionMapper_Proxy(WorkflowDefinitionMapper dependency) {
+        super(dependency);
+    }
+
+    public WorkflowDefinition queryByDefineName(long projectCode, String workflowDefinitionName) {
+        WorkflowDefinition result = dependency.queryByDefineName(projectCode, workflowDefinitionName);
+        Assertions.assertNotNull(result);
+        return result;
+    }
+}
+
+class TaskDefinitionMapper_Proxy extends TaskDefinitionMapper_EmptyProxy {
+    TaskDefinitionMapper_Proxy(TaskDefinitionMapper dependency) {
+        super(dependency);
+    }
+
+    public TaskDefinition queryByName(long projectCode, long workflowDefinitionCode, String name) {
+        TaskDefinition result = dependency.queryByName(projectCode, workflowDefinitionCode, name);
+        Assertions.assertNotNull(result);
+        return result;
+    }
+}
+---PROXIES_END---

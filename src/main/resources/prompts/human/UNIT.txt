@@ -1,96 +1,76 @@
-package org.apache.dolphinscheduler.api.python;
+    package org.apache.dolphinscheduler.api.service;
 
-import org.apache.dolphinscheduler.api.service.ResourcesService;
-import org.apache.dolphinscheduler.dao.entity.Project;
-import org.apache.dolphinscheduler.dao.entity.TaskDefinition;
-import org.apache.dolphinscheduler.dao.entity.User;
-import org.apache.dolphinscheduler.dao.entity.WorkflowDefinition;
-import org.apache.dolphinscheduler.dao.mapper.ProjectMapper;
-import org.apache.dolphinscheduler.dao.mapper.TaskDefinitionMapper;
-import org.apache.dolphinscheduler.dao.mapper.WorkflowDefinitionMapper;
-import org.apache.dolphinscheduler.plugin.storage.api.StorageEntity;
-import org.apache.dolphinscheduler.spi.enums.ResourceType;
+    import static org.mockito.ArgumentMatchers.anyList;
+    import static org.mockito.ArgumentMatchers.eq;
+    import static org.mockito.Mockito.verify;
+    import static org.mockito.Mockito.when;
 
-import java.util.Date;
-import java.util.Map;
+    import org.apache.dolphinscheduler.api.enums.Status;
+    import org.apache.dolphinscheduler.api.exceptions.ServiceException;
+    import org.apache.dolphinscheduler.api.service.impl.WorkflowLineageServiceImpl;
+    import org.apache.dolphinscheduler.dao.entity.Project;
+    import org.apache.dolphinscheduler.dao.entity.TaskDefinition;
+    import org.apache.dolphinscheduler.dao.entity.WorkFlowLineage;
+    import org.apache.dolphinscheduler.dao.entity.WorkFlowRelation;
+    import org.apache.dolphinscheduler.dao.entity.WorkFlowRelationDetail;
+    import org.apache.dolphinscheduler.dao.entity.WorkflowDefinition;
+    import org.apache.dolphinscheduler.dao.entity.WorkflowTaskLineage;
+    import org.apache.dolphinscheduler.dao.mapper.ProjectMapper;
+    import org.apache.dolphinscheduler.dao.mapper.TaskDefinitionLogMapper;
+    import org.apache.dolphinscheduler.dao.mapper.TaskDefinitionMapper;
+    import org.apache.dolphinscheduler.dao.mapper.WorkflowDefinitionMapper;
+    import org.apache.dolphinscheduler.dao.repository.WorkflowTaskLineageDao;
 
-import org.junit.jupiter.api.Assertions;
-import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.extension.ExtendWith;
-import org.mockito.InjectMocks;
-import org.mockito.Mock;
-import org.mockito.Mockito;
-import org.mockito.junit.jupiter.MockitoExtension;
+    import org.apache.commons.collections4.CollectionUtils;
 
-@ExtendWith(MockitoExtension.class)
-public class PythonGatewayTest {
+    import java.util.ArrayList;
+    import java.util.List;
+    import java.util.Optional;
 
-    @InjectMocks
-    private PythonGateway pythonGateway;
+    import org.junit.jupiter.api.Assertions;
+    import org.junit.jupiter.api.Test;
+    import org.junit.jupiter.api.extension.ExtendWith;
+    import org.mockito.InjectMocks;
+    import org.mockito.Mock;
+    import org.mockito.Mockito;
+    import org.mockito.junit.jupiter.MockitoExtension;
 
-    @Mock
-    private ProjectMapper projectMapper;
+    @ExtendWith(MockitoExtension.class)
+    public class WorkflowTaskLineageServiceTest {
 
-    @Mock
-    private WorkflowDefinitionMapper workflowDefinitionMapper;
+        @InjectMocks
+        private WorkflowLineageServiceImpl workflowLineageService;
 
-    @Mock
-    private TaskDefinitionMapper taskDefinitionMapper;
-
-    @Mock
-    private ResourcesService resourcesService;
+        @Mock
+        private WorkflowTaskLineageDao workflowTaskLineageDao;
 
     @Test
-    public void testGetCodeAndVersion() {
-        Project project = getTestProject();
-        Mockito.when(projectMapper.queryByName(project.getName())).thenReturn(project);
+    public void testUpdateWorkflowLineageWithNonEmptyList() {
+        // Test case: Normal update with non-empty lineage list
+        long workflowDefinitionCode = 100L;
+        List<WorkflowTaskLineage> workflowTaskLineages = new ArrayList<>();
 
-        WorkflowDefinition workflowDefinition = getTestProcessDefinition();
-        Mockito.when(workflowDefinitionMapper.queryByDefineName(project.getCode(), workflowDefinition.getName()))
-                .thenReturn(workflowDefinition);
+        WorkflowTaskLineage lineage1 = new WorkflowTaskLineage();
+        lineage1.setWorkflowDefinitionCode(workflowDefinitionCode);
+        lineage1.setTaskDefinitionCode(200L);
+        workflowTaskLineages.add(lineage1);
 
-        TaskDefinition taskDefinition = getTestTaskDefinition();
-        Mockito.when(taskDefinitionMapper.queryByName(project.getCode(), workflowDefinition.getCode(),
-                taskDefinition.getName())).thenReturn(taskDefinition);
+        WorkflowTaskLineage lineage2 = new WorkflowTaskLineage();
+        lineage2.setWorkflowDefinitionCode(workflowDefinitionCode);
+        lineage2.setTaskDefinitionCode(300L);
+        workflowTaskLineages.add(lineage2);
 
-        Map<String, Long> result = pythonGateway.getCodeAndVersion(project.getName(), workflowDefinition.getName(),
-                taskDefinition.getName());
-        Assertions.assertEquals(result.get("code").longValue(), taskDefinition.getCode());
+        // Mock DAO methods
+        when(workflowTaskLineageDao.batchDeleteByWorkflowDefinitionCode(anyList())).thenReturn(2);
+        when(workflowTaskLineageDao.batchInsert(workflowTaskLineages)).thenReturn(2);
+
+        // Execute
+        int result = workflowLineageService.updateWorkflowLineage(workflowDefinitionCode, workflowTaskLineages);
+
+        // Verify
+        Assertions.assertEquals(2, result);
+        verify(workflowTaskLineageDao)
+                .batchDeleteByWorkflowDefinitionCode(eq(java.util.Collections.singletonList(workflowDefinitionCode)));
+        verify(workflowTaskLineageDao).batchInsert(workflowTaskLineages);
     }
-
-     private Project getTestProject() {
-            Project project = new Project();
-            project.setName("ut-project");
-            project.setUserId(111);
-            project.setCode(1L);
-            project.setCreateTime(new Date());
-            project.setUpdateTime(new Date());
-            return project;
-        }
-
-        private WorkflowDefinition getTestProcessDefinition() {
-            WorkflowDefinition workflowDefinition = new WorkflowDefinition();
-            workflowDefinition.setCode(1L);
-            workflowDefinition.setName("ut-process-definition");
-            workflowDefinition.setProjectCode(1L);
-            workflowDefinition.setUserId(111);
-            workflowDefinition.setUpdateTime(new Date());
-            workflowDefinition.setCreateTime(new Date());
-            return workflowDefinition;
-        }
-
-        private TaskDefinition getTestTaskDefinition() {
-            TaskDefinition taskDefinition = new TaskDefinition();
-            taskDefinition.setCode(888888L);
-            taskDefinition.setName("ut-task-definition");
-            taskDefinition.setProjectCode(1L);
-            taskDefinition.setTaskType("SHELL");
-            taskDefinition.setUserId(111);
-            taskDefinition.setResourceIds("1");
-            taskDefinition.setWorkerGroup("default");
-            taskDefinition.setEnvironmentCode(1L);
-            taskDefinition.setVersion(1);
-            taskDefinition.setCreateTime(new Date());
-            taskDefinition.setUpdateTime(new Date());
-            return taskDefinition;
-        }
+    }

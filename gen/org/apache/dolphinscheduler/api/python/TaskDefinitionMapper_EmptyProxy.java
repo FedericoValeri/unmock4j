@@ -21,8 +21,13 @@ public class TaskDefinitionMapper_EmptyProxy implements TaskDefinitionMapper {
     }
 
     @Override
-    public TaskDefinition queryByCode(long arg0) {
-        return dependency.queryByCode(arg0);
+    public List<String> queryAllTaskDefinitionWorkerGroups(long arg0) {
+        return dependency.queryAllTaskDefinitionWorkerGroups(arg0);
+    }
+
+    @Override
+    public void deleteByWorkflowDefinitionCodeAndVersion(long arg0, int arg1) {
+        dependency.deleteByWorkflowDefinitionCodeAndVersion(arg0, arg1);
     }
 
     @Override
@@ -31,28 +36,8 @@ public class TaskDefinitionMapper_EmptyProxy implements TaskDefinitionMapper {
     }
 
     @Override
-    public List<TaskMainInfo> queryDefineListByCodeList(long arg0, List<Long> arg1) {
-        return dependency.queryDefineListByCodeList(arg0, arg1);
-    }
-
-    @Override
-    public List<TaskDefinition> queryByCodeList(Collection<Long> arg0) {
-        return dependency.queryByCodeList(arg0);
-    }
-
-    @Override
-    public IPage<TaskDefinition> filterTaskDefinition(IPage<TaskDefinition> arg0, TaskDefinition arg1) {
-        return dependency.filterTaskDefinition(arg0, arg1);
-    }
-
-    @Override
-    public int deleteByBatchCodes(List<Long> arg0) {
-        return dependency.deleteByBatchCodes(arg0);
-    }
-
-    @Override
-    public List<TaskDefinition> queryDefinitionsByTaskType(String arg0) {
-        return dependency.queryDefinitionsByTaskType(arg0);
+    public TaskDefinition queryByCode(long arg0) {
+        return dependency.queryByCode(arg0);
     }
 
     @Override
@@ -71,13 +56,28 @@ public class TaskDefinitionMapper_EmptyProxy implements TaskDefinitionMapper {
     }
 
     @Override
-    public List<String> queryAllTaskDefinitionWorkerGroups(long arg0) {
-        return dependency.queryAllTaskDefinitionWorkerGroups(arg0);
+    public int deleteByBatchCodes(List<Long> arg0) {
+        return dependency.deleteByBatchCodes(arg0);
     }
 
     @Override
-    public void deleteByWorkflowDefinitionCodeAndVersion(long arg0, int arg1) {
-        dependency.deleteByWorkflowDefinitionCodeAndVersion(arg0, arg1);
+    public List<TaskDefinition> queryDefinitionsByTaskType(String arg0) {
+        return dependency.queryDefinitionsByTaskType(arg0);
+    }
+
+    @Override
+    public List<TaskDefinition> queryByCodeList(Collection<Long> arg0) {
+        return dependency.queryByCodeList(arg0);
+    }
+
+    @Override
+    public IPage<TaskDefinition> filterTaskDefinition(IPage<TaskDefinition> arg0, TaskDefinition arg1) {
+        return dependency.filterTaskDefinition(arg0, arg1);
+    }
+
+    @Override
+    public List<TaskMainInfo> queryDefineListByCodeList(long arg0, List<Long> arg1) {
+        return dependency.queryDefineListByCodeList(arg0, arg1);
     }
 
     @Override
@@ -96,8 +96,48 @@ public class TaskDefinitionMapper_EmptyProxy implements TaskDefinitionMapper {
     }
 
     @Override
+    public List<TaskDefinition> selectBatchIds(Collection<? extends Serializable> idList) {
+        return dependency.selectBatchIds(idList);
+    }
+
+    @Override
+    public <P extends IPage<Map<String, Object>>> P selectMapsPage(P page, Wrapper<TaskDefinition> queryWrapper) {
+        return dependency.selectMapsPage(page, queryWrapper);
+    }
+
+    @Override
+    public Long selectCount(Wrapper<TaskDefinition> queryWrapper) {
+        return dependency.selectCount(queryWrapper);
+    }
+
+    @Override
+    public int deleteBatchIds(Collection<?> idList) {
+        return dependency.deleteBatchIds(idList);
+    }
+
+    @Override
+    public List<TaskDefinition> selectByMap(Map<String, Object> columnMap) {
+        return dependency.selectByMap(columnMap);
+    }
+
+    @Override
+    public int deleteByMap(Map<String, Object> columnMap) {
+        return dependency.deleteByMap(columnMap);
+    }
+
+    @Override
     public List<Object> selectObjs(Wrapper<TaskDefinition> queryWrapper) {
         return dependency.selectObjs(queryWrapper);
+    }
+
+    @Override
+    public int deleteById(Serializable id) {
+        return dependency.deleteById(id);
+    }
+
+    @Override
+    public int deleteById(TaskDefinition entity) {
+        return dependency.deleteById(entity);
     }
 
     @Override
@@ -121,48 +161,8 @@ public class TaskDefinitionMapper_EmptyProxy implements TaskDefinitionMapper {
     }
 
     @Override
-    public int deleteById(TaskDefinition entity) {
-        return dependency.deleteById(entity);
-    }
-
-    @Override
-    public int deleteById(Serializable id) {
-        return dependency.deleteById(id);
-    }
-
-    @Override
     public int updateById(TaskDefinition entity) {
         return dependency.updateById(entity);
-    }
-
-    @Override
-    public int deleteBatchIds(Collection<?> idList) {
-        return dependency.deleteBatchIds(idList);
-    }
-
-    @Override
-    public List<TaskDefinition> selectBatchIds(Collection<? extends Serializable> idList) {
-        return dependency.selectBatchIds(idList);
-    }
-
-    @Override
-    public Long selectCount(Wrapper<TaskDefinition> queryWrapper) {
-        return dependency.selectCount(queryWrapper);
-    }
-
-    @Override
-    public List<TaskDefinition> selectByMap(Map<String, Object> columnMap) {
-        return dependency.selectByMap(columnMap);
-    }
-
-    @Override
-    public <P extends IPage<Map<String, Object>>> P selectMapsPage(P page, Wrapper<TaskDefinition> queryWrapper) {
-        return dependency.selectMapsPage(page, queryWrapper);
-    }
-
-    @Override
-    public int deleteByMap(Map<String, Object> columnMap) {
-        return dependency.deleteByMap(columnMap);
     }
 
 }
