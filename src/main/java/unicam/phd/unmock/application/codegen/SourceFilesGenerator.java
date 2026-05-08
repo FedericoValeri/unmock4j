@@ -5,6 +5,7 @@ import org.slf4j.LoggerFactory;
 import unicam.phd.unmock.application.parser.JavaCodeExtractor;
 import unicam.phd.unmock.infrastructure.files.FileWriter;
 
+import java.io.File;
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
@@ -60,7 +61,8 @@ public class SourceFilesGenerator {
         try {
             Path inputPath = Path.of(file).toAbsolutePath();
             log.info("Generating final source files for {}...", inputPath);
-            Path outputDir = inputPath.getParent();
+            //Path outputDir = inputPath.getParent();
+            Path outputDir = Path.of("gen", unitTestPackage.replace('.', File.separatorChar));
 
             String content = Files.readString(
                     inputPath,
