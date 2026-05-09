@@ -24,3 +24,5 @@ org.apache.dolphinscheduler.api.service.impl.WorkflowLineageServiceImpl-9,org.ap
 org.apache.dolphinscheduler.api.service.impl.WorkflowLineageServiceImpl-10,org.apache.dolphinscheduler.api.service.impl.WorkflowLineageServiceImpl,openai,gpt-5.4-mini,7123,3150,10273,0.019517,18.741,2026-05-08 10:40:08
 org.apache.dolphinscheduler.api.service.impl.EnvironmentWorkerGroupRelationServiceImpl-0,org.apache.dolphinscheduler.api.service.impl.EnvironmentWorkerGroupRelationServiceImpl,openai,gpt-5.4-mini,5263,1754,7017,0.011840,13.975,2026-05-08 12:21:19
 org.apache.dolphinscheduler.service.process.ProcessServiceImpl-0,org.apache.dolphinscheduler.service.process.ProcessServiceImpl,openai,gpt-5.4-mini,6369,2286,8655,0.015064,17.409,2026-05-09 16:03:18
+com.alibaba.nacos.client.naming.selector.DefaultNamingSelector-0,com.alibaba.nacos.client.naming.selector.DefaultNamingSelector,openai,gpt-5.4-mini,5437,1904,7341,0.012646,15.946,2026-05-09 16:28:23
+com.alibaba.nacos.client.naming.selector.DefaultNamingSelector-1,com.alibaba.nacos.client.naming.selector.DefaultNamingSelector,openai,gpt-5.4-mini,5437,1904,7341,0.012646,13.653,2026-05-09 16:42:33

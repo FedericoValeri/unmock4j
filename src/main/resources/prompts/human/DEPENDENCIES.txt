@@ -1,56 +1,16 @@
-package org.apache.dolphinscheduler.dao.mapper;
+package com.alibaba.nacos.api.naming.selector;
 
-import org.apache.dolphinscheduler.dao.entity.User;
-import org.apache.dolphinscheduler.dao.entity.UserWithWorkflowDefinitionCode;
+import com.alibaba.nacos.api.naming.pojo.Instance;
 
-import org.apache.ibatis.annotations.Param;
-
-import java.util.Date;
 import java.util.List;
 
-import com.baomidou.mybatisplus.core.mapper.BaseMapper;
-import com.baomidou.mybatisplus.core.metadata.IPage;
-import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
+public interface NamingContext {
 
-public interface UserMapper extends BaseMapper<User> {
+    String getServiceName();
 
-    User selectById(int id);
+    String getGroupName();
 
-    int deleteById(int id);
+    String getClusters();
 
-    int updateById(@Param("et") User user);
-
-    List<User> queryAllGeneralUser();
-
-    User queryByUserNameAccurately(@Param("userName") String userName);
-
-    User queryUserByNamePassword(@Param("userName") String userName, @Param("password") String password);
-
-    IPage<User> queryUserPaging(Page page,
-                                @Param("userName") String userName);
-
-    User queryDetailsById(@Param("userId") int userId);
-
-    List<User> queryUserListByAlertGroupId(@Param("alertgroupId") int alertgroupId);
-
-    List<User> queryUserListByTenant(@Param("tenantId") int tenantId);
-
-    User queryTenantCodeByUserId(@Param("userId") int userId);
-
-    User queryUserByToken(@Param("token") String token, @Param("now") Date now);
-
-    List<User> queryUserListByQueue(@Param("queue") String queueName);
-
-    Boolean existUser(@Param("queue") String queue);
-
-    Integer updateUserQueue(@Param("oldQueue") String oldQueue, @Param("newQueue") String newQueue);
-
-    List<User> selectByIds(@Param("ids") List<Integer> ids);
-
-    List<User> queryAuthedUserListByProjectId(@Param("projectId") int projectId);
-
-    List<User> queryEnabledUsers();
-
-    List<UserWithWorkflowDefinitionCode> queryUserWithWorkflowDefinitionCode(@Param("workflowDefinitionCodes") List<Long> workflowDefinitionCodes);
-
+    List<Instance> getInstances();
 }

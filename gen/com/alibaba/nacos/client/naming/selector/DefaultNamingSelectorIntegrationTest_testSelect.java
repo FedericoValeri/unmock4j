@@ -14,7 +14,7 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
-public class DefaultNamingSelectorTest {
+public class DefaultNamingSelectorIntegrationTest_testSelect {
 
     @Test
     public void testSelect() {
@@ -32,8 +32,9 @@ public class DefaultNamingSelectorTest {
 
     private NamingContext getMockNamingContext(int total, int health) {
         NamingContext namingContext = mock(NamingContext.class);
-        when(namingContext.getInstances()).thenReturn(getInstance(total, health));
-        return namingContext;
+        NamingContext namingContext_proxy = new NamingContext_Proxy(<--NamingContext_REAL_CONFIGURED_INSTANCE-->);
+        namingContext_proxy.getInstances();
+        return namingContext_proxy;
     }
 
     private List<Instance> getInstance(int total, int health) {
