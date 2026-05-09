@@ -14,7 +14,7 @@ with proxies that execute real code and validate results.
 
 Install:
 
-- **Java JDK 26**
+- **Java JDK 21**
 - **Apache Maven 3.9+**
 
 Check installed versions:

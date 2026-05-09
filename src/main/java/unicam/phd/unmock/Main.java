@@ -10,7 +10,7 @@ import unicam.phd.unmock.bootstrap.UnmockApplication;
 public class Main {
     private static final Logger log = LoggerFactory.getLogger(Main.class);
 
-    static void main() {
+    public static void main(String[] args) {
         try {
             printBanner();
             UnmockApplication app = new ApplicationBootstrap().create();
