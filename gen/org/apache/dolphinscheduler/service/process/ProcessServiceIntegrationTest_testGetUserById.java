@@ -42,19 +42,22 @@ import org.mockito.quality.Strictness;
 
 @ExtendWith(MockitoExtension.class)
 @MockitoSettings(strictness = Strictness.LENIENT)
-public class ProcessServiceTest {
+public class ProcessServiceIntegrationTest_testGetUserById {
 
     @InjectMocks
     private ProcessServiceImpl processService;
 
-    @Mock
-    private UserMapper userMapper;
+    private UserMapper userMapper_proxy;
+
+    public ProcessServiceIntegrationTest_testGetUserById(UserMapper userMapper) {
+        this.userMapper_proxy = new UserMapper_Proxy(userMapper);
+    }
 
     @Test
     public void testGetUserById() {
         User user = new User();
         user.setId(123);
-        when(userMapper.selectById(123)).thenReturn(user);
+        userMapper_proxy.selectById(123);
         Assertions.assertEquals(user, processService.getUserById(123));
     }
-    }
+}

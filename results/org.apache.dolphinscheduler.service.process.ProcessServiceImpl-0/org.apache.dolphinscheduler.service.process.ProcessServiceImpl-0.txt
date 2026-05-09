@@ -1,3 +1,4 @@
+---INTEGRATION_TEST_START---
 package org.apache.dolphinscheduler.service.process;
 
 import static org.mockito.ArgumentMatchers.any;
@@ -42,19 +43,49 @@ import org.mockito.quality.Strictness;
 
 @ExtendWith(MockitoExtension.class)
 @MockitoSettings(strictness = Strictness.LENIENT)
-public class ProcessServiceTest {
+public class ProcessServiceIntegrationTest_testGetUserById {
 
     @InjectMocks
     private ProcessServiceImpl processService;
 
-    @Mock
-    private UserMapper userMapper;
+    private UserMapper userMapper_proxy;
+
+    public ProcessServiceIntegrationTest_testGetUserById(UserMapper userMapper) {
+        this.userMapper_proxy = new UserMapper_Proxy(userMapper);
+    }
 
     @Test
     public void testGetUserById() {
         User user = new User();
         user.setId(123);
-        when(userMapper.selectById(123)).thenReturn(user);
+        userMapper_proxy.selectById(123);
         Assertions.assertEquals(user, processService.getUserById(123));
     }
+}
+---INTEGRATION_TEST_END---
+
+---PROXIES_START---
+package org.apache.dolphinscheduler.service.process;
+
+import static org.junit.jupiter.api.Assertions.assertEquals;
+
+import org.apache.dolphinscheduler.dao.entity.User;
+import org.apache.dolphinscheduler.dao.mapper.UserMapper;
+
+public class UserMapper_Proxy extends UserMapper_EmptyProxy {
+
+    private final UserMapper dependency;
+
+    public UserMapper_Proxy(UserMapper dependency) {
+        super(dependency);
+        this.dependency = dependency;
     }
+
+    @Override
+    public User selectById(int id) {
+        User result = dependency.selectById(id);
+        assertEquals(123, result.getId());
+        return result;
+    }
+}
+---PROXIES_END---
