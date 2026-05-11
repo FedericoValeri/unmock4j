@@ -34,12 +34,6 @@ import java.util.concurrent.ConcurrentMap;
 import static com.alibaba.nacos.sys.env.Constants.REQUEST_PATH_SEPARATOR;
 
 
-/**
- * Method cache.
- *
- * @author nkorange
- * @since 1.2.0
- */
 @Component
 public class ControllerMethodsCache {
 
@@ -100,11 +94,6 @@ public class ControllerMethodsCache {
         return matchedInfo;
     }
 
-    /**
-     * find target method from this package.
-     *
-     * @param packageName package name
-     */
     public void initClassMethod(String packageName) {
         DefaultPackageScan packageScan = new DefaultPackageScan();
         Set<Class<Object>> classesList = packageScan.getTypesAnnotatedWith(packageName, RequestMapping.class);
@@ -113,22 +102,12 @@ public class ControllerMethodsCache {
         }
     }
 
-    /**
-     * find target method from class list.
-     *
-     * @param classesList class list
-     */
     public void initClassMethod(Set<Class<?>> classesList) {
         for (Class clazz : classesList) {
             initClassMethod(clazz);
         }
     }
 
-    /**
-     * find target method from target class.
-     *
-     * @param clazz {@link Class}
-     */
     private void initClassMethod(Class<?> clazz) {
         if (scannedClass.contains(clazz)) {
             return;
