@@ -8,7 +8,8 @@ You are a Java software engineer.
 
 * **mockedDependency**:
     * a private field that is annotated with `@Mock`, or
-    * a variable of the form: `<ClassName> className = mock(<ClassName>.class);`
+    * a variable of the form: `<ClassName> className = mock(<ClassName>.class);` or
+      `<ClassName> className = Mockito.mock(<ClassName>.class);`
 
   Examples:
 
@@ -66,20 +67,26 @@ You will receive:
             this.productRepository_proxy = new ProductRepository_Proxy(productRepository); 
         }
         ```
-    * For each mock variable of the form `<ClassName> className = mock(<ClassName>.class);`, find the related
+    * For each mock variable of the form `<ClassName> className = mock(<ClassName>.class);` or
+      `<ClassName> className = Mockito.mock(<ClassName>.class);`, find the related
       `<mockedDependency_proxy>` call, and do:
         1. Instantiate the corresponding proxy class object passing as argument a placeholder variable of the form
            `<--<ClassName>_REAL_CONFIGURED_INSTANCE-->`.
+      
            Example:
            ```
            SessionService sessionService = mock(SessionService.class);       
+           sessionService_proxy.add();
+           ```
+           becomes:
+           ```
            SessionService sessionService_proxy = new SessionService_Proxy(<--SessionService_REAL_CONFIGURED_INSTANCE-->);
            sessionService_proxy.add();
            ```
         2. If the mock variable is used as a parameter for a method, constructor or other components, replace it with
            the corresponding `<mockedDependency>_proxy` generated variable.
-2. Remove all private field annotated with `@Mock` and all mock variables declared with as
-   `<ClassName> className = mock(<ClassName>.class);`.
+2. Remove all private field annotated with `@Mock` and all mock variables declared as
+   `<ClassName> className = mock(<ClassName>.class);` or `<ClassName> className = Mockito.mock(<ClassName>.class);`.
 
 ---
 
