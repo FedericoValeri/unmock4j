@@ -32,3 +32,4 @@ com.alibaba.nacos.client.naming.remote.http.NamingHttpClientManager-1,com.alibab
 com.alibaba.nacos.client.naming.remote.http.NamingHttpClientManager-2,com.alibaba.nacos.client.naming.remote.http.NamingHttpClientManager,openai,gpt-5.4-mini,5397,1690,7087,0.011653,14.313,2026-05-11 11:44:00
 com.alibaba.nacos.client.naming.remote.http.NamingHttpClientManager-3,com.alibaba.nacos.client.naming.remote.http.NamingHttpClientManager,openai,gpt-5.4-mini,5216,1596,6812,0.011094,26.123,2026-05-11 11:53:27
 com.alibaba.nacos.client.naming.remote.http.NamingHttpClientManager-4,com.alibaba.nacos.client.naming.remote.http.NamingHttpClientManager,openai,gpt-5.4-mini,5208,1670,6878,0.011421,14.488,2026-05-11 11:58:15
+com.alibaba.nacos.client.naming.selector.DefaultNamingSelector-2,com.alibaba.nacos.client.naming.selector.DefaultNamingSelector,openai,gpt-5.4-mini,5456,1794,7250,0.012165,15.497,2026-05-11 13:23:33

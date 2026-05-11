@@ -16,23 +16,14 @@ import static org.mockito.Mockito.when;
 
 public class NamingContext_Proxy extends NamingContext_EmptyProxy {
 
-    private final NamingContext dependency;
-    private int methodCounter = 0;
-
     public NamingContext_Proxy(NamingContext dependency) {
         super(dependency);
-        this.dependency = dependency;
     }
 
     @Override
     public List<Instance> getInstances() {
-        methodCounter++;
         List<Instance> result = dependency.getInstances();
         assertNotNull(result);
         return result;
-    }
-
-    public int getInstances_verify() {
-        return methodCounter;
     }
 }

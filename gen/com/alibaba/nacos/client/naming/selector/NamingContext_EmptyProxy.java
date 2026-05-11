@@ -13,8 +13,8 @@ public class NamingContext_EmptyProxy implements NamingContext {
     }
 
     @Override
-    public String getClusters() {
-        return dependency.getClusters();
+    public String getGroupName() {
+        return dependency.getGroupName();
     }
 
     @Override
@@ -23,13 +23,13 @@ public class NamingContext_EmptyProxy implements NamingContext {
     }
 
     @Override
-    public String getServiceName() {
-        return dependency.getServiceName();
+    public String getClusters() {
+        return dependency.getClusters();
     }
 
     @Override
-    public String getGroupName() {
-        return dependency.getGroupName();
+    public String getServiceName() {
+        return dependency.getServiceName();
     }
 
 }
