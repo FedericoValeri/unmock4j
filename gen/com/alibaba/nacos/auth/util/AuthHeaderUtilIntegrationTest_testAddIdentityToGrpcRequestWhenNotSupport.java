@@ -5,7 +5,6 @@ import com.alibaba.nacos.auth.config.NacosAuthConfig;
 import com.alibaba.nacos.common.http.param.Header;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
-import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -16,20 +15,26 @@ import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
-class AuthHeaderUtilTest {
 
-    @Mock
-    private NacosAuthConfig authConfig;
-    
-    @Mock
-    private Request request;
+
+@ExtendWith(MockitoExtension.class)
+class AuthHeaderUtilIntegrationTest_testAddIdentityToGrpcRequestWhenNotSupport {
+
+    private NacosAuthConfig authConfig_proxy;
+
+    private Request request_proxy;
+
+    public AuthHeaderUtilIntegrationTest_testAddIdentityToGrpcRequestWhenNotSupport(NacosAuthConfig authConfig, Request request) {
+        this.authConfig_proxy = new NacosAuthConfig_Proxy(authConfig);
+        this.request_proxy = new Request_Proxy(request);
+    }
 
     @Test
     void testAddIdentityToGrpcRequestWhenNotSupport() {
-        when(authConfig.isSupportServerIdentity()).thenReturn(false);
+        authConfig_proxy.isSupportServerIdentity();
 
-        AuthHeaderUtil.addIdentityToHeader(request, authConfig);
+        AuthHeaderUtil.addIdentityToHeader(request_proxy, authConfig_proxy);
 
-        verify(request, never()).putHeader(anyString(), anyString());
+        assertEquals(0, ((Request_Proxy) request_proxy).putHeader_verify());
     }
 }

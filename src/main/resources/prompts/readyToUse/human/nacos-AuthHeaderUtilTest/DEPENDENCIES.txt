@@ -70,5 +70,4 @@ public abstract class Request implements Payload {
         return this.getClass().getSimpleName() + "{" + "headers=" + headers + ", requestId='"
             + requestId + '\'' + '}';
     }
-
 }
