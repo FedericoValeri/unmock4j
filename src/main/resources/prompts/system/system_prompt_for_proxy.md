@@ -54,16 +54,19 @@ Do:
       non-default constructor of `<DependencyClassName>_EmptyProxy` (i.e., "
       `super(<formal parameter of the current constructor>)`" )
     * overrides only mocked methods in the unit test so that they call real dependency method, store the result, and add
-      an assertion based on the original unit test original stub, like so:
+      an assertion based on the original unit test original stub inside an `if` block that checks for the method args (
+      if any), like so:
       ```
       @Override
       public <returnType> method(args){
             <returnType> result = dependency.method(args);            
-            // Assertion must be placed here
+            if(args){ 
+              // Assertion must be placed here
+            }
             return result;
           }
       ```
-      The assertion must be written based on the value returned by the statement`thenReturn` in the original unit test
+      The assertion must be written based on the value returned by the statement `thenReturn` in the original unit test
       stub, following these rules:
         * `<value>` is a number: `thenReturn(<value>);` becomes `assertEquals(<value>, result);`
         * `<value>` is a string: `thenReturn(<value>);` becomes `assertEquals(<value>, result);`
