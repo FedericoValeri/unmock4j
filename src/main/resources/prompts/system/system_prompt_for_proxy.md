@@ -7,8 +7,9 @@ You are a Java software engineer.
 ## DEFINITIONS
 
 * **mockedDependency**:
-    * any private field that is annotated with `@Mock`, or
-    * any variable of the form: `<ClassName> className = mock(<ClassName>.class);`
+    * a private field that is annotated with `@Mock`, or
+    * a variable of the form: `<ClassName> className = mock(<ClassName>.class);` or
+      `<ClassName> className = Mockito.mock(<ClassName>.class);`
 
   Examples:
 
@@ -47,8 +48,8 @@ For each `<mockedDependency>_proxy` method call in the partially transformed ver
 
 Do:
 
-* Create the concrete class `<DependencyClassName>_Proxy` that extends `<DependencyClassName>_EmptyProxy` assuming
-  `<DependencyClassName>_EmptyProxy` exists, so that:
+* Create the concrete class `<DependencyClassName>_Proxy` that extends a class named `<DependencyClassName>_EmptyProxy`,
+  so that:
     * Declares a non-default constructor that takes the mocked dependency type as a parameter and that only invokes the
       non-default constructor of `<DependencyClassName>_EmptyProxy` (i.e., "
       `super(<formal parameter of the current constructor>)`" )
@@ -75,8 +76,8 @@ For each `<mockedDependency>_proxy.method_verify()` in the partially transformed
 
 Do:
 
-* Create the concrete class `<DependencyClassName>_Proxy` that extends `<DependencyClassName>_EmptyProxy` assuming
-  `<DependencyClassName>_EmptyProxy` exists, so that:
+* Create the concrete class `<DependencyClassName>_Proxy` that extends the class `<DependencyClassName>_EmptyProxy`, so
+  that:
     * Declares a non-default constructor that takes the mocked dependency type as a parameter and that only invokes the
       non-default constructor of `<DependencyClassName>_EmptyProxy` (i.e., "
       `super(<formal parameter of the current constructor>)`" )
@@ -116,6 +117,7 @@ Do:
 * ALWAYS call real dependency inside proxy classes
 * ALWAYS return real result
 * ALWAYS add an assertion in the proxy override methods based on the original unit test stub following the rules
+* The proxy classes must always extend the related `_EmptyProxy` class.
 
 ---
 
