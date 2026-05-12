@@ -1,74 +1,28 @@
-package com.alibaba.nacos.auth.config;
+package org.apache.dolphinscheduler.dao.repository;
 
-public interface NacosAuthConfig {
+import org.apache.dolphinscheduler.dao.entity.WorkFlowRelationDetail;
+import org.apache.dolphinscheduler.dao.entity.WorkflowTaskLineage;
 
-    String getAuthScope();
+import java.util.List;
 
-    boolean isAuthEnabled();
+public interface WorkflowTaskLineageDao extends IDao<WorkflowTaskLineage> {
 
-    String getNacosAuthSystemType();
+    int batchDeleteByWorkflowDefinitionCode(List<Long> workflowDefinitionCodes);
 
-    boolean isSupportServerIdentity();
+    int batchInsert(List<WorkflowTaskLineage> workflowTaskLineages);
 
-    String getServerIdentityKey();
+    List<WorkflowTaskLineage> queryByProjectCode(long projectCode);
 
-    String getServerIdentityValue();
-}
+    List<WorkFlowRelationDetail> queryWorkFlowLineageByCode(long workflowDefinitionCode);
 
-package com.alibaba.nacos.api.remote.request;
+    List<WorkFlowRelationDetail> queryWorkFlowLineageByName(long projectCode,
+                                                            String workflowDefinitionName);
 
-import com.alibaba.nacos.api.remote.Payload;
-import java.util.Map;
-import java.util.TreeMap;
+    List<WorkflowTaskLineage> queryWorkFlowLineageByDept(long deptProjectCode,
+                                                         long deptWorkflowDefinitionCode,
+                                                         long deptTaskDefinitionCode);
 
-public abstract class Request implements Payload {
+    List<WorkflowTaskLineage> queryByWorkflowDefinitionCode(long workflowDefinitionCode);
 
-    private final Map<String, String> headers = new TreeMap<>(String.CASE_INSENSITIVE_ORDER);
-
-    private String requestId;
-
-    public void putHeader(String key, String value) {
-        headers.put(key, value);
-    }
-
-    public void putAllHeader(Map<String, String> headers) {
-        if (headers == null || headers.isEmpty()) {
-            return;
-        }
-        this.headers.putAll(headers);
-    }
-
-    public String getHeader(String key) {
-        return headers.get(key);
-    }
-
-    public String getHeader(String key, String defaultValue) {
-        String value = headers.get(key);
-        return (value == null) ? defaultValue : value;
-    }
-
-    public String getRequestId() {
-        return requestId;
-    }
-
-    public void setRequestId(String requestId) {
-        this.requestId = requestId;
-    }
-
-    public abstract String getModule();
-
-    public Map<String, String> getHeaders() {
-        return headers;
-    }
-
-    public void clearHeaders() {
-        this.headers.clear();
-    }
-
-    @Override
-    public String toString() {
-        return this.getClass().getSimpleName() + "{" + "headers=" + headers + ", requestId='"
-            + requestId + '\'' + '}';
-    }
-
+    int updateWorkflowTaskLineage(List<WorkflowTaskLineage> workflowTaskLineages);
 }

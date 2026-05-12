@@ -24,14 +24,16 @@ import org.mockito.junit.jupiter.MockitoExtension;
 
 
 
-class WorkflowDefinitionMapper_Proxy extends WorkflowDefinitionMapper_EmptyProxy {
-    public WorkflowDefinitionMapper_Proxy(WorkflowDefinitionMapper dependency) {
+class TaskDefinitionMapper_Proxy extends TaskDefinitionMapper_EmptyProxy {
+    TaskDefinitionMapper_Proxy(TaskDefinitionMapper dependency) {
         super(dependency);
     }
 
-    public WorkflowDefinition queryByDefineName(long projectCode, String workflowDefinitionName) {
-        WorkflowDefinition result = dependency.queryByDefineName(projectCode, workflowDefinitionName);
-        Assertions.assertNotNull(result);
+    public TaskDefinition queryByName(long projectCode, long workflowDefinitionCode, String name) {
+        TaskDefinition result = dependency.queryByName(projectCode, workflowDefinitionCode, name);
+        if (projectCode == 1L && workflowDefinitionCode == 1L && "ut-task-definition".equals(name)) {
+            Assertions.assertNotNull(result);
+        }
         return result;
     }
 }

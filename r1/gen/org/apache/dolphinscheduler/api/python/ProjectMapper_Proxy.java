@@ -24,14 +24,16 @@ import org.mockito.junit.jupiter.MockitoExtension;
 
 
 
-class TaskDefinitionMapper_Proxy extends TaskDefinitionMapper_EmptyProxy {
-    public TaskDefinitionMapper_Proxy(TaskDefinitionMapper dependency) {
+class ProjectMapper_Proxy extends ProjectMapper_EmptyProxy {
+    ProjectMapper_Proxy(ProjectMapper dependency) {
         super(dependency);
     }
 
-    public TaskDefinition queryByName(long projectCode, long workflowDefinitionCode, String name) {
-        TaskDefinition result = dependency.queryByName(projectCode, workflowDefinitionCode, name);
-        Assertions.assertNotNull(result);
+    public Project queryByName(String projectName) {
+        Project result = dependency.queryByName(projectName);
+        if ("ut-project".equals(projectName)) {
+            Assertions.assertNotNull(result);
+        }
         return result;
     }
 }

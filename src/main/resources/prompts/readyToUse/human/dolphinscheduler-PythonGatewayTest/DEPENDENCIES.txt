@@ -15,117 +15,36 @@ import com.baomidou.mybatisplus.core.metadata.IPage;
 
 public interface WorkflowDefinitionMapper extends BaseMapper<WorkflowDefinition> {
 
-    /**
-     * query workflow definition by code
-     *
-     * @param code code
-     * @return workflow definition
-     */
     WorkflowDefinition queryByCode(@Param("code") long code);
 
-    /**
-     * update
-     */
     int updateById(@Param("et") WorkflowDefinition workflowDefinition);
 
-    /**
-     * delete workflow definition by code
-     *
-     * @param code code
-     * @return delete result
-     */
     int deleteByCode(@Param("code") long code);
 
-    /**
-     * query workflow definition by code list
-     *
-     * @param codes codes
-     * @return workflow definition list
-     */
     List<WorkflowDefinition> queryByCodes(@Param("codes") Collection<Long> codes);
 
-    /**
-     * verify workflow definition by workflowDefinitionName
-     *
-     * @param projectCode projectCode
-     * @param workflowDefinitionName workflowDefinitionName
-     * @return workflow definition
-     */
     WorkflowDefinition verifyByDefineName(@Param("projectCode") long projectCode,
                                           @Param("workflowDefinitionName") String workflowDefinitionName);
 
-    /**
-     * query workflow definition by workflowDefinitionName
-     *
-     * @param projectCode projectCode
-     * @param workflowDefinitionName workflowDefinitionName
-     * @return workflow definition
-     */
     WorkflowDefinition queryByDefineName(@Param("projectCode") long projectCode,
                                          @Param("workflowDefinitionName") String workflowDefinitionName);
 
-    /**
-     * query workflow definition by id
-     *
-     * @param workflowDefinitionId workflowDefinitionId
-     * @return workflow definition
-     */
     WorkflowDefinition queryByDefineId(@Param("workflowDefinitionId") int workflowDefinitionId);
 
-    /**
-     * workflow definition page
-     *
-     * @param page page
-     * @param searchVal searchVal
-     * @param userId userId
-     * @param projectCode projectCode
-     * @return workflow definition IPage
-     */
     IPage<WorkflowDefinition> queryDefineListPaging(IPage<WorkflowDefinition> page,
                                                     @Param("searchVal") String searchVal,
                                                     @Param("userId") int userId,
                                                     @Param("projectCode") long projectCode);
 
-    /**
-     * query all workflow definition list
-     *
-     * @param projectCode projectCode
-     * @return workflow definition list
-     */
     List<WorkflowDefinition> queryAllDefinitionList(@Param("projectCode") long projectCode);
 
-    /**
-     * query workflow definition list
-     *
-     * @param projectCode projectCode
-     * @return workflow definition list
-     */
     List<DependentSimplifyDefinition> queryDefinitionListByProjectCodeAndWorkflowDefinitionCodes(@Param("projectCode") long projectCode,
                                                                                                  @Param("codes") Collection<Long> codes);
 
-    /**
-     * query workflow definition by ids
-     *
-     * @param ids ids
-     * @return workflow definition list
-     */
     List<WorkflowDefinition> queryDefinitionListByIdList(@Param("ids") Integer[] ids);
 
-    /**
-     * Statistics workflow definition group by project codes list
-     * <p>
-     * We only need project codes to determine whether the definition belongs to the user or not.
-     *
-     * @param projectCodes projectCodes
-     * @return definition group by user
-     */
     List<WorkflowDefinitionCountDto> countDefinitionByProjectCodes(@Param("projectCodes") Collection<Long> projectCodes);
 
-    /**
-     * list all project ids
-     *
-     * @return project ids list
-     */
     List<Integer> listProjectIds();
 
     List<Long> queryDefinitionCodeListByProjectCodes(@Param("projectCodes") List<Long> projectCodes);
@@ -148,72 +67,22 @@ import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 
 public interface TaskDefinitionMapper extends BaseMapper<TaskDefinition> {
 
-    /**
-     * query task definition by name
-     *
-     * @param projectCode projectCode
-     * @param workflowDefinitionCode workflowDefinitionCode
-     * @param name name
-     * @return task definition
-     */
     TaskDefinition queryByName(@Param("projectCode") long projectCode,
                                @Param("workflowDefinitionCode") long workflowDefinitionCode,
                                @Param("name") String name);
 
-    /**
-     * query task definition by code
-     *
-     * @param code taskDefinitionCode
-     * @return task definition
-     */
     TaskDefinition queryByCode(@Param("code") long code);
 
-    /**
-     * query all task definition list
-     *
-     * @param projectCode projectCode
-     * @return task definition list
-     */
     List<String> queryAllTaskDefinitionWorkerGroups(@Param("projectCode") long projectCode);
 
-    /**
-     * count task definition group by user
-     *
-     * @param projectCodes projectCodes
-     * @return task definition list
-     */
     List<WorkflowDefinitionCountDto> countDefinitionGroupByUser(@Param("projectCodes") Long[] projectCodes);
 
-    /**
-     * delete task definition by code
-     *
-     * @param code code
-     * @return int
-     */
     int deleteByCode(@Param("code") long code);
 
-    /**
-     * batch insert task definitions
-     *
-     * @param taskDefinitions taskDefinitions
-     * @return int
-     */
     int batchInsert(@Param("taskDefinitions") List<TaskDefinitionLog> taskDefinitions);
 
-    /**
-     * query task definition by code list
-     *
-     * @param codes taskDefinitionCode list
-     * @return task definition list
-     */
     List<TaskDefinition> queryByCodeList(@Param("codes") Collection<Long> codes);
 
-    /**
-     * batch delete task by task code
-     *
-     * @param taskCodeList task code list
-     * @return deleted row count
-     */
     int deleteByBatchCodes(@Param("taskCodeList") List<Long> taskCodeList);
 
     void deleteByWorkflowDefinitionCodeAndVersion(long workflowDefinitionCode, int workflowDefinitionVersion);
@@ -236,107 +105,34 @@ import com.baomidou.mybatisplus.core.metadata.IPage;
 
 public interface ProjectMapper extends BaseMapper<Project> {
 
-    /**
-     * query project detail by code
-     * @param projectCode projectCode
-     * @return project
-     */
     Project queryByCode(@Param("projectCode") long projectCode);
 
-    /**
-     * query project detail by code list
-     * @param codes codes
-     * @return project list
-     */
     List<Project> queryByCodes(@Param("codes") Collection<Long> codes);
 
-    /**
-     * TODO: delete
-     * query project detail by id
-     * @param projectId projectId
-     * @return project
-     */
     Project queryDetailById(@Param("projectId") int projectId);
 
-    /**
-     * query project by name
-     * @param projectName projectName
-     * @return project
-     */
     Project queryByName(@Param("projectName") String projectName);
 
-    /**
-     * project page
-     * @param page page
-     * @param projectsIds projectsIds
-     * @param searchName searchName
-     * @return project Ipage
-     */
     IPage<Project> queryProjectListPaging(IPage<Project> page,
                                           @Param("projectsIds") List<Integer> projectsIds,
                                           @Param("searchName") String searchName);
 
-    /**
-     *  query create project user
-     * @param userId userId
-     * @return project list
-     */
     List<Project> queryProjectCreatedByUser(@Param("userId") int userId);
 
-    /**
-     * query authed project list by userId
-     * @param userId userId
-     * @return project list
-     */
     List<Project> queryAuthedProjectListByUserId(@Param("userId") int userId);
 
-    /**
-     * query project except userId
-     * @param userId userId
-     * @return project list
-     */
     List<Project> queryProjectExceptUserId(@Param("userId") int userId);
 
-    /**
-     * query project list by userId
-     * @param userId
-     * @return
-     */
     List<Project> queryProjectCreatedAndAuthorizedByUserId(@Param("userId") int userId);
 
-    /**
-     * query project name and user name by workflowInstanceId.
-     * @param workflowInstanceId workflowInstanceId
-     * @return projectName and userName
-     */
     ProjectUser queryProjectWithUserByWorkflowInstanceId(@Param("workflowInstanceId") int workflowInstanceId);
 
-    /**
-     * query all project
-     * @param userId
-     * @return projectList
-     */
     List<Project> queryAllProject(@Param("userId") int userId);
 
-    /**
-     * list authorized Projects
-     * @param userId
-     * @param projectsIds
-     * @return
-     */
     List<Project> listAuthorizedProjects(@Param("userId") int userId, @Param("projectsIds") List<Integer> projectsIds);
 
-    /**
-     * query all project for dependent node
-     * @return projectList
-     */
     List<Project> queryAllProjectForDependent();
 
-    /**
-     * query the project by task instance id
-     * @param taskInstanceId
-     * @return project
-     */
     Project queryProjectByTaskInstanceId(@Param("taskInstanceId") int taskInstanceId);
 
 }
