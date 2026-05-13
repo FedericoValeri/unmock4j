@@ -24,18 +24,14 @@ import static org.mockito.Mockito.verify;
 class HttpClientRequest_Proxy extends HttpClientRequest_EmptyProxy {
     private int closeCounter = 0;
 
-    public HttpClientRequest_Proxy(HttpClientRequest dependency) {
+    HttpClientRequest_Proxy(HttpClientRequest dependency) {
         super(dependency);
     }
 
     @Override
     public void close() throws IOException {
         closeCounter++;
-        try {
-            dependency.close();
-        } catch (IOException e) {
-            throw e;
-        }
+        dependency.close();
     }
 
     public int close_verify() {

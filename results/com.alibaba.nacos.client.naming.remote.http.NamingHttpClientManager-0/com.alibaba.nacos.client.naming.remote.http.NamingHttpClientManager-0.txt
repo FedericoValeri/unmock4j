@@ -17,13 +17,12 @@ class NamingHttpClientManagerIntegrationTest_testShutdown {
  void testShutdown() throws NoSuchFieldException, IllegalAccessException, NacosException, IOException {
         NamingHttpClientManager instance = NamingHttpClientManager.getInstance();
 
-        HttpClientRequest mockHttpClientRequest = mock(HttpClientRequest.class);
-        HttpClientRequest mockHttpClientRequest_proxy = new HttpClientRequest_Proxy(<--HttpClientRequest_REAL_CONFIGURED_INSTANCE-->);
+        HttpClientRequest mockHttpClientRequest = new HttpClientRequest_Proxy(<--HttpClientRequest_REAL_CONFIGURED_INSTANCE-->);
         Field requestClient = NacosRestTemplate.class.getDeclaredField("requestClient");
         requestClient.setAccessible(true);
-        requestClient.set(instance.getNacosRestTemplate(), mockHttpClientRequest_proxy);
+        requestClient.set(instance.getNacosRestTemplate(), mockHttpClientRequest);
         NamingHttpClientManager.getInstance().shutdown();
-        assertEquals(1, mockHttpClientRequest_proxy.close_verify());
+        assertEquals(1, ((HttpClientRequest_Proxy) mockHttpClientRequest).close_verify());
     }
     }
 ---INTEGRATION_TEST_END---
@@ -50,10 +49,28 @@ import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 
+class HttpClientRequest_EmptyProxy implements HttpClientRequest {
+    protected final HttpClientRequest dependency;
+
+    HttpClientRequest_EmptyProxy(HttpClientRequest dependency) {
+        this.dependency = dependency;
+    }
+
+    @Override
+    public void close() throws IOException {
+        dependency.close();
+    }
+
+    @Override
+    public com.alibaba.nacos.common.http.client.response.HttpClientResponse execute(java.net.URI uri, String httpMethod, com.alibaba.nacos.common.model.RequestHttpEntity requestHttpEntity) throws Exception {
+        return dependency.execute(uri, httpMethod, requestHttpEntity);
+    }
+}
+
 class HttpClientRequest_Proxy extends HttpClientRequest_EmptyProxy {
     private int closeCounter = 0;
 
-    public HttpClientRequest_Proxy(HttpClientRequest dependency) {
+    HttpClientRequest_Proxy(HttpClientRequest dependency) {
         super(dependency);
     }
 
