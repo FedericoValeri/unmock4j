@@ -21,8 +21,33 @@ public class UserMapper_EmptyProxy implements UserMapper {
     }
 
     @Override
-    public List<User> queryAuthedUserListByProjectId(int arg0) {
-        return dependency.queryAuthedUserListByProjectId(arg0);
+    public List<User> queryUserListByTenant(int arg0) {
+        return dependency.queryUserListByTenant(arg0);
+    }
+
+    @Override
+    public User queryUserByNamePassword(String arg0, String arg1) {
+        return dependency.queryUserByNamePassword(arg0, arg1);
+    }
+
+    @Override
+    public User queryByUserNameAccurately(String arg0) {
+        return dependency.queryByUserNameAccurately(arg0);
+    }
+
+    @Override
+    public User queryTenantCodeByUserId(int arg0) {
+        return dependency.queryTenantCodeByUserId(arg0);
+    }
+
+    @Override
+    public List<User> queryAllGeneralUser() {
+        return dependency.queryAllGeneralUser();
+    }
+
+    @Override
+    public List<User> queryUserListByQueue(String arg0) {
+        return dependency.queryUserListByQueue(arg0);
     }
 
     @Override
@@ -31,8 +56,18 @@ public class UserMapper_EmptyProxy implements UserMapper {
     }
 
     @Override
+    public List<User> queryAuthedUserListByProjectId(int arg0) {
+        return dependency.queryAuthedUserListByProjectId(arg0);
+    }
+
+    @Override
     public User selectById(int arg0) {
         return dependency.selectById(arg0);
+    }
+
+    @Override
+    public int deleteById(int arg0) {
+        return dependency.deleteById(arg0);
     }
 
     @Override
@@ -46,48 +81,8 @@ public class UserMapper_EmptyProxy implements UserMapper {
     }
 
     @Override
-    public int deleteById(int arg0) {
-        return dependency.deleteById(arg0);
-    }
-
-    @Override
-    public List<User> queryAllGeneralUser() {
-        return dependency.queryAllGeneralUser();
-    }
-
-    @Override
-    public User queryTenantCodeByUserId(int arg0) {
-        return dependency.queryTenantCodeByUserId(arg0);
-    }
-
-    @Override
-    public User queryByUserNameAccurately(String arg0) {
-        return dependency.queryByUserNameAccurately(arg0);
-    }
-
-    @Override
-    public List<User> queryUserListByTenant(int arg0) {
-        return dependency.queryUserListByTenant(arg0);
-    }
-
-    @Override
-    public List<User> queryUserListByQueue(String arg0) {
-        return dependency.queryUserListByQueue(arg0);
-    }
-
-    @Override
-    public User queryUserByNamePassword(String arg0, String arg1) {
-        return dependency.queryUserByNamePassword(arg0, arg1);
-    }
-
-    @Override
-    public List<UserWithWorkflowDefinitionCode> queryUserWithWorkflowDefinitionCode(List<Long> arg0) {
-        return dependency.queryUserWithWorkflowDefinitionCode(arg0);
-    }
-
-    @Override
-    public User queryDetailsById(int arg0) {
-        return dependency.queryDetailsById(arg0);
+    public Integer updateUserQueue(String arg0, String arg1) {
+        return dependency.updateUserQueue(arg0, arg1);
     }
 
     @Override
@@ -96,8 +91,8 @@ public class UserMapper_EmptyProxy implements UserMapper {
     }
 
     @Override
-    public IPage<User> queryUserPaging(Page arg0, String arg1) {
-        return dependency.queryUserPaging(arg0, arg1);
+    public User queryDetailsById(int arg0) {
+        return dependency.queryDetailsById(arg0);
     }
 
     @Override
@@ -106,13 +101,18 @@ public class UserMapper_EmptyProxy implements UserMapper {
     }
 
     @Override
+    public IPage<User> queryUserPaging(Page arg0, String arg1) {
+        return dependency.queryUserPaging(arg0, arg1);
+    }
+
+    @Override
     public User queryUserByToken(String arg0, Date arg1) {
         return dependency.queryUserByToken(arg0, arg1);
     }
 
     @Override
-    public Integer updateUserQueue(String arg0, String arg1) {
-        return dependency.updateUserQueue(arg0, arg1);
+    public List<UserWithWorkflowDefinitionCode> queryUserWithWorkflowDefinitionCode(List<Long> arg0) {
+        return dependency.queryUserWithWorkflowDefinitionCode(arg0);
     }
 
     @Override
@@ -136,18 +136,13 @@ public class UserMapper_EmptyProxy implements UserMapper {
     }
 
     @Override
-    public int deleteById(Serializable id) {
-        return dependency.deleteById(id);
-    }
-
-    @Override
     public int deleteById(User entity) {
         return dependency.deleteById(entity);
     }
 
     @Override
-    public List<User> selectList(Wrapper<User> queryWrapper) {
-        return dependency.selectList(queryWrapper);
+    public int deleteById(Serializable id) {
+        return dependency.deleteById(id);
     }
 
     @Override
@@ -166,8 +161,8 @@ public class UserMapper_EmptyProxy implements UserMapper {
     }
 
     @Override
-    public int deleteBatchIds(Collection<?> idList) {
-        return dependency.deleteBatchIds(idList);
+    public List<User> selectList(Wrapper<User> queryWrapper) {
+        return dependency.selectList(queryWrapper);
     }
 
     @Override
@@ -176,8 +171,8 @@ public class UserMapper_EmptyProxy implements UserMapper {
     }
 
     @Override
-    public <P extends IPage<Map<String, Object>>> P selectMapsPage(P page, Wrapper<User> queryWrapper) {
-        return dependency.selectMapsPage(page, queryWrapper);
+    public Long selectCount(Wrapper<User> queryWrapper) {
+        return dependency.selectCount(queryWrapper);
     }
 
     @Override
@@ -186,13 +181,18 @@ public class UserMapper_EmptyProxy implements UserMapper {
     }
 
     @Override
-    public List<User> selectBatchIds(Collection<? extends Serializable> idList) {
-        return dependency.selectBatchIds(idList);
+    public int deleteBatchIds(Collection<?> idList) {
+        return dependency.deleteBatchIds(idList);
     }
 
     @Override
-    public Long selectCount(Wrapper<User> queryWrapper) {
-        return dependency.selectCount(queryWrapper);
+    public <P extends IPage<Map<String, Object>>> P selectMapsPage(P page, Wrapper<User> queryWrapper) {
+        return dependency.selectMapsPage(page, queryWrapper);
+    }
+
+    @Override
+    public List<User> selectBatchIds(Collection<? extends Serializable> idList) {
+        return dependency.selectBatchIds(idList);
     }
 
 }

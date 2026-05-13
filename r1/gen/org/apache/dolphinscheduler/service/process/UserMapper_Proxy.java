@@ -1,7 +1,6 @@
 package org.apache.dolphinscheduler.service.process;
 
-import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.Mockito.when;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 import org.apache.dolphinscheduler.common.enums.UserType;
 import org.apache.dolphinscheduler.common.graph.DAG;
@@ -9,6 +8,7 @@ import org.apache.dolphinscheduler.common.model.TaskNodeRelation;
 import org.apache.dolphinscheduler.common.utils.JSONUtils;
 import org.apache.dolphinscheduler.dao.entity.TaskDefinitionLog;
 import org.apache.dolphinscheduler.dao.entity.User;
+import org.apache.dolphinscheduler.dao.entity.UserWithWorkflowDefinitionCode;
 import org.apache.dolphinscheduler.dao.entity.WorkflowDefinition;
 import org.apache.dolphinscheduler.dao.entity.WorkflowDefinitionLog;
 import org.apache.dolphinscheduler.dao.entity.WorkflowTaskRelationLog;
@@ -30,31 +30,19 @@ import java.util.Collections;
 import java.util.Date;
 import java.util.List;
 
-import org.junit.jupiter.api.Assertions;
-import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.extension.ExtendWith;
-import org.mockito.InjectMocks;
-import org.mockito.Mock;
-import org.mockito.Mockito;
-import org.mockito.junit.jupiter.MockitoExtension;
-import org.mockito.junit.jupiter.MockitoSettings;
-import org.mockito.quality.Strictness;
+public 
 
-@ExtendWith(MockitoExtension.class)
-@MockitoSettings(strictness = Strictness.LENIENT)
-public class ProcessServiceTest {
-
-    @InjectMocks
-    private ProcessServiceImpl processService;
-
-    @Mock
-    private UserMapper userMapper;
-
-    @Test
-    public void testGetUserById() {
-        User user = new User();
-        user.setId(123);
-        when(userMapper.selectById(123)).thenReturn(user);
-        Assertions.assertEquals(user, processService.getUserById(123));
+class UserMapper_Proxy extends UserMapper_EmptyProxy {
+    public UserMapper_Proxy(UserMapper dependency) {
+        super(dependency);
     }
+
+    @Override
+    public User selectById(int id) {
+        User result = dependency.selectById(id);
+        if (id == 123) {
+            assertEquals(123, result.getId());
+        }
+        return result;
     }
+}
