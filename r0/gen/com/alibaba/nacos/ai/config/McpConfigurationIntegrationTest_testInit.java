@@ -1,4 +1,3 @@
----INTEGRATION_TEST_START---
 package com.alibaba.nacos.ai.config;
 
 import com.alibaba.nacos.core.code.ControllerMethodsCache;
@@ -8,6 +7,9 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
 import static org.mockito.Mockito.verify;
+
+@ExtendWith(MockitoExtension.class)
+
 
 @ExtendWith(MockitoExtension.class)
 class McpConfigurationIntegrationTest_testInit {
@@ -25,35 +27,3 @@ class McpConfigurationIntegrationTest_testInit {
         assertEquals(1, ((ControllerMethodsCache_Proxy) methodsCache_proxy).initClassMethod_verify());
     }
 }
----INTEGRATION_TEST_END---
-
----PROXIES_START---
-package com.alibaba.nacos.ai.config;
-
-import com.alibaba.nacos.core.code.ControllerMethodsCache;
-import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.extension.ExtendWith;
-import org.mockito.Mock;
-import org.mockito.junit.jupiter.MockitoExtension;
-
-import static org.mockito.Mockito.verify;
-
-class ControllerMethodsCache_Proxy extends ControllerMethodsCache_EmptyProxy {
-
-    private int initClassMethodCounter = 0;
-
-    public ControllerMethodsCache_Proxy(ControllerMethodsCache dependency) {
-        super(dependency);
-    }
-
-    @Override
-    public void initClassMethod(String packageName) {
-        initClassMethodCounter++;
-        dependency.initClassMethod(packageName);
-    }
-
-    public int initClassMethod_verify() {
-        return initClassMethodCounter;
-    }
-}
----PROXIES_END---

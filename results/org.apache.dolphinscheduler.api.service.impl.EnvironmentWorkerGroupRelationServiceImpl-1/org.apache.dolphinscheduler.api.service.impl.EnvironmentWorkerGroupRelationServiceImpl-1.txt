@@ -1,0 +1,184 @@
+---INTEGRATION_TEST_START---
+package org.apache.dolphinscheduler.api.service;
+
+import org.apache.dolphinscheduler.api.enums.Status;
+import org.apache.dolphinscheduler.api.service.impl.EnvironmentWorkerGroupRelationServiceImpl;
+import org.apache.dolphinscheduler.common.constants.Constants;
+import org.apache.dolphinscheduler.dao.entity.EnvironmentWorkerGroupRelation;
+import org.apache.dolphinscheduler.dao.mapper.EnvironmentWorkerGroupRelationMapper;
+
+import java.util.Map;
+
+import org.assertj.core.util.Lists;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.InjectMocks;
+import org.mockito.junit.jupiter.MockitoExtension;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+/**
+ * environment service test
+ */
+@ExtendWith(MockitoExtension.class)
+public class EnvironmentWorkerGroupRelationServiceIntegrationTest_testQueryEnvironmentWorkerGroupRelation {
+
+    public static final Logger logger = LoggerFactory.getLogger(EnvironmentWorkerGroupRelationServiceIntegrationTest_testQueryEnvironmentWorkerGroupRelation.class);
+
+    @InjectMocks
+    private EnvironmentWorkerGroupRelationServiceImpl relationService;
+
+    private EnvironmentWorkerGroupRelationMapper relationMapper_proxy;
+
+    public EnvironmentWorkerGroupRelationServiceIntegrationTest_testQueryEnvironmentWorkerGroupRelation(EnvironmentWorkerGroupRelationMapper relationMapper) {
+        this.relationMapper_proxy = new EnvironmentWorkerGroupRelationMapper_Proxy(relationMapper);
+    }
+
+    @Test
+    public void testQueryEnvironmentWorkerGroupRelation() {
+        relationMapper_proxy.queryByEnvironmentCode(1L);
+        Map<String, Object> result = relationService.queryEnvironmentWorkerGroupRelation(1L);
+        logger.info(result.toString());
+        Assertions.assertEquals(Status.SUCCESS, result.get(Constants.STATUS));
+    }
+}
+---INTEGRATION_TEST_END---
+
+---PROXIES_START---
+package org.apache.dolphinscheduler.api.service;
+
+import org.apache.dolphinscheduler.dao.entity.EnvironmentWorkerGroupRelation;
+import org.apache.dolphinscheduler.dao.mapper.EnvironmentWorkerGroupRelationMapper;
+
+import java.util.List;
+
+import org.assertj.core.util.Lists;
+import org.junit.jupiter.api.Assertions;
+import org.mockito.Mockito;
+
+public class EnvironmentWorkerGroupRelationMapper_EmptyProxy implements EnvironmentWorkerGroupRelationMapper {
+
+    protected final EnvironmentWorkerGroupRelationMapper dependency;
+
+    public EnvironmentWorkerGroupRelationMapper_EmptyProxy(EnvironmentWorkerGroupRelationMapper dependency) {
+        this.dependency = dependency;
+    }
+
+    @Override
+    public List<EnvironmentWorkerGroupRelation> queryByEnvironmentCode(Long environmentCode) {
+        return dependency.queryByEnvironmentCode(environmentCode);
+    }
+
+    @Override
+    public List<EnvironmentWorkerGroupRelation> queryByWorkerGroupName(String workerGroupName) {
+        return dependency.queryByWorkerGroupName(workerGroupName);
+    }
+
+    @Override
+    public int deleteByCode(Long environmentCode, String workerGroupName) {
+        return dependency.deleteByCode(environmentCode, workerGroupName);
+    }
+
+    @Override
+    public <E> E selectById(java.io.Serializable id) {
+        return dependency.selectById(id);
+    }
+
+    @Override
+    public <E> java.util.List<E> selectBatchIds(java.util.Collection<java.io.Serializable> idList) {
+        return dependency.selectBatchIds(idList);
+    }
+
+    @Override
+    public <E> java.util.List<E> selectByMap(java.util.Map<String, Object> columnMap) {
+        return dependency.selectByMap(columnMap);
+    }
+
+    @Override
+    public <E> E selectOne(com.baomidou.mybatisplus.core.conditions.Wrapper<E> queryWrapper) {
+        return dependency.selectOne(queryWrapper);
+    }
+
+    @Override
+    public int selectCount(com.baomidou.mybatisplus.core.conditions.Wrapper<EnvironmentWorkerGroupRelation> queryWrapper) {
+        return dependency.selectCount(queryWrapper);
+    }
+
+    @Override
+    public java.util.List<EnvironmentWorkerGroupRelation> selectList(com.baomidou.mybatisplus.core.conditions.Wrapper<EnvironmentWorkerGroupRelation> queryWrapper) {
+        return dependency.selectList(queryWrapper);
+    }
+
+    @Override
+    public java.util.List<java.util.Map<String, Object>> selectMaps(com.baomidou.mybatisplus.core.conditions.Wrapper<EnvironmentWorkerGroupRelation> queryWrapper) {
+        return dependency.selectMaps(queryWrapper);
+    }
+
+    @Override
+    public java.util.List<java.lang.Object> selectObjs(com.baomidou.mybatisplus.core.conditions.Wrapper<EnvironmentWorkerGroupRelation> queryWrapper) {
+        return dependency.selectObjs(queryWrapper);
+    }
+
+    @Override
+    public int insert(EnvironmentWorkerGroupRelation entity) {
+        return dependency.insert(entity);
+    }
+
+    @Override
+    public int deleteById(java.io.Serializable id) {
+        return dependency.deleteById(id);
+    }
+
+    @Override
+    public int deleteById(EnvironmentWorkerGroupRelation entity) {
+        return dependency.deleteById(entity);
+    }
+
+    @Override
+    public int deleteByMap(java.util.Map<String, Object> columnMap) {
+        return dependency.deleteByMap(columnMap);
+    }
+
+    @Override
+    public int delete(com.baomidou.mybatisplus.core.conditions.Wrapper<EnvironmentWorkerGroupRelation> queryWrapper) {
+        return dependency.delete(queryWrapper);
+    }
+
+    @Override
+    public int deleteBatchIds(java.util.Collection<?> idList) {
+        return dependency.deleteBatchIds(idList);
+    }
+
+    @Override
+    public int updateById(EnvironmentWorkerGroupRelation entity) {
+        return dependency.updateById(entity);
+    }
+
+    @Override
+    public int update(EnvironmentWorkerGroupRelation entity, com.baomidou.mybatisplus.core.conditions.Wrapper<EnvironmentWorkerGroupRelation> updateWrapper) {
+        return dependency.update(entity, updateWrapper);
+    }
+
+    @Override
+    public EnvironmentWorkerGroupRelation selectById(java.lang.Long id) {
+        return dependency.selectById(id);
+    }
+}
+
+public class EnvironmentWorkerGroupRelationMapper_Proxy extends EnvironmentWorkerGroupRelationMapper_EmptyProxy {
+
+    public EnvironmentWorkerGroupRelationMapper_Proxy(EnvironmentWorkerGroupRelationMapper dependency) {
+        super(dependency);
+    }
+
+    @Override
+    public List<EnvironmentWorkerGroupRelation> queryByEnvironmentCode(Long environmentCode) {
+        List<EnvironmentWorkerGroupRelation> result = dependency.queryByEnvironmentCode(environmentCode);
+        if (environmentCode != null && environmentCode.equals(1L)) {
+            Assertions.assertNotNull(result);
+        }
+        return result;
+    }
+}
+---PROXIES_END---

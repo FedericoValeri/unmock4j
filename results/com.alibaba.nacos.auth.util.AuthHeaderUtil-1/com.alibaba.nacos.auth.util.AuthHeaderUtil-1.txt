@@ -6,6 +6,7 @@ import com.alibaba.nacos.auth.config.NacosAuthConfig;
 import com.alibaba.nacos.common.http.param.Header;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -19,7 +20,7 @@ import static org.mockito.Mockito.when;
 class AuthHeaderUtilIntegrationTest_testAddIdentityToGrpcRequestWhenNotSupport {
 
     private NacosAuthConfig authConfig_proxy;
-
+    
     private Request request_proxy;
 
     public AuthHeaderUtilIntegrationTest_testAddIdentityToGrpcRequestWhenNotSupport(NacosAuthConfig authConfig, Request request) {
@@ -59,7 +60,7 @@ import static org.mockito.Mockito.when;
 class NacosAuthConfig_EmptyProxy implements NacosAuthConfig {
     protected final NacosAuthConfig dependency;
 
-    NacosAuthConfig_EmptyProxy(NacosAuthConfig dependency) {
+    public NacosAuthConfig_EmptyProxy(NacosAuthConfig dependency) {
         this.dependency = dependency;
     }
 
@@ -95,7 +96,7 @@ class NacosAuthConfig_EmptyProxy implements NacosAuthConfig {
 }
 
 class NacosAuthConfig_Proxy extends NacosAuthConfig_EmptyProxy {
-    NacosAuthConfig_Proxy(NacosAuthConfig dependency) {
+    public NacosAuthConfig_Proxy(NacosAuthConfig dependency) {
         super(dependency);
     }
 
@@ -110,7 +111,7 @@ class NacosAuthConfig_Proxy extends NacosAuthConfig_EmptyProxy {
 class Request_EmptyProxy extends Request {
     protected final Request dependency;
 
-    Request_EmptyProxy(Request dependency) {
+    public Request_EmptyProxy(Request dependency) {
         this.dependency = dependency;
     }
 
@@ -163,7 +164,7 @@ class Request_EmptyProxy extends Request {
 class Request_Proxy extends Request_EmptyProxy {
     private int putHeaderCounter = 0;
 
-    Request_Proxy(Request dependency) {
+    public Request_Proxy(Request dependency) {
         super(dependency);
     }
 

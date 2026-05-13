@@ -2,37 +2,27 @@
 package com.alibaba.nacos.client.naming.remote.http;
 
 import com.alibaba.nacos.api.exception.NacosException;
-import com.alibaba.nacos.common.http.HttpClientBeanHolder;
 import com.alibaba.nacos.common.http.client.NacosRestTemplate;
 import com.alibaba.nacos.common.http.client.request.HttpClientRequest;
 import org.junit.jupiter.api.Test;
-import org.mockito.Mockito;
 
 import java.io.IOException;
 import java.lang.reflect.Field;
-import java.util.Map;
 
-import static com.alibaba.nacos.common.constant.RequestUrlConstants.HTTP_PREFIX;
 import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertNotNull;
-import static org.mockito.Mockito.doThrow;
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.times;
-import static org.mockito.Mockito.verify;
 
 class NamingHttpClientManagerIntegrationTest_testShutdown {
 
 @Test
-    void testShutdown() throws NoSuchFieldException, IllegalAccessException, NacosException, IOException {
+ void testShutdown() throws NoSuchFieldException, IllegalAccessException, NacosException, IOException {
         NamingHttpClientManager instance = NamingHttpClientManager.getInstance();
 
-        HttpClientRequest mockHttpClientRequest = Mockito.mock(HttpClientRequest.class);
-        HttpClientRequest mockHttpClientRequest_proxy = new HttpClientRequest_Proxy(<--HttpClientRequest_REAL_CONFIGURED_INSTANCE-->);
+        HttpClientRequest mockHttpClientRequest = new HttpClientRequest_Proxy(<--HttpClientRequest_REAL_CONFIGURED_INSTANCE-->);
         Field requestClient = NacosRestTemplate.class.getDeclaredField("requestClient");
         requestClient.setAccessible(true);
-        requestClient.set(instance.getNacosRestTemplate(), mockHttpClientRequest_proxy);
+        requestClient.set(instance.getNacosRestTemplate(), mockHttpClientRequest);
         NamingHttpClientManager.getInstance().shutdown();
-        assertEquals(1, ((HttpClientRequest_Proxy) mockHttpClientRequest_proxy).close_verify());
+        assertEquals(1, ((HttpClientRequest_Proxy) mockHttpClientRequest).close_verify());
     }
     }
 ---INTEGRATION_TEST_END---
@@ -59,21 +49,35 @@ import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 
+class HttpClientRequest_EmptyProxy implements HttpClientRequest {
+    protected final HttpClientRequest dependency;
+
+    HttpClientRequest_EmptyProxy(HttpClientRequest dependency) {
+        this.dependency = dependency;
+    }
+
+    @Override
+    public void close() throws IOException {
+        dependency.close();
+    }
+
+    @Override
+    public com.alibaba.nacos.common.http.client.response.HttpClientResponse execute(java.net.URI uri, String httpMethod, com.alibaba.nacos.common.model.RequestHttpEntity requestHttpEntity) throws Exception {
+        return dependency.execute(uri, httpMethod, requestHttpEntity);
+    }
+}
+
 class HttpClientRequest_Proxy extends HttpClientRequest_EmptyProxy {
     private int closeCounter = 0;
 
-    public HttpClientRequest_Proxy(HttpClientRequest dependency) {
+    HttpClientRequest_Proxy(HttpClientRequest dependency) {
         super(dependency);
     }
 
     @Override
     public void close() throws IOException {
         closeCounter++;
-        try {
-            dependency.close();
-        } catch (IOException e) {
-            throw e;
-        }
+        dependency.close();
     }
 
     public int close_verify() {

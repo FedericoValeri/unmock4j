@@ -32,8 +32,6 @@ import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
-import org.mockito.Mock;
-import org.mockito.Mockito;
 import org.mockito.junit.jupiter.MockitoExtension;
 
 @ExtendWith(MockitoExtension.class)
@@ -63,7 +61,7 @@ public void testUpdateWorkflowLineageWithNonEmptyList() {
     lineage2.setTaskDefinitionCode(300L);
     workflowTaskLineages.add(lineage2);
 
-    workflowTaskLineageDao_proxy.batchDeleteByWorkflowDefinitionCode(anyList());
+    workflowTaskLineageDao_proxy.batchDeleteByWorkflowDefinitionCode(java.util.Collections.singletonList(workflowDefinitionCode));
     workflowTaskLineageDao_proxy.batchInsert(workflowTaskLineages);
 
     int result = workflowLineageService.updateWorkflowLineage(workflowDefinitionCode, workflowTaskLineages);
@@ -86,8 +84,59 @@ import org.apache.dolphinscheduler.dao.entity.WorkFlowRelationDetail;
 import org.apache.dolphinscheduler.dao.entity.WorkflowTaskLineage;
 import org.apache.dolphinscheduler.dao.repository.WorkflowTaskLineageDao;
 
-public class WorkflowTaskLineageDao_Proxy extends WorkflowTaskLineageDao_EmptyProxy {
+public class WorkflowTaskLineageDao_EmptyProxy implements WorkflowTaskLineageDao {
+    protected final WorkflowTaskLineageDao dependency;
 
+    public WorkflowTaskLineageDao_EmptyProxy(WorkflowTaskLineageDao dependency) {
+        this.dependency = dependency;
+    }
+
+    @Override
+    public int batchDeleteByWorkflowDefinitionCode(List<Long> workflowDefinitionCodes) {
+        return dependency.batchDeleteByWorkflowDefinitionCode(workflowDefinitionCodes);
+    }
+
+    @Override
+    public int batchInsert(List<WorkflowTaskLineage> workflowTaskLineages) {
+        return dependency.batchInsert(workflowTaskLineageList(workflowTaskLineages));
+    }
+
+    private List<WorkflowTaskLineage> workflowTaskLineageList(List<WorkflowTaskLineage> workflowTaskLineages) {
+        return workflowTaskLineages;
+    }
+
+    @Override
+    public List<WorkflowTaskLineage> queryByProjectCode(long projectCode) {
+        return dependency.queryByProjectCode(projectCode);
+    }
+
+    @Override
+    public List<WorkFlowRelationDetail> queryWorkFlowLineageByCode(long workflowDefinitionCode) {
+        return dependency.queryWorkFlowLineageByCode(workflowDefinitionCode);
+    }
+
+    @Override
+    public List<WorkFlowRelationDetail> queryWorkFlowLineageByName(long projectCode, String workflowDefinitionName) {
+        return dependency.queryWorkFlowLineageByName(projectCode, workflowDefinitionName);
+    }
+
+    @Override
+    public List<WorkflowTaskLineage> queryWorkFlowLineageByDept(long deptProjectCode, long deptWorkflowDefinitionCode, long deptTaskDefinitionCode) {
+        return dependency.queryWorkFlowLineageByDept(deptProjectCode, deptWorkflowDefinitionCode, deptTaskDefinitionCode);
+    }
+
+    @Override
+    public List<WorkflowTaskLineage> queryByWorkflowDefinitionCode(long workflowDefinitionCode) {
+        return dependency.queryByWorkflowDefinitionCode(workflowDefinitionCode);
+    }
+
+    @Override
+    public int updateWorkflowTaskLineage(List<WorkflowTaskLineage> workflowTaskLineages) {
+        return dependency.updateWorkflowTaskLineage(workflowTaskLineages);
+    }
+}
+
+class WorkflowTaskLineageDao_Proxy extends WorkflowTaskLineageDao_EmptyProxy {
     private int batchDeleteByWorkflowDefinitionCodeCounter = 0;
     private int batchInsertCounter = 0;
 
@@ -99,7 +148,9 @@ public class WorkflowTaskLineageDao_Proxy extends WorkflowTaskLineageDao_EmptyPr
     public int batchDeleteByWorkflowDefinitionCode(List<Long> workflowDefinitionCodes) {
         batchDeleteByWorkflowDefinitionCodeCounter++;
         int result = dependency.batchDeleteByWorkflowDefinitionCode(workflowDefinitionCodes);
-        assertEquals(2, result);
+        if (workflowDefinitionCodes != null) {
+            assertEquals(2, result);
+        }
         return result;
     }
 
@@ -107,7 +158,9 @@ public class WorkflowTaskLineageDao_Proxy extends WorkflowTaskLineageDao_EmptyPr
     public int batchInsert(List<WorkflowTaskLineage> workflowTaskLineages) {
         batchInsertCounter++;
         int result = dependency.batchInsert(workflowTaskLineages);
-        assertEquals(2, result);
+        if (workflowTaskLineages != null) {
+            assertEquals(2, result);
+        }
         return result;
     }
 
