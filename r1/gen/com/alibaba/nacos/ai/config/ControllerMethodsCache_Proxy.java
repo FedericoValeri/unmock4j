@@ -11,7 +11,6 @@ import static org.mockito.Mockito.verify;
 
 
 class ControllerMethodsCache_Proxy extends ControllerMethodsCache_EmptyProxy {
-
     private int initClassMethodCounter = 0;
 
     public ControllerMethodsCache_Proxy(ControllerMethodsCache dependency) {
@@ -22,6 +21,9 @@ class ControllerMethodsCache_Proxy extends ControllerMethodsCache_EmptyProxy {
     public void initClassMethod(String packageName) {
         initClassMethodCounter++;
         dependency.initClassMethod(packageName);
+        if ("com.alibaba.nacos.ai.controller".equals(packageName)) {
+            assertEquals(1, initClassMethodCounter);
+        }
     }
 
     public int initClassMethod_verify() {
