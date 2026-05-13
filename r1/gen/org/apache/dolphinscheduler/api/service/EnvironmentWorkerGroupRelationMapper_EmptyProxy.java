@@ -18,6 +18,11 @@ public class EnvironmentWorkerGroupRelationMapper_EmptyProxy implements Environm
     }
 
     @Override
+    public List<EnvironmentWorkerGroupRelation> queryByEnvironmentCode(Long arg0) {
+        return dependency.queryByEnvironmentCode(arg0);
+    }
+
+    @Override
     public List<EnvironmentWorkerGroupRelation> queryByWorkerGroupName(String arg0) {
         return dependency.queryByWorkerGroupName(arg0);
     }
@@ -25,11 +30,6 @@ public class EnvironmentWorkerGroupRelationMapper_EmptyProxy implements Environm
     @Override
     public int deleteByCode(Long arg0, String arg1) {
         return dependency.deleteByCode(arg0, arg1);
-    }
-
-    @Override
-    public List<EnvironmentWorkerGroupRelation> queryByEnvironmentCode(Long arg0) {
-        return dependency.queryByEnvironmentCode(arg0);
     }
 
     @Override
@@ -48,8 +48,18 @@ public class EnvironmentWorkerGroupRelationMapper_EmptyProxy implements Environm
     }
 
     @Override
+    public <P extends IPage<EnvironmentWorkerGroupRelation>> P selectPage(P page, Wrapper<EnvironmentWorkerGroupRelation> queryWrapper) {
+        return dependency.selectPage(page, queryWrapper);
+    }
+
+    @Override
     public int updateById(EnvironmentWorkerGroupRelation entity) {
         return dependency.updateById(entity);
+    }
+
+    @Override
+    public List<EnvironmentWorkerGroupRelation> selectList(Wrapper<EnvironmentWorkerGroupRelation> queryWrapper) {
+        return dependency.selectList(queryWrapper);
     }
 
     @Override
@@ -58,18 +68,13 @@ public class EnvironmentWorkerGroupRelationMapper_EmptyProxy implements Environm
     }
 
     @Override
-    public EnvironmentWorkerGroupRelation selectById(Serializable id) {
-        return dependency.selectById(id);
-    }
-
-    @Override
     public List<Map<String, Object>> selectMaps(Wrapper<EnvironmentWorkerGroupRelation> queryWrapper) {
         return dependency.selectMaps(queryWrapper);
     }
 
     @Override
-    public int deleteById(Serializable id) {
-        return dependency.deleteById(id);
+    public EnvironmentWorkerGroupRelation selectById(Serializable id) {
+        return dependency.selectById(id);
     }
 
     @Override
@@ -78,13 +83,23 @@ public class EnvironmentWorkerGroupRelationMapper_EmptyProxy implements Environm
     }
 
     @Override
-    public <P extends IPage<EnvironmentWorkerGroupRelation>> P selectPage(P page, Wrapper<EnvironmentWorkerGroupRelation> queryWrapper) {
-        return dependency.selectPage(page, queryWrapper);
+    public int deleteById(Serializable id) {
+        return dependency.deleteById(id);
     }
 
     @Override
-    public List<EnvironmentWorkerGroupRelation> selectList(Wrapper<EnvironmentWorkerGroupRelation> queryWrapper) {
-        return dependency.selectList(queryWrapper);
+    public int deleteBatchIds(Collection<?> idList) {
+        return dependency.deleteBatchIds(idList);
+    }
+
+    @Override
+    public List<EnvironmentWorkerGroupRelation> selectByMap(Map<String, Object> columnMap) {
+        return dependency.selectByMap(columnMap);
+    }
+
+    @Override
+    public <P extends IPage<Map<String, Object>>> P selectMapsPage(P page, Wrapper<EnvironmentWorkerGroupRelation> queryWrapper) {
+        return dependency.selectMapsPage(page, queryWrapper);
     }
 
     @Override
@@ -98,23 +113,8 @@ public class EnvironmentWorkerGroupRelationMapper_EmptyProxy implements Environm
     }
 
     @Override
-    public int deleteBatchIds(Collection<?> idList) {
-        return dependency.deleteBatchIds(idList);
-    }
-
-    @Override
     public int deleteByMap(Map<String, Object> columnMap) {
         return dependency.deleteByMap(columnMap);
-    }
-
-    @Override
-    public List<EnvironmentWorkerGroupRelation> selectByMap(Map<String, Object> columnMap) {
-        return dependency.selectByMap(columnMap);
-    }
-
-    @Override
-    public <P extends IPage<Map<String, Object>>> P selectMapsPage(P page, Wrapper<EnvironmentWorkerGroupRelation> queryWrapper) {
-        return dependency.selectMapsPage(page, queryWrapper);
     }
 
 }

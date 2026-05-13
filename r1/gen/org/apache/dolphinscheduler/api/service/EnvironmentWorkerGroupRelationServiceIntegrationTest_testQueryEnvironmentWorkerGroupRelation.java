@@ -13,7 +13,6 @@ import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
-import org.mockito.Mockito;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -22,16 +21,16 @@ import org.slf4j.LoggerFactory;
  * environment service test
  */
 @ExtendWith(MockitoExtension.class)
-public class EnvironmentWorkerGroupRelationIntegrationTest_testQueryEnvironmentWorkerGroupRelation {
+public class EnvironmentWorkerGroupRelationServiceIntegrationTest_testQueryEnvironmentWorkerGroupRelation {
 
-    public static final Logger logger = LoggerFactory.getLogger(EnvironmentWorkerGroupRelationIntegrationTest_testQueryEnvironmentWorkerGroupRelation.class);
+    public static final Logger logger = LoggerFactory.getLogger(EnvironmentWorkerGroupRelationServiceIntegrationTest_testQueryEnvironmentWorkerGroupRelation.class);
 
     @InjectMocks
     private EnvironmentWorkerGroupRelationServiceImpl relationService;
 
     private EnvironmentWorkerGroupRelationMapper relationMapper_proxy;
 
-    public EnvironmentWorkerGroupRelationIntegrationTest_testQueryEnvironmentWorkerGroupRelation(EnvironmentWorkerGroupRelationMapper relationMapper) {
+    public EnvironmentWorkerGroupRelationServiceIntegrationTest_testQueryEnvironmentWorkerGroupRelation(EnvironmentWorkerGroupRelationMapper relationMapper) {
         this.relationMapper_proxy = new EnvironmentWorkerGroupRelationMapper_Proxy(relationMapper);
     }
 

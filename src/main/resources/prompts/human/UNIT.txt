@@ -1,76 +1,44 @@
-    package org.apache.dolphinscheduler.api.service;
+package org.apache.dolphinscheduler.api.service;
 
-    import static org.mockito.ArgumentMatchers.anyList;
-    import static org.mockito.ArgumentMatchers.eq;
-    import static org.mockito.Mockito.verify;
-    import static org.mockito.Mockito.when;
+import org.apache.dolphinscheduler.api.enums.Status;
+import org.apache.dolphinscheduler.api.service.impl.EnvironmentWorkerGroupRelationServiceImpl;
+import org.apache.dolphinscheduler.common.constants.Constants;
+import org.apache.dolphinscheduler.dao.entity.EnvironmentWorkerGroupRelation;
+import org.apache.dolphinscheduler.dao.mapper.EnvironmentWorkerGroupRelationMapper;
 
-    import org.apache.dolphinscheduler.api.enums.Status;
-    import org.apache.dolphinscheduler.api.exceptions.ServiceException;
-    import org.apache.dolphinscheduler.api.service.impl.WorkflowLineageServiceImpl;
-    import org.apache.dolphinscheduler.dao.entity.Project;
-    import org.apache.dolphinscheduler.dao.entity.TaskDefinition;
-    import org.apache.dolphinscheduler.dao.entity.WorkFlowLineage;
-    import org.apache.dolphinscheduler.dao.entity.WorkFlowRelation;
-    import org.apache.dolphinscheduler.dao.entity.WorkFlowRelationDetail;
-    import org.apache.dolphinscheduler.dao.entity.WorkflowDefinition;
-    import org.apache.dolphinscheduler.dao.entity.WorkflowTaskLineage;
-    import org.apache.dolphinscheduler.dao.mapper.ProjectMapper;
-    import org.apache.dolphinscheduler.dao.mapper.TaskDefinitionLogMapper;
-    import org.apache.dolphinscheduler.dao.mapper.TaskDefinitionMapper;
-    import org.apache.dolphinscheduler.dao.mapper.WorkflowDefinitionMapper;
-    import org.apache.dolphinscheduler.dao.repository.WorkflowTaskLineageDao;
+import java.util.Map;
 
-    import org.apache.commons.collections4.CollectionUtils;
+import org.assertj.core.util.Lists;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.InjectMocks;
+import org.mockito.Mock;
+import org.mockito.Mockito;
+import org.mockito.junit.jupiter.MockitoExtension;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
-    import java.util.ArrayList;
-    import java.util.List;
-    import java.util.Optional;
+/**
+ * environment service test
+ */
+@ExtendWith(MockitoExtension.class)
+public class EnvironmentWorkerGroupRelationServiceTest {
 
-    import org.junit.jupiter.api.Assertions;
-    import org.junit.jupiter.api.Test;
-    import org.junit.jupiter.api.extension.ExtendWith;
-    import org.mockito.InjectMocks;
-    import org.mockito.Mock;
-    import org.mockito.Mockito;
-    import org.mockito.junit.jupiter.MockitoExtension;
+    public static final Logger logger = LoggerFactory.getLogger(EnvironmentWorkerGroupRelationServiceTest.class);
 
-    @ExtendWith(MockitoExtension.class)
-    public class WorkflowTaskLineageServiceTest {
+    @InjectMocks
+    private EnvironmentWorkerGroupRelationServiceImpl relationService;
 
-        @InjectMocks
-        private WorkflowLineageServiceImpl workflowLineageService;
-
-        @Mock
-        private WorkflowTaskLineageDao workflowTaskLineageDao;
+    @Mock
+    private EnvironmentWorkerGroupRelationMapper relationMapper;
 
     @Test
-    public void testUpdateWorkflowLineageWithNonEmptyList() {
-        // Test case: Normal update with non-empty lineage list
-        long workflowDefinitionCode = 100L;
-        List<WorkflowTaskLineage> workflowTaskLineages = new ArrayList<>();
-
-        WorkflowTaskLineage lineage1 = new WorkflowTaskLineage();
-        lineage1.setWorkflowDefinitionCode(workflowDefinitionCode);
-        lineage1.setTaskDefinitionCode(200L);
-        workflowTaskLineages.add(lineage1);
-
-        WorkflowTaskLineage lineage2 = new WorkflowTaskLineage();
-        lineage2.setWorkflowDefinitionCode(workflowDefinitionCode);
-        lineage2.setTaskDefinitionCode(300L);
-        workflowTaskLineages.add(lineage2);
-
-        // Mock DAO methods
-        when(workflowTaskLineageDao.batchDeleteByWorkflowDefinitionCode(anyList())).thenReturn(2);
-        when(workflowTaskLineageDao.batchInsert(workflowTaskLineages)).thenReturn(2);
-
-        // Execute
-        int result = workflowLineageService.updateWorkflowLineage(workflowDefinitionCode, workflowTaskLineages);
-
-        // Verify
-        Assertions.assertEquals(2, result);
-        verify(workflowTaskLineageDao)
-                .batchDeleteByWorkflowDefinitionCode(eq(java.util.Collections.singletonList(workflowDefinitionCode)));
-        verify(workflowTaskLineageDao).batchInsert(workflowTaskLineages);
+    public void testQueryEnvironmentWorkerGroupRelation() {
+        Mockito.when(relationMapper.queryByEnvironmentCode(1L))
+                .thenReturn(Lists.newArrayList(new EnvironmentWorkerGroupRelation()));
+        Map<String, Object> result = relationService.queryEnvironmentWorkerGroupRelation(1L);
+        logger.info(result.toString());
+        Assertions.assertEquals(Status.SUCCESS, result.get(Constants.STATUS));
     }
-    }
+}

@@ -1,28 +1,18 @@
-package org.apache.dolphinscheduler.dao.repository;
+package org.apache.dolphinscheduler.dao.mapper;
 
-import org.apache.dolphinscheduler.dao.entity.WorkFlowRelationDetail;
-import org.apache.dolphinscheduler.dao.entity.WorkflowTaskLineage;
+import org.apache.dolphinscheduler.dao.entity.EnvironmentWorkerGroupRelation;
+
+import org.apache.ibatis.annotations.Param;
 
 import java.util.List;
 
-public interface WorkflowTaskLineageDao extends IDao<WorkflowTaskLineage> {
+import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 
-    int batchDeleteByWorkflowDefinitionCode(List<Long> workflowDefinitionCodes);
+public interface EnvironmentWorkerGroupRelationMapper extends BaseMapper<EnvironmentWorkerGroupRelation> {
 
-    int batchInsert(List<WorkflowTaskLineage> workflowTaskLineages);
+    List<EnvironmentWorkerGroupRelation> queryByEnvironmentCode(@Param("environmentCode") Long environmentCode);
 
-    List<WorkflowTaskLineage> queryByProjectCode(long projectCode);
+    List<EnvironmentWorkerGroupRelation> queryByWorkerGroupName(@Param("workerGroupName") String workerGroupName);
 
-    List<WorkFlowRelationDetail> queryWorkFlowLineageByCode(long workflowDefinitionCode);
-
-    List<WorkFlowRelationDetail> queryWorkFlowLineageByName(long projectCode,
-                                                            String workflowDefinitionName);
-
-    List<WorkflowTaskLineage> queryWorkFlowLineageByDept(long deptProjectCode,
-                                                         long deptWorkflowDefinitionCode,
-                                                         long deptTaskDefinitionCode);
-
-    List<WorkflowTaskLineage> queryByWorkflowDefinitionCode(long workflowDefinitionCode);
-
-    int updateWorkflowTaskLineage(List<WorkflowTaskLineage> workflowTaskLineages);
+    int deleteByCode(@Param("environmentCode") Long environmentCode, @Param("workerGroupName") String workerGroupName);
 }

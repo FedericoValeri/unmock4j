@@ -1,3 +1,3 @@
 package org.apache.dolphinscheduler.api.service.impl;
 
-public class WorkflowLineageServiceImpl
+public class EnvironmentWorkerGroupRelationServiceImpl
