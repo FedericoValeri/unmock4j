@@ -107,3 +107,10 @@ class McpConfigurationIntegrationTest {
     }
 }
 ```
+
+---
+
+In order to check the generated `.java` files, the following command is run into the target project:
+
+`mvn clean test-compile -pl <module_name> -am`
+
