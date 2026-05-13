@@ -14,3 +14,12 @@ com.alibaba.nacos.client.naming.remote.http.NamingHttpClientManager-0,com.alibab
 org.apache.dolphinscheduler.api.service.impl.EnvironmentWorkerGroupRelationServiceImpl-0,org.apache.dolphinscheduler.api.python.PythonGateway,openai,gpt-5.4-mini,5263,1754,7017,0.011840,13.975,2026-05-08 12:21:19
 org.apache.dolphinscheduler.api.service.impl.WorkflowLineageServiceImpl-0,org.apache.dolphinscheduler.api.service.impl.WorkflowLineageServiceImpl,openai,gpt-5.4-mini,7123,3150,10273,0.019517,18.741,2026-05-08 10:40:08
 org.apache.dolphinscheduler.service.process.ProcessServiceImpl-0,org.apache.dolphinscheduler.service.process.ProcessServiceImpl,openai,gpt-5.4-mini,6369,2286,8655,0.015064,17.409,2026-05-09 16:03:18
+org.apache.dolphinscheduler.api.python.PythonGateway-2,org.apache.dolphinscheduler.api.python.PythonGateway,openai,gpt-5.4-mini,8649,4198,12847,0.025378,30.554,2026-05-13 17:17:54
+org.apache.dolphinscheduler.api.service.impl.WorkflowLineageServiceImpl-2,org.apache.dolphinscheduler.api.service.impl.WorkflowLineageServiceImpl,openai,gpt-5.4-mini,7120,3217,10337,0.019817,20.238,2026-05-13 17:30:46
+org.apache.dolphinscheduler.api.service.impl.EnvironmentWorkerGroupRelationServiceImpl-2,org.apache.dolphinscheduler.api.service.impl.EnvironmentWorkerGroupRelationServiceImpl,openai,gpt-5.4-mini,5512,2020,7532,0.013224,13.242,2026-05-13 21:54:41
+org.apache.dolphinscheduler.service.process.ProcessServiceImpl-2,org.apache.dolphinscheduler.service.process.ProcessServiceImpl,openai,gpt-5.4-mini,6889,3090,9979,0.019072,16.619,2026-05-13 22:01:44
+com.alibaba.nacos.client.naming.selector.DefaultNamingSelector-2,com.alibaba.nacos.client.naming.selector.DefaultNamingSelector,openai,gpt-5.4-mini,5513,1794,7307,0.012208,12.702,2026-05-13 22:13:32
+com.alibaba.nacos.client.naming.selector.DefaultNamingSelector-0,com.alibaba.nacos.client.naming.selector.DefaultNamingSelector,openai,gpt-5.4-mini,5456,1794,7250,0.012165,15.497,2026-05-11 13:23:33
+com.alibaba.nacos.ai.config.McpConfiguration-2,com.alibaba.nacos.ai.config.McpConfiguration,openai,gpt-5.4-mini,6089,1126,7215,0.009634,9.472,2026-05-13 22:28:46
+com.alibaba.nacos.client.naming.remote.http.NamingHttpClientManager-2,com.alibaba.nacos.client.naming.remote.http.NamingHttpClientManager,openai,gpt-5.4-mini,5359,1784,7143,0.012047,13.050,2026-05-13 22:40:41
+com.alibaba.nacos.auth.util.AuthHeaderUtil-2,com.alibaba.nacos.auth.util.AuthHeaderUtil,openai,gpt-5.4-mini,5649,2418,8067,0.015118,15.512,2026-05-13 22:47:51

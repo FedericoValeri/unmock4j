@@ -1,3 +1,3 @@
-package com.alibaba.nacos.client.naming.selector;
+package com.alibaba.nacos.auth.util;
 
-public class DefaultNamingSelector
+public class AuthHeaderUtil

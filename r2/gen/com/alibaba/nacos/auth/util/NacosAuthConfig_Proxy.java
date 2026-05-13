@@ -5,6 +5,7 @@ import com.alibaba.nacos.auth.config.NacosAuthConfig;
 import com.alibaba.nacos.common.http.param.Header;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
+import org.junit.jupiter.api.Assertions;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
@@ -15,21 +16,17 @@ import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
-@ExtendWith(MockitoExtension.class)
-class AuthHeaderUtilTest {
 
-    @Mock
-    private NacosAuthConfig authConfig;
-    
-    @Mock
-    private Request request;
 
-    @Test
-    void testAddIdentityToGrpcRequestWhenNotSupport() {
-        when(authConfig.isSupportServerIdentity()).thenReturn(false);
+class NacosAuthConfig_Proxy extends NacosAuthConfig_EmptyProxy {
+    NacosAuthConfig_Proxy(NacosAuthConfig dependency) {
+        super(dependency);
+    }
 
-        AuthHeaderUtil.addIdentityToHeader(request, authConfig);
-
-        verify(request, never()).putHeader(anyString(), anyString());
+    @Override
+    public boolean isSupportServerIdentity() {
+        boolean result = dependency.isSupportServerIdentity();
+        assertFalse(result);
+        return result;
     }
 }
