@@ -17,15 +17,20 @@ import static org.mockito.Mockito.when;
 
 
 
-class NacosAuthConfig_Proxy extends NacosAuthConfig_EmptyProxy {
-    NacosAuthConfig_Proxy(NacosAuthConfig dependency) {
+class Request_Proxy extends Request_EmptyProxy {
+    private int putHeaderCounter = 0;
+
+    public Request_Proxy(Request dependency) {
         super(dependency);
     }
 
     @Override
-    public boolean isSupportServerIdentity() {
-        boolean result = dependency.isSupportServerIdentity();
-        assertFalse(result);
-        return result;
+    public void putHeader(String key, String value) {
+        putHeaderCounter++;
+        dependency.putHeader(key, value);
+    }
+
+    public int putHeader_verify() {
+        return putHeaderCounter;
     }
 }

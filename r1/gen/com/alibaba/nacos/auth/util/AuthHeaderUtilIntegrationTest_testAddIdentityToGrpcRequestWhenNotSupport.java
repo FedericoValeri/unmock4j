@@ -5,6 +5,7 @@ import com.alibaba.nacos.auth.config.NacosAuthConfig;
 import com.alibaba.nacos.common.http.param.Header;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -21,7 +22,7 @@ import static org.mockito.Mockito.when;
 class AuthHeaderUtilIntegrationTest_testAddIdentityToGrpcRequestWhenNotSupport {
 
     private NacosAuthConfig authConfig_proxy;
-
+    
     private Request request_proxy;
 
     public AuthHeaderUtilIntegrationTest_testAddIdentityToGrpcRequestWhenNotSupport(NacosAuthConfig authConfig, Request request) {

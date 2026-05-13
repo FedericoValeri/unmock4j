@@ -1,204 +1,73 @@
-package com.alibaba.nacos.core.code;
+package com.alibaba.nacos.auth.config;
 
-import com.alibaba.nacos.api.exception.NacosException;
-import com.alibaba.nacos.api.exception.runtime.NacosRuntimeException;
-import com.alibaba.nacos.common.packagescan.DefaultPackageScan;
-import com.alibaba.nacos.common.utils.ArrayUtils;
-import com.alibaba.nacos.common.utils.CollectionUtils;
-import com.alibaba.nacos.core.code.RequestMappingInfo.RequestMappingInfoComparator;
-import com.alibaba.nacos.core.code.condition.ParamRequestCondition;
-import com.alibaba.nacos.core.code.condition.PathRequestCondition;
-import com.alibaba.nacos.sys.env.EnvUtil;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import org.springframework.stereotype.Component;
-import org.springframework.web.bind.annotation.DeleteMapping;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PatchMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.PutMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
+public interface NacosAuthConfig {
 
-import jakarta.servlet.http.HttpServletRequest;
-import java.lang.reflect.Method;
-import java.net.URI;
-import java.net.URISyntaxException;
-import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
-import java.util.concurrent.ConcurrentHashMap;
-import java.util.concurrent.ConcurrentMap;
+    String getAuthScope();
 
-import static com.alibaba.nacos.sys.env.Constants.REQUEST_PATH_SEPARATOR;
+    boolean isAuthEnabled();
 
+    String getNacosAuthSystemType();
 
-@Component
-public class ControllerMethodsCache {
+    boolean isSupportServerIdentity();
 
-    private static final Logger LOGGER = LoggerFactory.getLogger(ControllerMethodsCache.class);
+    String getServerIdentityKey();
 
-    private ConcurrentMap<RequestMappingInfo, Method> methods = new ConcurrentHashMap<>();
+    String getServerIdentityValue();
+}
 
-    private final ConcurrentMap<String, List<RequestMappingInfo>> urlLookup = new ConcurrentHashMap<>();
+package com.alibaba.nacos.api.remote.request;
 
-    private final Set<Class> scannedClass = new HashSet<>();
+import com.alibaba.nacos.api.remote.Payload;
+import java.util.Map;
+import java.util.TreeMap;
 
-    public Method getMethod(HttpServletRequest request) {
-        String path = getPath(request);
-        String httpMethod = request.getMethod();
-        String urlKey = httpMethod + REQUEST_PATH_SEPARATOR + path.replaceFirst(EnvUtil.getContextPath(), "");
-        List<RequestMappingInfo> requestMappingInfos = urlLookup.get(urlKey);
-        if (CollectionUtils.isEmpty(requestMappingInfos)) {
-            return null;
-        }
-        List<RequestMappingInfo> matchedInfo = findMatchedInfo(requestMappingInfos, request);
-        if (CollectionUtils.isEmpty(matchedInfo)) {
-            return null;
-        }
-        RequestMappingInfo bestMatch = matchedInfo.get(0);
-        if (matchedInfo.size() > 1) {
-            RequestMappingInfoComparator comparator = new RequestMappingInfoComparator();
-            matchedInfo.sort(comparator);
-            bestMatch = matchedInfo.get(0);
-            RequestMappingInfo secondBestMatch = matchedInfo.get(1);
-            if (comparator.compare(bestMatch, secondBestMatch) == 0) {
-                throw new IllegalStateException(
-                        "Ambiguous methods mapped for '" + request.getRequestURI() + "': {" + bestMatch + ", "
-                                + secondBestMatch + "}");
-            }
-        }
-        return methods.get(bestMatch);
+public abstract class Request implements Payload {
+
+    private final Map<String, String> headers = new TreeMap<>(String.CASE_INSENSITIVE_ORDER);
+
+    private String requestId;
+
+    public void putHeader(String key, String value) {
+        headers.put(key, value);
     }
 
-    private String getPath(HttpServletRequest request) {
-        try {
-            return new URI(request.getRequestURI()).getPath();
-        } catch (URISyntaxException e) {
-            LOGGER.error("parse request to path error", e);
-            throw new NacosRuntimeException(NacosException.NOT_FOUND, "Invalid URI");
-        }
-    }
-
-    private List<RequestMappingInfo> findMatchedInfo(List<RequestMappingInfo> requestMappingInfos,
-            HttpServletRequest request) {
-        List<RequestMappingInfo> matchedInfo = new ArrayList<>();
-        for (RequestMappingInfo requestMappingInfo : requestMappingInfos) {
-            ParamRequestCondition matchingCondition = requestMappingInfo.getParamRequestCondition()
-                    .getMatchingCondition(request);
-            if (matchingCondition != null) {
-                matchedInfo.add(requestMappingInfo);
-            }
-        }
-        return matchedInfo;
-    }
-
-    public void initClassMethod(String packageName) {
-        DefaultPackageScan packageScan = new DefaultPackageScan();
-        Set<Class<Object>> classesList = packageScan.getTypesAnnotatedWith(packageName, RequestMapping.class);
-        for (Class clazz : classesList) {
-            initClassMethod(clazz);
-        }
-    }
-
-    public void initClassMethod(Set<Class<?>> classesList) {
-        for (Class clazz : classesList) {
-            initClassMethod(clazz);
-        }
-    }
-
-    private void initClassMethod(Class<?> clazz) {
-        if (scannedClass.contains(clazz)) {
+    public void putAllHeader(Map<String, String> headers) {
+        if (headers == null || headers.isEmpty()) {
             return;
         }
-        RequestMapping requestMapping = clazz.getAnnotation(RequestMapping.class);
-        for (String classPath : requestMapping.value()) {
-            for (Method method : clazz.getMethods()) {
-                if (!method.isAnnotationPresent(RequestMapping.class)) {
-                    parseSubAnnotations(method, classPath);
-                    continue;
-                }
-                requestMapping = method.getAnnotation(RequestMapping.class);
-                RequestMethod[] requestMethods = requestMapping.method();
-                if (requestMethods.length == 0) {
-                    requestMethods = new RequestMethod[1];
-                    requestMethods[0] = RequestMethod.GET;
-                }
-                // FIXME: vipserver needs multiple http methods mapping
-                for (RequestMethod requestMethod : requestMethods) {
-                    String[] value = requestMapping.value();
-                    if (value.length > 0) {
-                        for (String methodPath : requestMapping.value()) {
-                            String urlKey = requestMethod.name() + REQUEST_PATH_SEPARATOR + classPath + methodPath;
-                            addUrlAndMethodRelation(urlKey, requestMapping.params(), method);
-                        }
-                    } else {
-                        String urlKey = requestMethod.name() + REQUEST_PATH_SEPARATOR + classPath;
-                        addUrlAndMethodRelation(urlKey, requestMapping.params(), method);
-                    }
-                }
-            }
-        }
-        scannedClass.add(clazz);
+        this.headers.putAll(headers);
     }
 
-    private void parseSubAnnotations(Method method, String classPath) {
-
-        final GetMapping getMapping = method.getAnnotation(GetMapping.class);
-        final PostMapping postMapping = method.getAnnotation(PostMapping.class);
-        final PutMapping putMapping = method.getAnnotation(PutMapping.class);
-        final DeleteMapping deleteMapping = method.getAnnotation(DeleteMapping.class);
-        final PatchMapping patchMapping = method.getAnnotation(PatchMapping.class);
-
-        if (getMapping != null) {
-            put(RequestMethod.GET, classPath, getMapping.value(), getMapping.params(), method);
-        }
-
-        if (postMapping != null) {
-            put(RequestMethod.POST, classPath, postMapping.value(), postMapping.params(), method);
-        }
-
-        if (putMapping != null) {
-            put(RequestMethod.PUT, classPath, putMapping.value(), putMapping.params(), method);
-        }
-
-        if (deleteMapping != null) {
-            put(RequestMethod.DELETE, classPath, deleteMapping.value(), deleteMapping.params(), method);
-        }
-
-        if (patchMapping != null) {
-            put(RequestMethod.PATCH, classPath, patchMapping.value(), patchMapping.params(), method);
-        }
-
+    public String getHeader(String key) {
+        return headers.get(key);
     }
 
-    private void put(RequestMethod requestMethod, String classPath, String[] requestPaths, String[] requestParams,
-            Method method) {
-        if (ArrayUtils.isEmpty(requestPaths)) {
-            String urlKey = requestMethod.name() + REQUEST_PATH_SEPARATOR + classPath;
-            addUrlAndMethodRelation(urlKey, requestParams, method);
-            return;
-        }
-        for (String requestPath : requestPaths) {
-            String urlKey = requestMethod.name() + REQUEST_PATH_SEPARATOR + classPath + requestPath;
-            addUrlAndMethodRelation(urlKey, requestParams, method);
-        }
+    public String getHeader(String key, String defaultValue) {
+        String value = headers.get(key);
+        return (value == null) ? defaultValue : value;
     }
 
-    private void addUrlAndMethodRelation(String urlKey, String[] requestParam, Method method) {
-        RequestMappingInfo requestMappingInfo = new RequestMappingInfo();
-        requestMappingInfo.setPathRequestCondition(new PathRequestCondition(urlKey));
-        requestMappingInfo.setParamRequestCondition(new ParamRequestCondition(requestParam));
-        List<RequestMappingInfo> requestMappingInfos = urlLookup.get(urlKey);
-        if (requestMappingInfos == null) {
-            urlLookup.putIfAbsent(urlKey, new ArrayList<>());
-            requestMappingInfos = urlLookup.get(urlKey);
-            // For issue #4701.
-            String urlKeyBackup = urlKey + "/";
-            urlLookup.putIfAbsent(urlKeyBackup, requestMappingInfos);
-        }
-        requestMappingInfos.add(requestMappingInfo);
-        methods.put(requestMappingInfo, method);
+    public String getRequestId() {
+        return requestId;
+    }
+
+    public void setRequestId(String requestId) {
+        this.requestId = requestId;
+    }
+
+    public abstract String getModule();
+
+    public Map<String, String> getHeaders() {
+        return headers;
+    }
+
+    public void clearHeaders() {
+        this.headers.clear();
+    }
+
+    @Override
+    public String toString() {
+        return this.getClass().getSimpleName() + "{" + "headers=" + headers + ", requestId='"
+            + requestId + '\'' + '}';
     }
 }

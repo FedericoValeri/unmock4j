@@ -11,23 +11,13 @@ public class NacosAuthConfig_EmptyProxy implements NacosAuthConfig {
     }
 
     @Override
-    public boolean isAuthEnabled() {
-        return dependency.isAuthEnabled();
-    }
-
-    @Override
     public String getAuthScope() {
         return dependency.getAuthScope();
     }
 
     @Override
-    public boolean isSupportServerIdentity() {
-        return dependency.isSupportServerIdentity();
-    }
-
-    @Override
-    public String getNacosAuthSystemType() {
-        return dependency.getNacosAuthSystemType();
+    public boolean isAuthEnabled() {
+        return dependency.isAuthEnabled();
     }
 
     @Override
@@ -36,8 +26,18 @@ public class NacosAuthConfig_EmptyProxy implements NacosAuthConfig {
     }
 
     @Override
+    public boolean isSupportServerIdentity() {
+        return dependency.isSupportServerIdentity();
+    }
+
+    @Override
     public String getServerIdentityValue() {
         return dependency.getServerIdentityValue();
+    }
+
+    @Override
+    public String getNacosAuthSystemType() {
+        return dependency.getNacosAuthSystemType();
     }
 
 }

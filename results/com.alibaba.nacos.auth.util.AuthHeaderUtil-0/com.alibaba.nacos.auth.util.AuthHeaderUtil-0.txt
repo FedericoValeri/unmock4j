@@ -6,6 +6,7 @@ import com.alibaba.nacos.auth.config.NacosAuthConfig;
 import com.alibaba.nacos.common.http.param.Header;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -56,18 +57,11 @@ import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
-class NacosAuthConfig_Proxy implements NacosAuthConfig {
-    private final NacosAuthConfig dependency;
+class NacosAuthConfig_EmptyProxy implements NacosAuthConfig {
+    protected final NacosAuthConfig dependency;
 
-    public NacosAuthConfig_Proxy(NacosAuthConfig dependency) {
+    public NacosAuthConfig_EmptyProxy(NacosAuthConfig dependency) {
         this.dependency = dependency;
-    }
-
-    @Override
-    public boolean isSupportServerIdentity() {
-        boolean result = dependency.isSupportServerIdentity();
-        assertFalse(result);
-        return result;
     }
 
     @Override
@@ -86,6 +80,11 @@ class NacosAuthConfig_Proxy implements NacosAuthConfig {
     }
 
     @Override
+    public boolean isSupportServerIdentity() {
+        return dependency.isSupportServerIdentity();
+    }
+
+    @Override
     public String getServerIdentityKey() {
         return dependency.getServerIdentityKey();
     }
@@ -96,12 +95,77 @@ class NacosAuthConfig_Proxy implements NacosAuthConfig {
     }
 }
 
-class Request_Proxy extends Request {
-    private final Request dependency;
+class NacosAuthConfig_Proxy extends NacosAuthConfig_EmptyProxy {
+    public NacosAuthConfig_Proxy(NacosAuthConfig dependency) {
+        super(dependency);
+    }
+
+    @Override
+    public boolean isSupportServerIdentity() {
+        boolean result = dependency.isSupportServerIdentity();
+        assertFalse(result);
+        return result;
+    }
+}
+
+class Request_EmptyProxy extends Request {
+    protected final Request dependency;
+
+    public Request_EmptyProxy(Request dependency) {
+        this.dependency = dependency;
+    }
+
+    @Override
+    public String getModule() {
+        return dependency.getModule();
+    }
+
+    @Override
+    public void putHeader(String key, String value) {
+        dependency.putHeader(key, value);
+    }
+
+    @Override
+    public void putAllHeader(java.util.Map<String, String> headers) {
+        dependency.putAllHeader(headers);
+    }
+
+    @Override
+    public String getHeader(String key) {
+        return dependency.getHeader(key);
+    }
+
+    @Override
+    public String getHeader(String key, String defaultValue) {
+        return dependency.getHeader(key, defaultValue);
+    }
+
+    @Override
+    public String getRequestId() {
+        return dependency.getRequestId();
+    }
+
+    @Override
+    public void setRequestId(String requestId) {
+        dependency.setRequestId(requestId);
+    }
+
+    @Override
+    public java.util.Map<String, String> getHeaders() {
+        return dependency.getHeaders();
+    }
+
+    @Override
+    public void clearHeaders() {
+        dependency.clearHeaders();
+    }
+}
+
+class Request_Proxy extends Request_EmptyProxy {
     private int putHeaderCounter = 0;
 
     public Request_Proxy(Request dependency) {
-        this.dependency = dependency;
+        super(dependency);
     }
 
     @Override
@@ -112,11 +176,6 @@ class Request_Proxy extends Request {
 
     public int putHeader_verify() {
         return putHeaderCounter;
-    }
-
-    @Override
-    public String getModule() {
-        return dependency.getModule();
     }
 }
 ---PROXIES_END---
