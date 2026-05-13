@@ -16,8 +16,8 @@ import static org.mockito.Mockito.when;
 
 public class NamingContext_Proxy extends NamingContext_EmptyProxy {
 
-    public NamingContext_Proxy(NamingContext dependency) {
-        super(dependency);
+    public NamingContext_Proxy(NamingContext namingContext) {
+        super(namingContext);
     }
 
     @Override

@@ -12,8 +12,6 @@ import java.util.Random;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.when;
 
 public class DefaultNamingSelectorIntegrationTest_testSelect {
 
@@ -32,7 +30,6 @@ public class DefaultNamingSelectorIntegrationTest_testSelect {
     }
 
     private NamingContext getMockNamingContext(int total, int health) {
-        NamingContext namingContext = mock(NamingContext.class);
         NamingContext namingContext_proxy = new NamingContext_Proxy(<--NamingContext_REAL_CONFIGURED_INSTANCE-->);
         namingContext_proxy.getInstances();
         return namingContext_proxy;
@@ -74,24 +71,15 @@ import static org.mockito.Mockito.when;
 
 public class NamingContext_Proxy extends NamingContext_EmptyProxy {
 
-    private final NamingContext dependency;
-    private int methodCounter = 0;
-
-    public NamingContext_Proxy(NamingContext dependency) {
-        super(dependency);
-        this.dependency = dependency;
+    public NamingContext_Proxy(NamingContext namingContext) {
+        super(namingContext);
     }
 
     @Override
     public List<Instance> getInstances() {
-        methodCounter++;
         List<Instance> result = dependency.getInstances();
         assertNotNull(result);
         return result;
-    }
-
-    public int getInstances_verify() {
-        return methodCounter;
     }
 }
 ---PROXIES_END---
