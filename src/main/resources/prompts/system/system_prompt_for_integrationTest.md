@@ -40,13 +40,13 @@ You will receive:
 ## RULES
 
 1. mockedDependency identification and handling:
-    * For each private field annotated with `@Mock`, if any, do:
+    * For each mockedDependency annotated with `@Mock`, if any, do:
         1. Add a new private proxy field after the existing field with:
             * Type = same as original field type
             * Name = `<mockedDependency>_proxy`
         2. Generate a public constructor for the class:
             * Constructor name = class name
-            * Parameters = one parameter for each matched `@Mock` field
+            * Parameters = one parameter for each matched mockedDependency
             * Parameter names = same as original field names
             * Inside constructor assign:
               `this.<mockedDependency>_proxy = new <DependencyClassName>_Proxy(<parameterName>);`
@@ -67,12 +67,12 @@ You will receive:
             this.productRepository_proxy = new ProductRepository_Proxy(productRepository); 
         }
         ```
-    * For each mock variable of the form `<ClassName> className = mock(<ClassName>.class);` or
+    * For each mockedDependency variable of the form `<ClassName> className = mock(<ClassName>.class);` or
       `<ClassName> className = Mockito.mock(<ClassName>.class);`, find the related
       `<mockedDependency_proxy>` call, and do:
         1. Instantiate the corresponding proxy class object passing as argument a placeholder variable of the form
            `<--<ClassName>_REAL_CONFIGURED_INSTANCE-->`.
-      
+
            Example:
            ```
            SessionService sessionService = mock(SessionService.class);       
@@ -85,7 +85,7 @@ You will receive:
            ```
         2. If the mock variable is used as a parameter for a method, constructor or other components, replace it with
            the corresponding `<mockedDependency>_proxy` generated variable.
-2. Remove all private field annotated with `@Mock` and all mock variables declared as
+2. Remove all mockedDependencies declared as private field annotated with `@Mock` and all mock variables declared as
    `<ClassName> className = mock(<ClassName>.class);` or `<ClassName> className = Mockito.mock(<ClassName>.class);`.
 
 ---
