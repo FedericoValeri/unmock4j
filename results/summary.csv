@@ -23,3 +23,11 @@ com.alibaba.nacos.client.naming.selector.DefaultNamingSelector-0,com.alibaba.nac
 com.alibaba.nacos.ai.config.McpConfiguration-2,com.alibaba.nacos.ai.config.McpConfiguration,openai,gpt-5.4-mini,6089,1126,7215,0.009634,9.472,2026-05-13 22:28:46
 com.alibaba.nacos.client.naming.remote.http.NamingHttpClientManager-2,com.alibaba.nacos.client.naming.remote.http.NamingHttpClientManager,openai,gpt-5.4-mini,5359,1784,7143,0.012047,13.050,2026-05-13 22:40:41
 com.alibaba.nacos.auth.util.AuthHeaderUtil-2,com.alibaba.nacos.auth.util.AuthHeaderUtil,openai,gpt-5.4-mini,5649,2418,8067,0.015118,15.512,2026-05-13 22:47:51
+org.apache.dolphinscheduler.api.python.PythonGateway-3,org.apache.dolphinscheduler.api.python.PythonGateway,openai,gpt-5.4-mini,8462,3846,12308,0.023654,24.460,2026-05-14 07:36:30
+org.apache.dolphinscheduler.api.service.impl.WorkflowLineageServiceImpl-3,org.apache.dolphinscheduler.api.service.impl.WorkflowLineageServiceImpl,openai,gpt-5.4-mini,7663,3994,11657,0.023720,20.011,2026-05-14 07:42:12
+org.apache.dolphinscheduler.api.service.impl.EnvironmentWorkerGroupRelationServiceImpl-3,org.apache.dolphinscheduler.api.service.impl.EnvironmentWorkerGroupRelationServiceImpl,openai,gpt-5.4-mini,5513,1993,7506,0.013103,14.097,2026-05-14 07:46:47
+org.apache.dolphinscheduler.service.process.ProcessServiceImpl-3,org.apache.dolphinscheduler.service.process.ProcessServiceImpl,openai,gpt-5.4-mini,6859,2958,9817,0.018455,19.840,2026-05-14 07:49:20
+com.alibaba.nacos.client.naming.selector.DefaultNamingSelector-3,com.alibaba.nacos.client.naming.selector.DefaultNamingSelector,openai,gpt-5.4-mini,5515,1805,7320,0.012259,13.715,2026-05-14 09:19:57
+com.alibaba.nacos.ai.config.McpConfiguration-3,com.alibaba.nacos.ai.config.McpConfiguration,openai,gpt-5.4-mini,6036,991,7027,0.008987,10.074,2026-05-14 09:33:39
+com.alibaba.nacos.client.naming.remote.http.NamingHttpClientManager-3,com.alibaba.nacos.client.naming.remote.http.NamingHttpClientManager,openai,gpt-5.4-mini,5365,1796,7161,0.012106,13.983,2026-05-14 10:04:49
+com.alibaba.nacos.auth.util.AuthHeaderUtil-3,com.alibaba.nacos.auth.util.AuthHeaderUtil,openai,gpt-5.4-mini,5623,2362,7985,0.014846,15.632,2026-05-14 10:22:08
