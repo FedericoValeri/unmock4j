@@ -1,0 +1,40 @@
+package com.alibaba.nacos.client.naming.remote.http;
+
+import com.alibaba.nacos.api.exception.NacosException;
+import com.alibaba.nacos.common.http.HttpClientBeanHolder;
+import com.alibaba.nacos.common.http.client.NacosRestTemplate;
+import com.alibaba.nacos.common.http.client.request.HttpClientRequest;
+import org.junit.jupiter.api.Test;
+import org.mockito.Mockito;
+
+import java.io.IOException;
+import java.lang.reflect.Field;
+import java.util.Map;
+
+import static com.alibaba.nacos.common.constant.RequestUrlConstants.HTTP_PREFIX;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.mockito.Mockito.doThrow;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
+
+
+
+class HttpClientRequest_Proxy extends HttpClientRequest_EmptyProxy {
+    private int closeCounter = 0;
+
+    HttpClientRequest_Proxy(HttpClientRequest dependency) {
+        super(dependency);
+    }
+
+    @Override
+    public void close() throws IOException {
+        closeCounter++;
+        dependency.close();
+    }
+
+    public int close_verify() {
+        return closeCounter;
+    }
+}

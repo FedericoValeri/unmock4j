@@ -1,3 +1,0 @@
-package com.alibaba.nacos.auth.util;
-
-public class AuthHeaderUtil
