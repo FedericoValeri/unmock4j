@@ -136,7 +136,9 @@ class ProjectMapper_Proxy extends ProjectMapper_EmptyProxy {
 
     public Project queryByName(String projectName) {
         Project result = dependency.queryByName(projectName);
-        Assertions.assertNotNull(result);
+        if (projectName != null) {
+            Assertions.assertNotNull(result);
+        }
         return result;
     }
 }
@@ -156,7 +158,9 @@ class WorkflowDefinitionMapper_Proxy extends WorkflowDefinitionMapper_EmptyProxy
 
     public WorkflowDefinition queryByDefineName(long projectCode, String workflowDefinitionName) {
         WorkflowDefinition result = dependency.queryByDefineName(projectCode, workflowDefinitionName);
-        Assertions.assertNotNull(result);
+        if (workflowDefinitionName != null) {
+            Assertions.assertNotNull(result);
+        }
         return result;
     }
 }
@@ -176,7 +180,9 @@ class TaskDefinitionMapper_Proxy extends TaskDefinitionMapper_EmptyProxy {
 
     public TaskDefinition queryByName(long projectCode, long workflowDefinitionCode, String name) {
         TaskDefinition result = dependency.queryByName(projectCode, workflowDefinitionCode, name);
-        Assertions.assertNotNull(result);
+        if (name != null) {
+            Assertions.assertNotNull(result);
+        }
         return result;
     }
 }

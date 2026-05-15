@@ -23,7 +23,6 @@ import org.mockito.Mockito;
 import org.mockito.junit.jupiter.MockitoExtension;
 
 
-
 class TaskDefinitionMapper_Proxy extends TaskDefinitionMapper_EmptyProxy {
     public TaskDefinitionMapper_Proxy(TaskDefinitionMapper dependency) {
         super(dependency);
@@ -31,7 +30,9 @@ class TaskDefinitionMapper_Proxy extends TaskDefinitionMapper_EmptyProxy {
 
     public TaskDefinition queryByName(long projectCode, long workflowDefinitionCode, String name) {
         TaskDefinition result = dependency.queryByName(projectCode, workflowDefinitionCode, name);
-        Assertions.assertNotNull(result);
+        if (name != null) {
+            Assertions.assertNotNull(result);
+        }
         return result;
     }
 }

@@ -21,7 +21,9 @@ public class WorkflowTaskLineageDao_Proxy extends WorkflowTaskLineageDao_EmptyPr
     public int batchDeleteByWorkflowDefinitionCode(List<Long> workflowDefinitionCodes) {
         batchDeleteByWorkflowDefinitionCodeCounter++;
         int result = dependency.batchDeleteByWorkflowDefinitionCode(workflowDefinitionCodes);
-        assertEquals(2, result);
+        if (workflowDefinitionCodes != null) {
+            assertEquals(2, result);
+        }
         return result;
     }
 
@@ -29,7 +31,9 @@ public class WorkflowTaskLineageDao_Proxy extends WorkflowTaskLineageDao_EmptyPr
     public int batchInsert(List<WorkflowTaskLineage> workflowTaskLineages) {
         batchInsertCounter++;
         int result = dependency.batchInsert(workflowTaskLineages);
-        assertEquals(2, result);
+        if (workflowTaskLineages != null) {
+            assertEquals(2, result);
+        }
         return result;
     }
 

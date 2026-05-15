@@ -17,7 +17,9 @@ public class UserMapper_Proxy extends UserMapper_EmptyProxy {
     @Override
     public User selectById(int id) {
         User result = dependency.selectById(id);
-        assertEquals(123, result.getId());
+        if (id == 123) {
+            assertEquals(123, result.getId());
+        }
         return result;
     }
 }

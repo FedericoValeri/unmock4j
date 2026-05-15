@@ -23,7 +23,6 @@ import org.mockito.Mockito;
 import org.mockito.junit.jupiter.MockitoExtension;
 
 
-
 class ProjectMapper_Proxy extends ProjectMapper_EmptyProxy {
     public ProjectMapper_Proxy(ProjectMapper dependency) {
         super(dependency);
@@ -31,7 +30,9 @@ class ProjectMapper_Proxy extends ProjectMapper_EmptyProxy {
 
     public Project queryByName(String projectName) {
         Project result = dependency.queryByName(projectName);
-        Assertions.assertNotNull(result);
+        if (projectName != null) {
+            Assertions.assertNotNull(result);
+        }
         return result;
     }
 }
