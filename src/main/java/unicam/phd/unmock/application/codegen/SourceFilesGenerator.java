@@ -95,7 +95,8 @@ public class SourceFilesGenerator {
                             unitTestPackage
                     );
 
-                } catch (Exception e) {
+                } catch (Exception | LinkageError e) {
+                    // LinkageError: a type in the dependency's method signatures is missing from the classpath
                     System.err.println(
                             "Failed for " + mockedDependencyClassName + ": " + e.getMessage()
                     );
