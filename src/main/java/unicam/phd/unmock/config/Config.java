@@ -10,12 +10,12 @@ public class Config {
             dotenv.get("PROVIDER", "openai");
 
     public static final String MODEL =
-            dotenv.get("MODEL", "gpt-5.4-mini");
+            dotenv.get("MODEL", "gpt-6-luna");
 
     public static final String OPENAI_API_KEY =
             dotenv.get("OPENAI_API_KEY");
 
-    public static final double TEMPERATURE = 0.0;
+    public static final double TEMPERATURE = 1;
 
     public static final int MAX_INPUT_TOKENS = 32000;
 }

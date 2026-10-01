@@ -13,9 +13,13 @@ public class CostCalculator {
                     "input", 0.75,
                     "output", 4.50
             ),
-            "gpt-5.4", Map.of(
-                    "input", 2.50,
-                    "output", 15.00
+            "gpt-5.6-luna", Map.of(
+                    "input", 0.20,
+                    "output", 1.20
+            ),
+            "gpt-6-luna", Map.of(
+                    "input", 0.10,
+                    "output", 0.50
             )
     );
 
