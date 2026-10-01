@@ -1,0 +1,10 @@
+package org.openapitools.codegen.api;
+
+import java.nio.file.Path;
+
+public interface TemplatingExecutor {
+
+    String getFullTemplateContents(String name);
+
+    Path getFullTemplatePath(String name);
+}
