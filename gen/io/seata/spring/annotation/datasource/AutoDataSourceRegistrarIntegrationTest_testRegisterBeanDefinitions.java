@@ -1,0 +1,30 @@
+package io.seata.spring.annotation.datasource;
+
+import org.junit.jupiter.api.Test;
+import org.springframework.beans.factory.support.BeanDefinitionRegistry;
+import org.springframework.beans.factory.support.SimpleBeanDefinitionRegistry;
+import org.springframework.core.type.AnnotationMetadata;
+
+import java.util.HashMap;
+import java.util.Map;
+
+import static org.junit.jupiter.api.Assertions.*;
+import static org.mockito.Mockito.*;
+
+public class AutoDataSourceRegistrarIntegrationTest_testRegisterBeanDefinitions {
+
+    @Test
+    public void testRegisterBeanDefinitions() {
+        AutoDataSourceProxyRegistrar registrar = new AutoDataSourceProxyRegistrar();
+        AnnotationMetadata_Proxy mockMetadata_proxy = new AnnotationMetadata_Proxy(<--AnnotationMetadata_REAL_CONFIGURED_INSTANCE-->);
+        BeanDefinitionRegistry registry = new SimpleBeanDefinitionRegistry();
+
+        Map<String, Object> attributes = new HashMap<>();
+        attributes.put("useJdkProxy", true);
+        attributes.put("excludes", new String[] {});
+        attributes.put("dataSourceProxyMode", "AT");
+        mockMetadata_proxy.getAnnotationAttributes(EnableAutoDataSourceProxy.class.getName());
+
+        assertDoesNotThrow(() -> registrar.registerBeanDefinitions(mockMetadata_proxy, registry));
+    }
+}

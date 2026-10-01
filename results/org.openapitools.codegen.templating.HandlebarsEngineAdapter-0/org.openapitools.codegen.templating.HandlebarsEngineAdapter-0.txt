@@ -1,0 +1,59 @@
+---INTEGRATION_TEST_START---
+package org.openapitools.codegen.templating;
+
+import org.openapitools.codegen.api.TemplatingExecutor;
+import org.testng.annotations.Test;
+
+import java.io.IOException;
+import java.util.Map;
+
+import static org.testng.Assert.assertEquals;
+
+public class HandlebarsEngineAdapterIntegrationTest_testHandlePartialTemplate {
+
+    @Test(description = "verify https://github.com/jknack/handlebars.java/issues/940#issue-1111612043 is fixed")
+    public void testHandlePartialTemplate() throws IOException {
+        HandlebarsEngineAdapter adapter = new HandlebarsEngineAdapter();
+        TemplatingExecutor executorMock_proxy = new TemplatingExecutor_Proxy(<--TemplatingExecutor_REAL_CONFIGURED_INSTANCE-->);
+        executorMock_proxy.getFullTemplateContents("outerTemplate.hbs");
+        executorMock_proxy.getFullTemplateContents("innerTemplate.hbs");
+
+        String generatedFile = adapter.compileTemplate(executorMock_proxy, Map.of(), "outerTemplate.hbs");
+
+        assertEquals(generatedFile, "Contents: 'Specific contents'");
+    }
+}
+---INTEGRATION_TEST_END---
+
+---PROXIES_START---
+package org.openapitools.codegen.templating;
+
+import org.mockito.Mockito;
+import org.openapitools.codegen.api.TemplatingExecutor;
+import org.testng.annotations.DataProvider;
+import org.testng.annotations.Test;
+
+import java.io.IOException;
+import java.util.Map;
+
+import static org.testng.Assert.assertEquals;
+
+public class TemplatingExecutor_Proxy extends TemplatingExecutor_EmptyProxy {
+
+    public TemplatingExecutor_Proxy(TemplatingExecutor dependency) {
+        super(dependency);
+    }
+
+    @Override
+    public String getFullTemplateContents(String name) {
+        String result = dependency.getFullTemplateContents(name);
+        if ("outerTemplate.hbs".equals(name)) {
+            assertEquals("Contents: {{>innerTemplate}}", result);
+        }
+        if ("innerTemplate.hbs".equals(name)) {
+            assertEquals("'Specific contents'", result);
+        }
+        return result;
+    }
+}
+---PROXIES_END---
