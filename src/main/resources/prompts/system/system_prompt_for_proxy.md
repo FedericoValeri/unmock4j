@@ -121,6 +121,11 @@ Do:
 * ALWAYS return real result
 * ALWAYS add an assertion in the proxy override methods based on the original unit test stub following the rules
 * The proxy classes must always extend the related `_EmptyProxy` class.
+* A mocked method may be declared in a super-interface or superclass of the mocked dependency (its source is in the
+  mocked dependencies source code). Override it in the `<DependencyClassName>_Proxy` of the mocked type. NEVER create a
+  proxy class for a parent type that is not itself a mockedDependency.
+* When overriding a method, use its signature as declared in the most specific type: the mocked type wins over its
+  parents (e.g. a covariant return type).
 
 ---
 
