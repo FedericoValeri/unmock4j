@@ -43,3 +43,4 @@ io.seata.spring.annotation.datasource.AutoDataSourceProxyRegistrar-0,io.seata.sp
 org.openapitools.codegen.templating.HandlebarsEngineAdapter-0,org.openapitools.codegen.templating.HandlebarsEngineAdapter,openai,gpt-6-luna,4872,1267,6139,0.001121,19.904,2026-10-01 11:18:54
 com.alibaba.csp.sentinel.adapter.dubbo.DubboUtils-0,com.alibaba.csp.sentinel.adapter.dubbo.DubboUtils,openai,gpt-6-luna,5950,1070,7020,0.001130,22.925,2026-10-01 14:35:51
 com.taobao.arthas.core.command.monitor200.TimeTunnelCommand-0,com.taobao.arthas.core.command.monitor200.TimeTunnelCommand,openai,gpt-6-luna,7473,2386,9859,0.001940,32.848,2026-10-01 14:40:40
+org.apache.shenyu.admin.config.LdapConfiguration-0,org.apache.shenyu.admin.config.LdapConfiguration,openai,gpt-6-luna,6470,2027,8497,0.001661,28.871,2026-10-02 08:58:55

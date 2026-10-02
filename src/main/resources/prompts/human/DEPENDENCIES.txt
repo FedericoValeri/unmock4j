@@ -1,233 +1,187 @@
-package com.taobao.arthas.core.shell.command;
+package org.apache.shenyu.admin.config.properties;
 
-import com.taobao.arthas.core.advisor.AdviceListener;
-import com.taobao.arthas.core.command.model.ResultModel;
-import com.taobao.arthas.core.shell.cli.CliToken;
-import com.taobao.arthas.core.shell.handlers.Handler;
-import com.taobao.arthas.core.shell.session.Session;
-import com.taobao.arthas.core.shell.term.Tty;
-import com.taobao.middleware.cli.CommandLine;
+import org.springframework.boot.context.properties.ConfigurationProperties;
 
-import java.lang.instrument.ClassFileTransformer;
-import java.util.List;
-import java.util.concurrent.atomic.AtomicInteger;
+@ConfigurationProperties(prefix = "shenyu.ldap")
+public class LdapProperties {
 
-/**
- * The command process provides interaction with the process of the command.
- *
- * @author <a href="mailto:julien@julienviet.com">Julien Viet</a>
- */
-public interface CommandProcess extends Tty {
-    /**
-     * @return the unparsed arguments tokens
-     */
-    List<CliToken> argsTokens();
+    private boolean enabled = true;
 
-    /**
-     * @return the actual string arguments of the command
-     */
-    List<String> args();
+    private String url;
+
+    private String bindDn;
+
+    private String password;
+
+    private String baseDn;
+
+    private String objectClass = "person";
+
+    private String loginField = "cn";
+
+    private Integer connectTimeout = 3000;
+
+    private Integer readTimeout = 3000;
 
     /**
-     * @return the command line object or null
-     */
-    CommandLine commandLine();
-
-    /**
-     * @return the shell session
-     */
-    Session session();
-
-    /**
-     * @return true if the command is running in foreground
-     */
-    boolean isForeground();
-
-    CommandProcess stdinHandler(Handler<String> handler);
-
-    /**
-     * Set an interrupt handler, this handler is called when the command is interrupted, for instance user
-     * press <code>Ctrl-C</code>.
+     * Gets the value of enabled.
      *
-     * @param handler the interrupt handler
-     * @return this command
+     * @return the value of enabled
      */
-    CommandProcess interruptHandler(Handler<Void> handler);
+    public boolean isEnabled() {
+        return enabled;
+    }
 
     /**
-     * Set a suspend handler, this handler is called when the command is suspended, for instance user
-     * press <code>Ctrl-Z</code>.
+     * Sets the enabled.
      *
-     * @param handler the interrupt handler
-     * @return this command
+     * @param enabled enabled
      */
-    CommandProcess suspendHandler(Handler<Void> handler);
+    public void setEnabled(final boolean enabled) {
+        this.enabled = enabled;
+    }
 
     /**
-     * Set a resume handler, this handler is called when the command is resumed, for instance user
-     * types <code>bg</code> or <code>fg</code> to resume the command.
+     * Gets the value of url.
      *
-     * @param handler the interrupt handler
-     * @return this command
+     * @return the value of url
      */
-    CommandProcess resumeHandler(Handler<Void> handler);
+    public String getUrl() {
+        return url;
+    }
 
     /**
-     * Set an end handler, this handler is called when the command is ended, for instance the command is running
-     * and the shell closes.
+     * Sets the url.
      *
-     * @param handler the end handler
-     * @return a reference to this, so the API can be used fluently
+     * @param url url
      */
-    CommandProcess endHandler(Handler<Void> handler);
+    public void setUrl(final String url) {
+        this.url = url;
+    }
 
     /**
-     * Write some text to the standard output.
+     * Gets the value of bindDn.
      *
-     * @param data the text
-     * @return a reference to this, so the API can be used fluently
+     * @return the value of bindDn
      */
-    CommandProcess write(String data);
+    public String getBindDn() {
+        return bindDn;
+    }
 
     /**
-     * Set a background handler, this handler is called when the command is running and put to background.
+     * Sets the bindDn.
      *
-     * @param handler the background handler
-     * @return this command
+     * @param bindDn bindDn
      */
-    CommandProcess backgroundHandler(Handler<Void> handler);
+    public void setBindDn(final String bindDn) {
+        this.bindDn = bindDn;
+    }
 
     /**
-     * Set a foreground handler, this handler is called when the command is running and put to foreground.
+     * Gets the value of password.
      *
-     * @param handler the foreground handler
-     * @return this command
+     * @return the value of password
      */
-    CommandProcess foregroundHandler(Handler<Void> handler);
-
-    @Override
-    CommandProcess resizehandler(Handler<Void> handler);
+    public String getPassword() {
+        return password;
+    }
 
     /**
-     * End the process with the exit status {@literal 0}
-     */
-    void end();
-
-    /**
-     * End the process.
+     * Sets the password.
      *
-     * @param status the exit status.
+     * @param password password
      */
-    void end(int status);
+    public void setPassword(final String password) {
+        this.password = password;
+    }
 
     /**
-     * End the process.
+     * Gets the value of baseDn.
      *
-     * @param status the exit status.
+     * @return the value of baseDn
      */
-    void end(int status, String message);
-
+    public String getBaseDn() {
+        return baseDn;
+    }
 
     /**
-     * Register listener
+     * Sets the baseDn.
      *
-     * @param listener
+     * @param baseDn baseDn
      */
-    void register(AdviceListener listener, ClassFileTransformer transformer);
+    public void setBaseDn(final String baseDn) {
+        this.baseDn = baseDn;
+    }
 
     /**
-     * Unregister listener
-     */
-    void unregister();
-
-    /**
-     * Execution times
+     * Gets the value of objectClass.
      *
-     * @return execution times
+     * @return the value of objectClass
      */
-    AtomicInteger times();
+    public String getObjectClass() {
+        return objectClass;
+    }
 
     /**
-     * Resume process
-     */
-    void resume();
-
-    /**
-     * Suspend process
-     */
-    void suspend();
-
-    /**
-     * echo tips
+     * Sets the objectClass.
      *
-     * @param tips process tips
+     * @param objectClass objectClass
      */
-    void echoTips(String tips);
+    public void setObjectClass(final String objectClass) {
+        this.objectClass = objectClass;
+    }
 
     /**
-     * Get cache file location
+     * Gets the value of loginField.
      *
-     * @return
+     * @return the value of loginField
      */
-    String cacheLocation();
+    public String getLoginField() {
+        return loginField;
+    }
 
     /**
-     * Whether the process is running
-     */
-    boolean isRunning();
-
-    /**
-     * Append the phased result to queue
-     * @param result a phased result of the command
-     */
-    void appendResult(ResultModel result);
-
-}
-
-package com.taobao.arthas.core.shell.term;
-
-import com.taobao.arthas.core.shell.handlers.Handler;
-
-public interface Tty {
-
-    /**
-     * @return the declared tty type, for instance {@literal vt100}, {@literal xterm-256},  etc... it can be null
-     * when the tty does not have declared its type.
-     */
-    String type();
-
-    /**
-     * @return the current width, i.e the number of rows or {@literal -1} if unknown
-     */
-    int width();
-
-    /**
-     * @return the current height, i.e the number of columns or {@literal -1} if unknown
-     */
-    int height();
-
-    /**
-     * Set a stream handler on the standard input to read the data.
+     * Sets the loginField.
      *
-     * @param handler the standard input
-     * @return this object
+     * @param loginField loginField
      */
-    Tty stdinHandler(Handler<String> handler);
+    public void setLoginField(final String loginField) {
+        this.loginField = loginField;
+    }
 
     /**
-     * Write data to the standard output.
+     * Gets the value of connectTimeout.
      *
-     * @param data the data to write
-     * @return this object
+     * @return the value of connectTimeout
      */
-    Tty write(String data);
+    public Integer getConnectTimeout() {
+        return connectTimeout;
+    }
 
     /**
-     * Set a resize handler, the handler is called when the tty size changes.
+     * Sets the connectTimeout.
      *
-     * @param handler the resize handler
-     * @return this object
+     * @param connectTimeout connectTimeout
      */
-    Tty resizehandler(Handler<Void> handler);
+    public void setConnectTimeout(final Integer connectTimeout) {
+        this.connectTimeout = connectTimeout;
+    }
 
+    /**
+     * Gets the value of readTimeout.
+     *
+     * @return the value of readTimeout
+     */
+    public Integer getReadTimeout() {
+        return readTimeout;
+    }
+
+    /**
+     * Sets the readTimeout.
+     *
+     * @param readTimeout readTimeout
+     */
+    public void setReadTimeout(final Integer readTimeout) {
+        this.readTimeout = readTimeout;
+    }
 }

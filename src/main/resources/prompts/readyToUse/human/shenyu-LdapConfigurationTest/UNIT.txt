@@ -1,0 +1,42 @@
+package org.apache.shenyu.admin.config;
+
+import org.apache.shenyu.admin.config.properties.LdapProperties;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.InjectMocks;
+import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.ldap.core.LdapTemplate;
+import org.springframework.ldap.core.support.LdapContextSource;
+
+import static org.hamcrest.CoreMatchers.is;
+import static org.hamcrest.MatcherAssert.assertThat;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.when;
+
+@ExtendWith(MockitoExtension.class)
+public final class LdapConfigurationTest {
+
+    @InjectMocks
+    private LdapConfiguration ldapConfiguration;
+
+    @Test
+    public void testContextSource() {
+        LdapProperties ldapProp = mock(LdapProperties.class);
+        String ldapUrl = "ldap://192.168.0.10:389";
+        String user = "test";
+        String pass = "123";
+        when(ldapProp.getUrl()).thenReturn(ldapUrl);
+        when(ldapProp.getBindDn()).thenReturn(user);
+        when(ldapProp.getPassword()).thenReturn(pass);
+        when(ldapProp.getConnectTimeout()).thenReturn(5000);
+        when(ldapProp.getReadTimeout()).thenReturn(10000);
+        LdapContextSource ldapContextSource = ldapConfiguration.contextSource(ldapProp);
+        assertNotNull(ldapContextSource);
+        assertThat(ldapContextSource.getUrls().length, is(1));
+        assertEquals(ldapContextSource.getUrls()[0], ldapUrl);
+        assertEquals(ldapContextSource.getUserDn(), user);
+        assertEquals(ldapContextSource.getPassword(), pass);
+    }
+}
