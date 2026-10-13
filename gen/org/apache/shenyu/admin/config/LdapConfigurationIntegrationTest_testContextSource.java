@@ -2,10 +2,6 @@ package org.apache.shenyu.admin.config;
 
 import org.apache.shenyu.admin.config.properties.LdapProperties;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.extension.ExtendWith;
-import org.mockito.InjectMocks;
-import org.mockito.junit.jupiter.MockitoExtension;
-import org.springframework.ldap.core.LdapTemplate;
 import org.springframework.ldap.core.support.LdapContextSource;
 
 import static org.hamcrest.CoreMatchers.is;
@@ -13,11 +9,9 @@ import static org.hamcrest.MatcherAssert.assertThat;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 
-@ExtendWith(MockitoExtension.class)
 public final final class LdapConfigurationIntegrationTest_testContextSource {
 
-    @InjectMocks
-    private LdapConfiguration ldapConfiguration;
+    private LdapConfiguration ldapConfiguration = new LdapConfiguration();
 
     @Test
     public void testContextSource() {

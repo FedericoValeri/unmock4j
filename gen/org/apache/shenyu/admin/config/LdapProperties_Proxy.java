@@ -17,8 +17,8 @@ import static org.mockito.Mockito.when;
 
 public class LdapProperties_Proxy extends LdapProperties_EmptyProxy {
 
-    public LdapProperties_Proxy(final LdapProperties ldapProperties) {
-        super(ldapProperties);
+    public LdapProperties_Proxy(final LdapProperties dependency) {
+        super(dependency);
     }
 
     @Override
