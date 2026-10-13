@@ -1,187 +1,73 @@
-package org.apache.shenyu.admin.config.properties;
+package com.alibaba.nacos.auth.config;
 
-import org.springframework.boot.context.properties.ConfigurationProperties;
+public interface NacosAuthConfig {
 
-@ConfigurationProperties(prefix = "shenyu.ldap")
-public class LdapProperties {
+    String getAuthScope();
 
-    private boolean enabled = true;
+    boolean isAuthEnabled();
 
-    private String url;
+    String getNacosAuthSystemType();
 
-    private String bindDn;
+    boolean isSupportServerIdentity();
 
-    private String password;
+    String getServerIdentityKey();
 
-    private String baseDn;
+    String getServerIdentityValue();
+}
 
-    private String objectClass = "person";
+package com.alibaba.nacos.api.remote.request;
 
-    private String loginField = "cn";
+import com.alibaba.nacos.api.remote.Payload;
+import java.util.Map;
+import java.util.TreeMap;
 
-    private Integer connectTimeout = 3000;
+public abstract class Request implements Payload {
 
-    private Integer readTimeout = 3000;
+    private final Map<String, String> headers = new TreeMap<>(String.CASE_INSENSITIVE_ORDER);
 
-    /**
-     * Gets the value of enabled.
-     *
-     * @return the value of enabled
-     */
-    public boolean isEnabled() {
-        return enabled;
+    private String requestId;
+
+    public void putHeader(String key, String value) {
+        headers.put(key, value);
     }
 
-    /**
-     * Sets the enabled.
-     *
-     * @param enabled enabled
-     */
-    public void setEnabled(final boolean enabled) {
-        this.enabled = enabled;
+    public void putAllHeader(Map<String, String> headers) {
+        if (headers == null || headers.isEmpty()) {
+            return;
+        }
+        this.headers.putAll(headers);
     }
 
-    /**
-     * Gets the value of url.
-     *
-     * @return the value of url
-     */
-    public String getUrl() {
-        return url;
+    public String getHeader(String key) {
+        return headers.get(key);
     }
 
-    /**
-     * Sets the url.
-     *
-     * @param url url
-     */
-    public void setUrl(final String url) {
-        this.url = url;
+    public String getHeader(String key, String defaultValue) {
+        String value = headers.get(key);
+        return (value == null) ? defaultValue : value;
     }
 
-    /**
-     * Gets the value of bindDn.
-     *
-     * @return the value of bindDn
-     */
-    public String getBindDn() {
-        return bindDn;
+    public String getRequestId() {
+        return requestId;
     }
 
-    /**
-     * Sets the bindDn.
-     *
-     * @param bindDn bindDn
-     */
-    public void setBindDn(final String bindDn) {
-        this.bindDn = bindDn;
+    public void setRequestId(String requestId) {
+        this.requestId = requestId;
     }
 
-    /**
-     * Gets the value of password.
-     *
-     * @return the value of password
-     */
-    public String getPassword() {
-        return password;
+    public abstract String getModule();
+
+    public Map<String, String> getHeaders() {
+        return headers;
     }
 
-    /**
-     * Sets the password.
-     *
-     * @param password password
-     */
-    public void setPassword(final String password) {
-        this.password = password;
+    public void clearHeaders() {
+        this.headers.clear();
     }
 
-    /**
-     * Gets the value of baseDn.
-     *
-     * @return the value of baseDn
-     */
-    public String getBaseDn() {
-        return baseDn;
-    }
-
-    /**
-     * Sets the baseDn.
-     *
-     * @param baseDn baseDn
-     */
-    public void setBaseDn(final String baseDn) {
-        this.baseDn = baseDn;
-    }
-
-    /**
-     * Gets the value of objectClass.
-     *
-     * @return the value of objectClass
-     */
-    public String getObjectClass() {
-        return objectClass;
-    }
-
-    /**
-     * Sets the objectClass.
-     *
-     * @param objectClass objectClass
-     */
-    public void setObjectClass(final String objectClass) {
-        this.objectClass = objectClass;
-    }
-
-    /**
-     * Gets the value of loginField.
-     *
-     * @return the value of loginField
-     */
-    public String getLoginField() {
-        return loginField;
-    }
-
-    /**
-     * Sets the loginField.
-     *
-     * @param loginField loginField
-     */
-    public void setLoginField(final String loginField) {
-        this.loginField = loginField;
-    }
-
-    /**
-     * Gets the value of connectTimeout.
-     *
-     * @return the value of connectTimeout
-     */
-    public Integer getConnectTimeout() {
-        return connectTimeout;
-    }
-
-    /**
-     * Sets the connectTimeout.
-     *
-     * @param connectTimeout connectTimeout
-     */
-    public void setConnectTimeout(final Integer connectTimeout) {
-        this.connectTimeout = connectTimeout;
-    }
-
-    /**
-     * Gets the value of readTimeout.
-     *
-     * @return the value of readTimeout
-     */
-    public Integer getReadTimeout() {
-        return readTimeout;
-    }
-
-    /**
-     * Sets the readTimeout.
-     *
-     * @param readTimeout readTimeout
-     */
-    public void setReadTimeout(final Integer readTimeout) {
-        this.readTimeout = readTimeout;
+    @Override
+    public String toString() {
+        return this.getClass().getSimpleName() + "{" + "headers=" + headers + ", requestId='"
+            + requestId + '\'' + '}';
     }
 }

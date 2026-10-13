@@ -1,42 +1,35 @@
-package org.apache.shenyu.admin.config;
+package com.alibaba.nacos.auth.util;
 
-import org.apache.shenyu.admin.config.properties.LdapProperties;
+import com.alibaba.nacos.api.remote.request.Request;
+import com.alibaba.nacos.auth.config.NacosAuthConfig;
+import com.alibaba.nacos.common.http.param.Header;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
-import org.mockito.InjectMocks;
+import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
-import org.springframework.ldap.core.LdapTemplate;
-import org.springframework.ldap.core.support.LdapContextSource;
 
-import static org.hamcrest.CoreMatchers.is;
-import static org.hamcrest.MatcherAssert.assertThat;
 import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertNotNull;
-import static org.mockito.Mockito.mock;
+import static org.junit.jupiter.api.Assertions.assertNull;
+import static org.mockito.ArgumentMatchers.anyString;
+import static org.mockito.Mockito.never;
+import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
-public final class LdapConfigurationTest {
+class AuthHeaderUtilTest {
 
-    @InjectMocks
-    private LdapConfiguration ldapConfiguration;
+    @Mock
+    private NacosAuthConfig authConfig;
+    
+    @Mock
+    private Request request;
 
     @Test
-    public void testContextSource() {
-        LdapProperties ldapProp = mock(LdapProperties.class);
-        String ldapUrl = "ldap://192.168.0.10:389";
-        String user = "test";
-        String pass = "123";
-        when(ldapProp.getUrl()).thenReturn(ldapUrl);
-        when(ldapProp.getBindDn()).thenReturn(user);
-        when(ldapProp.getPassword()).thenReturn(pass);
-        when(ldapProp.getConnectTimeout()).thenReturn(5000);
-        when(ldapProp.getReadTimeout()).thenReturn(10000);
-        LdapContextSource ldapContextSource = ldapConfiguration.contextSource(ldapProp);
-        assertNotNull(ldapContextSource);
-        assertThat(ldapContextSource.getUrls().length, is(1));
-        assertEquals(ldapContextSource.getUrls()[0], ldapUrl);
-        assertEquals(ldapContextSource.getUserDn(), user);
-        assertEquals(ldapContextSource.getPassword(), pass);
+    void testAddIdentityToGrpcRequestWhenNotSupport() {
+        when(authConfig.isSupportServerIdentity()).thenReturn(false);
+
+        AuthHeaderUtil.addIdentityToHeader(request, authConfig);
+
+        verify(request, never()).putHeader(anyString(), anyString());
     }
 }
