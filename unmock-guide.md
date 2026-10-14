@@ -4,6 +4,10 @@
 
 ### Prerequisites
 
+Clone repository
+
+`git clone https://github.com/FedericoValeri/unmock4j.git`
+
 Install:
 
 - **Java JDK 21**
