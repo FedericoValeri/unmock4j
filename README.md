@@ -60,18 +60,9 @@ Use the following commands:
     ```
 
 2. Execute
-
-    - Windows PowerShell:
-
-      ```powershell
-      mvn exec:java "-Dexec.mainClass=unicam.phd.unmock.Main"
-      ```
-
-    - macOS / Linux:
-
-      ```bash
-      mvn exec:java -Dexec.mainClass=unicam.phd.unmock.Main
-      ```
+   ```cmd
+   java -jar target/unmock-1.0-SNAPSHOT.jar
+   ```
 
 ## Insights
 

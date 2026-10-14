@@ -30,32 +30,25 @@ Replace `secret_key` with the given openai api key.
 
 ## Usage
 
-1. Move into the `src/main/resources/prompts/human` directory the given files (if there are already files with the same names, override them):
-   - SUT.txt
-   - UNIT.txt
-   - DEPENDENCIES.txt
+1. Move into the `src/main/resources/prompts/human` directory the given files (if there are already files with the same
+   names, override them):
+    - SUT.txt
+    - UNIT.txt
+    - DEPENDENCIES.txt
 
    This will enable UnMock to work with the selected use case.
 
 2. Run the application using the following commands:
-   1. Build
+    1. Build
 
-      ```bash
-      mvn clean package
-      ```
+       ```bash
+       mvn clean package
+       ```
 
-   2. Execute
-      - Windows PowerShell:
-
-      ```powershell
-      mvn exec:java "-Dexec.mainClass=unicam.phd.unmock.Main"
-      ```
-
-      - macOS / Linux:
-
-      ```bash
-      mvn exec:java -Dexec.mainClass=unicam.phd.unmock.Main
-      ```
+    2. Execute
+       ```cmd
+       java -jar target/unmock-1.0-SNAPSHOT.jar
+       ```
 
 3. Check the results via the provided script:
    `.\scripts\check-gen.ps1 -Repo <local_repo_path>`
