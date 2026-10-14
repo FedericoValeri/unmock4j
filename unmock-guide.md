@@ -72,9 +72,16 @@ if you cannot get it to work, that is valuable information for us.
        java -jar target/unmock-1.0-SNAPSHOT.jar
        ```
 
-4. Run the provided script:
-   `.\scripts\check-gen.ps1 -Repo <local_repo_path>`
+4. Run the provided script for your operating system:
 
+    - **Windows** (PowerShell):
+    ```powershell
+    .\scripts\check-gen.ps1 -Repo <local_repo_path>
+    ```
+    - **Linux / macOS** (bash):
+    ```bash
+    bash scripts/check-gen.sh --repo <local_repo_path>
+    ```
    Replace `<local_repo_path>` with the path of the target project repository in your machine.
 
 5. Check the outcome and complete the integration test.
@@ -85,7 +92,7 @@ if you cannot get it to work, that is valuable information for us.
        these copies**, not in the `gen/` folder of unmock4j, which must keep UnMock's original output.
     3. If the code does not compile, fix the errors. Also look for configuration points: places where the test needs
        a real instance of a dependency that UnMock could not create on its own. Provide that instance yourself.
-    4. **Do not run `check-gen.ps1` again**: it would overwrite your changes. To recompile, run this from the root of
+    4. **Do not run the script again**: it would overwrite your changes. To recompile, run this from the root of
        the target project, replacing `<module>` with the module shown by the script:
 
        ```bash
