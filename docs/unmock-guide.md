@@ -51,7 +51,8 @@ if you cannot get it to work, that is valuable information for us.
     - what behaviour the mocks are told to have (`when(...).thenReturn(...)`);
     - which interactions the test checks (`verify(...)`).
 
-2. Move into the unmock project `src/main/resources/prompts/human` directory the given files (if there are already files
+2. Move into the unmock project `../src/main/resources/prompts/human` directory the given files (if there are already
+   files
    with the same
    names, override them):
     - SUT.txt
