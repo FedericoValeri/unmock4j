@@ -107,7 +107,6 @@
         </dependency>
 
         <!-- Source: https://mvnrepository.com/artifact/com.taobao.arthas/arthas-core -->
-        <!-- Source: https://mvnrepository.com/artifact/com.taobao.arthas/arthas-core -->
         <dependency>
             <groupId>com.taobao.arthas</groupId>
             <artifactId>arthas-core</artifactId>

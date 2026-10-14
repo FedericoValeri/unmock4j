@@ -114,3 +114,19 @@ In order to check the generated `.java` files, the following command is run into
 
 `mvn clean test-compile -pl <module_name> -am`
 
+or automate via the available script:
+
+e.g.
+
+`.\scripts\check-gen.ps1 -Repo C:\repos\shenyu`
+
+## Tested repositories
+
+- [dolphinscheduler](https://github.com/apache/dolphinscheduler/releases#release-3.4.1)
+- [nacos](https://github.com/alibaba/nacos/releases#release-3.2.1)
+- [arthas](https://github.com/alibaba/arthas/releases#release-arthas-all-4.3.5)
+- [incubator-seata](https://github.com/apache/incubator-seata)
+- [sentinel](https://github.com/alibaba/Sentinel/releases#release-1.8.8)
+- [openapi-generator](https://github.com/OpenAPITools/openapi-generator/releases#release-v7.24.0)
+- [shenyu](https://github.com/apache/shenyu/releases#release-v2.7.1)
+
