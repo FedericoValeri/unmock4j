@@ -1,4 +1,4 @@
-# UnMock questionnaire material
+# UnMock experiment material
 
 ## Participant
 
@@ -39,16 +39,18 @@ the related `SUT.txt`, `UNIT.txt`, `DEPENDENCIES.txt` files.
 
 ## UnMock repository
 
-Download the UnMock project directly from the following link:
+In order to run UnMock, download the project directly from the following link:
 
 https://github.com/FedericoValeri/unmock4j
 
-## UnMock usage guide
+## UnMock experiment guide
 
-Follow this guide to conduct the experiment.
+Follow this guide to conduct the experiment:
 
-https://github.com/FedericoValeri/unmock4j/blob/main/docs/unmock-guide.md
+https://github.com/FedericoValeri/unmock4j/blob/main/docs/unmock-experiment-guide.md
 
 ## Questionnaire link
+
+Once you've done with the experiment, fill out the following questionnaire:
 
 https://docs.google.com/forms/d/e/1FAIpQLSfO3-WXm8VVo0qW31DTSEtE5bbmt-5IIJwTN_oesW3JjTA32Q/viewform
