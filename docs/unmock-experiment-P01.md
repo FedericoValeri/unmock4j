@@ -93,8 +93,7 @@ other applications. Please keep the key confidential and use it only for the UnM
     - UNIT.txt
     - DEPENDENCIES.txt
 
-   This will enable UnMock to work with the selected use case. For explanation about each file role in the experiment,
-   refer to the unmock experiment material document - section Input files.
+   This will enable UnMock to work with the selected use case.
 
 3. Run the application using the following commands:
     1. Build
@@ -119,7 +118,8 @@ other applications. Please keep the key confidential and use it only for the UnM
       bash scripts/check-gen.sh --repo <local_repo_path>
       ```
 
-   Replace `<local_repo_path>` with the path of the target project repository in your machine.
+   Replace `<local_repo_path>` with the path of the target project repository in your machine. The script will move the
+   UnMock generated files into the target open-source project and compile them.
 
 5. Check the outcome and complete the integration test.
     1. Read the script output. It shows the module of the target project (`Module`), the folder where the generated
