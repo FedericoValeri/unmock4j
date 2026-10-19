@@ -37,12 +37,6 @@ the related `SUT.txt`, `UNIT.txt`, `DEPENDENCIES.txt` files.
     - **UNIT.txt** (TODO: replace with download links)
     - **DEPENDENCIES.txt** (TODO: replace with download links)
 
-## UnMock repository
-
-In order to run UnMock, download the project directly from the following link:
-
-https://github.com/FedericoValeri/unmock4j
-
 ## UnMock experiment guide
 
 Follow this guide to conduct the experiment:
