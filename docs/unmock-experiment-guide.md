@@ -30,7 +30,7 @@ PROVIDER=openai
 OPENAI_API_KEY=secret_key
 ```
 
-Replace `secret_key` with the given openai api key.
+Replace `secret_key` with the given openai api key (see the unmock experiment material document - section Participant).
 
 ## Objective
 
@@ -38,7 +38,7 @@ Unit tests often replace the real dependencies of a class with mocks (Mockito `@
 mock encodes an assumption about how the real dependency behaves, but the unit test never checks that assumption against
 the real code. UnMock uses an LLM to turn such a unit test into an integration test: the mocks are replaced by proxies
 that call the real dependencies and still check what the original test expected.
-In this session you will use UnMock on a real unit test from an open-source project, check the generated integration
+In this session you will use UnMock on real unit tests from given open-source projects, check the generated integration
 test and fix it where needed. Afterwards you will fill in a short questionnaire about your experience.
 We are evaluating the tool, not you. There are no right or wrong outcomes: if the generated code needs many changes, or
 if you cannot get it to work, that is valuable information for us.
@@ -52,14 +52,13 @@ if you cannot get it to work, that is valuable information for us.
     - which interactions the test checks (`verify(...)`).
 
 2. Move into the unmock project `../src/main/resources/prompts/human` directory the given files (if there are already
-   files
-   with the same
-   names, override them):
+   files with the same names, override them):
     - SUT.txt
     - UNIT.txt
     - DEPENDENCIES.txt
 
-   This will enable UnMock to work with the selected use case.
+   This will enable UnMock to work with the selected use case. For explanation about each file role in the experiment,
+   refer to the unmock experiment material document - section Input files.
 
 3. Run the application using the following commands:
     1. Build
