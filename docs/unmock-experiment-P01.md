@@ -131,6 +131,12 @@ First, remember to download locally the open source projects, in a directory of 
        these copies**, not in the `gen/` folder of unmock4j, which must keep UnMock's original output.
     3. If the code does not compile, fix the errors. Also look for configuration points: places where the test needs
        a real instance of a dependency that UnMock could not create on its own. Provide that instance yourself.
+
+       Hints for finding errors:
+
+       - Look for `[ERROR]` lines in the output (they show file, line and message) or red underlines in the IDE.
+       - Search for `REAL_CONFIGURED_INSTANCE`: it marks the configuration points.
+       - Compare wrong imports, constructors or method signatures with the real classes in the target project.
     4. **Do not run the script again**: it would overwrite your changes. To recompile, run this from the root of
        the target project, replacing `<module>` with the module shown by the script:
 
