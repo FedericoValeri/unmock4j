@@ -79,6 +79,8 @@ other applications. Please keep the key confidential and use it only for the UnM
 
 ### Procedure
 
+First, remember to download locally the open source projects, in a directory of your choice, through the links provided in section `Target projects`.
+
 1. See the unit test provided in `UNIT.txt` and try to understand it by identifying:
 
     - the class under test (also given in `SUT.txt`);
@@ -125,7 +127,7 @@ other applications. Please keep the key confidential and use it only for the UnM
     1. Read the script output. It shows the module of the target project (`Module`), the folder where the generated
        files were copied (`Target`), one `copy ... -> ...` line per generated file, and finally whether the code
        compiles. The generated files are an integration test class and one or more proxy classes (`..._Proxy`).
-    2. Open the copied files in the target project (the paths after `->`) and read them. **Make all your changes in
+    2. Open the target project in a IDE of your choice (e.g. IntelliJ IDEA or Eclipse) and read the UnMock generated files (the location can be found in the script output paths after `->`). **Make all your changes in
        these copies**, not in the `gen/` folder of unmock4j, which must keep UnMock's original output.
     3. If the code does not compile, fix the errors. Also look for configuration points: places where the test needs
        a real instance of a dependency that UnMock could not create on its own. Provide that instance yourself.
