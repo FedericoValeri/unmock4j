@@ -1,53 +1,26 @@
 # UnMock experiment - P01
 
-## Objective
+Unit tests often use mocks (for example,  `@Mock`, `when(...)`, `verify(...)`) to simulate dependencies. Each mock encodes assumptions about how the real dependency behaves, but the unit test never checks those assumption against the real implementations. UnMock is a framework that uses an LLM to transform existing unit tests into integration tests. It replaces mocked dependencies with proxies that call the real dependencies while checking the expectations expressed in the original tests.
 
-Unit tests often replace the real dependencies of a class with mocks (Mockito `@Mock`, `when(...)`, `verify(...)`). Each
-mock encodes an assumption about how the real dependency behaves, but the unit test never checks that assumption against
-the real code. UnMock uses an LLM to turn such a unit test into an integration test: the mocks are replaced by proxies
-that call the real dependencies and still check what the original test expected.
-In this session you will use UnMock on real unit tests from given open-source projects, check the generated integration
-test and fix it where needed. Afterward you will fill in a short questionnaire about your experience.
-We are evaluating the tool, not you. There are no right or wrong outcomes: if the generated code needs many changes, or
-if you cannot get it to work, that is valuable information for us.
+In this experiment, you will use UnMock on provided unit tests from two open-source Java projects. 
 
-## Target projects
+For each project, you will:
+* Inspect the original unit test
+* Generate an integration test using UnMock
+* Review the generated code and make corrections where necessary
+* Attempt to compile and run the generated integration test
 
-- [dolphinscheduler](https://github.com/apache/dolphinscheduler/releases#release-3.4.1):
-    - **SUT.txt** (TODO: replace with download links)
-    - **UNIT.txt** (TODO: replace with download links)
-    - **DEPENDENCIES.txt** (TODO: replace with download links)
-- [nacos](https://github.com/alibaba/nacos/releases#release-3.2.1):
-    - **SUT.txt** (TODO: replace with download links)
-    - **UNIT.txt** (TODO: replace with download links)
-    - **DEPENDENCIES.txt** (TODO: replace with download links)
+Your main goal is to get the generated code to compile and run successfully in the target project. If it works without modifications, no changes are needed. Otherwise, please make a reasonable effort to resolve any issues you encounter. If you cannot resolve a problem after trying, make a note of it and move on.
 
-Download locally the target open source projects in a directory of your choice through the provided links. Also download
-the related `SUT.txt`, `UNIT.txt`, `DEPENDENCIES.txt` files. These files are the input UnMock needs to turn a
-unit test into an integration test:
+After working on both projects, you will complete one questionnaire about your experience.
 
-- **UNIT.txt**: the unit test to transform. A JUnit test class that uses Mockito mocks (`@Mock`, `when(...)`,
-  `verify(...)`). It is the main input: UnMock reads which dependencies are mocked, how they are expected to behave, and
-  which interactions are checked, and turns these into checks against the real dependencies.
-- **SUT.txt**: the system under test, i.e. the production class that the unit test exercises (its package and class
-  declaration). It tells UnMock which class the generated integration test targets.
-- **DEPENDENCIES.txt**: the source code of the dependencies that are mocked in UNIT.txt (interfaces or classes, one
-  after the other). UnMock uses it to see their method signatures, return types, constructors and inheritance, so that
-  the generated proxies can call the real implementations instead of the mocks.
+We are evaluating UnMock, not your programming skills. Your experience and feedback, including any issues you encounter, will help us understand how well the tool works and where it can be improved.
 
-## UnMock experiment guide
+## Experiment Setup
 
-Follow this guide to conduct the experiment.
+### 1. Check the prerequisites
 
-### Setup
-
-#### Prerequisites
-
-Clone repository
-
-`git clone https://github.com/FedericoValeri/unmock4j.git`
-
-Install:
+Make sure you have installed:
 
 - **Java JDK 21**
 - **Apache Maven 3.9+**
@@ -58,10 +31,15 @@ Check installed versions:
 java -version
 mvn -version
 ```
+### 2. Download and configure UnMock
 
-#### Environment configuration
+Clone the UnMock repository:
 
-Create a `.env` file in the project root directory with the following content:
+```bash
+git clone https://github.com/FedericoValeri/unmock4j.git
+cd unmock4j
+```
+Create a `.env` file in the root of `unmock4j` with the following contents:
 
 ```env
 MODEL=gpt-6-luna
@@ -77,85 +55,108 @@ _The OpenAI API key provided to you is intended exclusively for testing the Unmo
 activity. It is valid for one day and must not be used for any other purpose, shared with third parties, or used in
 other applications. Please keep the key confidential and use it only for the UnMock evaluation._
 
-### Procedure
 
-First, remember to download locally the open source projects, in a directory of your choice, through the links provided in section `Target projects`.
+### 3. Download a target project and its input files
 
-1. See the unit test provided in `UNIT.txt` and try to understand it by identifying:
+Download each target project into a directory of your choice:
 
-    - the class under test (also given in `SUT.txt`);
-    - which dependencies are mocked (e.g. fields annotated with `@Mock`);
-    - what behaviour the mocks are told to have (`when(...).thenReturn(...)`);
-    - which interactions the test checks (`verify(...)`).
+- [dolphinscheduler](https://github.com/apache/dolphinscheduler/releases#release-3.4.1):
+    - **SUT.txt** (TODO: replace with download links)
+    - **UNIT.txt** (TODO: replace with download links)
+    - **DEPENDENCIES.txt** (TODO: replace with download links)
+- [nacos](https://github.com/alibaba/nacos/releases#release-3.2.1):
+    - **SUT.txt** (TODO: replace with download links)
+    - **UNIT.txt** (TODO: replace with download links)
+    - **DEPENDENCIES.txt** (TODO: replace with download links)
 
-2. Move into the unmock project `../src/main/resources/prompts/human` directory the given files (if there are already
-   files with the same names, override them):
+Also download the related `SUT.txt`, `UNIT.txt`, `DEPENDENCIES.txt` files. These are the inputs UnMock needs to turn a unit test into an integration test:
+- **`UNIT.txt`** contains the Mockito-based JUnit unit test to be transformed. It is the main input: UnMock examines the mocked dependencies, their configured behavior, and the interactions being verified.
+- **`SUT.txt`** identifies the system under test,  i.e the production class exercised by the unit test.
+- **`DEPENDENCIES.txt`** contains source code for the mocked dependency types (interfaces or classes). UnMock uses their declarations, method signatures, and type information to construct proxies.
 
-    - SUT.txt
-    - UNIT.txt
-    - DEPENDENCIES.txt
+## Experiment Procedure
 
-   This will enable UnMock to work with the selected use case.
+Complete the following steps for each target project.
 
-3. Run the application using the following commands:
-    1. Build
+### 1. Inspect the original unit test
 
-       ```bash
-       mvn clean package
-       ```
+Open the unit test provided in `UNIT.txt` and try to understand it by identifying:
+- The class under test (also given in `SUT.txt`).
+- The dependencies that are mocked (for example, fields annotated with `@Mock`).
+- The behavior configured for the mocks (for example, `when(...).thenReturn(...)`).
+- The interactions checked by the test (for example, `verify(...)`).
 
-    2. Execute
-       ```cmd
-       java -jar target/unmock-1.0-SNAPSHOT.jar
-       ```
+### 2. Provide the input files to UnMock
 
-4. Run the provided script for your operating system:
+Copy the three downloaded files into:
 
-    - **Windows** (PowerShell):
-      ```powershell
-      .\scripts\check-gen.ps1 -Repo <local_repo_path>
-      ```
-    - **Linux / macOS** (bash):
-      ```bash
-      bash scripts/check-gen.sh --repo <local_repo_path>
-      ```
+```text
+unmock4j/src/main/resources/prompts/human/
+```
+The directory must contain the files with exactly these names:
 
-   Replace `<local_repo_path>` with the path of the target project repository in your machine. The script will move the
-   UnMock generated files into the target open-source project and compile them.
+```text
+SUT.txt
+UNIT.txt
+DEPENDENCIES.txt
+```
+Overwrite existing files with the same names. These files must all correspond to the project you are currently evaluating.
 
-5. Check the outcome and complete the integration test.
-    1. Read the script output. It shows the module of the target project (`Module`), the folder where the generated
-       files were copied (`Target`), one `copy ... -> ...` line per generated file, and finally whether the code
-       compiles. The generated files are an integration test class and one or more proxy classes (`..._Proxy`).
-    2. Open the target project in a IDE of your choice (e.g. IntelliJ IDEA or Eclipse) and read the UnMock generated files (the location can be found in the script output paths after `->`). **Make all your changes in
-       these copies**, not in the `gen/` folder of unmock4j, which must keep UnMock's original output.
-    3. If the code does not compile, fix the errors. Also look for configuration points: places where the test needs
-       a real instance of a dependency that UnMock could not create on its own. Provide that instance yourself.
+### 3. Generate the integration test
 
-       Hints for finding errors:
+From the root of `unmock4j`, build and run the application:
 
-       - Look for `[ERROR]` lines in the output (they show file, line and message) or red underlines in the IDE.
-       - Search for `REAL_CONFIGURED_INSTANCE`: it marks the configuration points.
-       - Compare wrong imports, constructors or method signatures with the real classes in the target project.
-    4. **Do not run the script again**: it would overwrite your changes. To recompile, run this from the root of
-       the target project, replacing `<module>` with the module shown by the script:
+```bash
+mvn clean package
+java -jar target/unmock-1.0-SNAPSHOT.jar
+```
 
-       ```bash
-          mvn clean test-compile -pl <module> -am
-       ```
+UnMock generates an integration test class and one or more proxy classes (with names ending in `_Proxy`) in its `gen/` directory.
 
-6. Change only what is needed to make the test compile and run.
+### 4. Compile the integration test
+
+From the root of `unmock4j`, run the appropriate checking script for your operating system. Replace `<local_repo_path>` with the path of the target project repository in your machine.
+
+- **Windows** (PowerShell):
+```powershell
+.\scripts\check-gen.ps1 -Repo <local_repo_path>
+```
+- **Linux / macOS** (bash):
+```bash
+bash scripts/check-gen.sh --repo <local_repo_path>
+```
+This script will move the UnMock generated files into the target open-source project and compile them. The output of the script includes:
+
+- **`Module`**: the target project's Maven module.
+- **`Target`**: the folder where the generated files were copied.
+- **`copy ... -> ...`**: the destination of each copied file.
+- The Maven compilation result and any compilation errors.
+
+**Important:** This script checks whether the generated code compiles; it **does not run the integration test**.
+
+### 5. Inspect and, if necessary, fix the generated code
+Your main goal is to inspect the integration test and proxy classes generated by UnMock and make any necessary changes to get them to **compile successfully** in the target project. Executing the generated integration test is optional as it may require additional services or configuration. If you cannot fix an issue, record the error and what you tried. You can still complete the experiment and questionnaire.
+
+Follow these steps:
+
+1. Open the cloned target project in an IDE, such as IntelliJ IDEA or Eclipse.
+2. Find the generated integration test and proxy classes using the destination paths (`->`) shown by the script. Inspect them even if compilation succeeded.
+3. **If the code does not compile**, fix the problems you can identify. For example:
+   - Incorrect imports, method signatures, or constructor calls.
+   - Missing or incorrect dependency initialization.
+   - Configuration points marked by `REAL_CONFIGURED_INSTANCE`, where a real dependency instance must be provided.
+4. Make **only the changes needed** to get the generated test compiling, and preserve the intentions of the original unit test as far as possible.
+5. Recompile the code after making changes. From the root of the target project, run the following command, replacing <module> with the module shown in the checking script's output: `mvn clean test-compile -pl <module> -am `
+ 
+Note: Do not run `check-gen` again after editing the copied files: it would overwrite your changes.
 
 ## Questionnaire
 
-Once you've done with the experiment, you can start the questionnaire. Do it once, right after finishing the experiment,
-while the experience is fresh. It takes about 5 minutes.
+Complete the questionnaire once, after finishing both projects. It takes approximately 5 minutes.
 
 - Enter your participant code, which you find below. Your name is not collected.
     - **Code**: P01
-- Rate each statement from 1 (strongly disagree) to 4 (strongly agree), thinking about the task you have just done.
-- The open questions at the end are optional but very useful. In particular, please describe what you had to
-  change in the generated code and why.
+- Rate each statement from 1 (strongly disagree) to 4 (strongly agree), based on the tasks you just completed.
+- The open-ended questions are optional but very helpful. In particular, describe what you changed in the generated code and why. 
 
-**Link to
-questionnaire**: https://docs.google.com/forms/d/e/1FAIpQLSfO3-WXm8VVo0qW31DTSEtE5bbmt-5IIJwTN_oesW3JjTA32Q/viewform
+**Link to questionnaire**: https://docs.google.com/forms/d/e/1FAIpQLSfO3-WXm8VVo0qW31DTSEtE5bbmt-5IIJwTN_oesW3JjTA32Q/viewform
