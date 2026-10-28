@@ -1,6 +1,6 @@
 # UnMock experiment - P01
 
-Unit tests often use mocks (for example,  `@Mock`, `when(...)`, `verify(...)`) to simulate dependencies. Each mock encodes assumptions about how the real dependency behaves, but the unit test never checks those assumption against the real implementations. UnMock is a framework that uses an LLM to transform existing unit tests into integration tests. It replaces mocked dependencies with proxies that call the real dependencies while checking the expectations expressed in the original tests.
+Unit tests often use mocks (for example,  `@Mock`, `when(...)`, `verify(...)`) to simulate dependencies (i.e. other classes required by the class under test during the execution of the test). Each mock encodes assumptions about how the real dependency behaves, but the unit test never checks those assumption against the real implementations. UnMock is a framework that uses an LLM to transform existing unit tests into integration tests. It replaces mocked dependencies with proxies that call the real dependencies while checking the expectations expressed in the original tests.
 
 In this experiment, you will use UnMock on provided unit tests from two open-source Java projects. 
 
@@ -8,7 +8,8 @@ For each project, you will:
 * Inspect the original unit test
 * Generate an integration test using UnMock
 * Review the generated code and make corrections where necessary
-* Attempt to compile and run the generated integration test
+* Attempt to compile the generated integration test
+* Attempt to run the generated integration test (TODO: provare a eseguire i test su tutti i 7 progetti, prima)
 
 Your main goal is to get the generated code to compile and run successfully in the target project. If it works without modifications, no changes are needed. Otherwise, please make a reasonable effort to resolve any issues you encounter. If you cannot resolve a problem after trying, make a note of it and move on.
 
@@ -49,7 +50,7 @@ OPENAI_API_KEY=secret_key
 
 Replace `secret_key` with the following openai api key:
 
-- **OPENAI API KEY**: #### (TODO: put the real api key)
+- **OPENAI API KEY**: #### (TODO: put the real api key - 10 days expiration - one each participant)
 
 _The OpenAI API key provided to you is intended exclusively for testing the Unmock project as part of this research
 activity. It is valid for one day and must not be used for any other purpose, shared with third parties, or used in
@@ -61,13 +62,13 @@ other applications. Please keep the key confidential and use it only for the UnM
 Download each target project into a directory of your choice:
 
 - [dolphinscheduler](https://github.com/apache/dolphinscheduler/releases#release-3.4.1):
-    - **SUT.txt** (TODO: replace with download links)
-    - **UNIT.txt** (TODO: replace with download links)
-    - **DEPENDENCIES.txt** (TODO: replace with download links)
+    - **SUT.txt** (TODO: replace with download link)
+    - **UNIT.txt** (TODO: replace with download link)
+    - **DEPENDENCIES.txt** (TODO: replace with download link)
 - [nacos](https://github.com/alibaba/nacos/releases#release-3.2.1):
-    - **SUT.txt** (TODO: replace with download links)
-    - **UNIT.txt** (TODO: replace with download links)
-    - **DEPENDENCIES.txt** (TODO: replace with download links)
+    - **SUT.txt** (TODO: replace with download link)
+    - **UNIT.txt** (TODO: replace with download link)
+    - **DEPENDENCIES.txt** (TODO: replace with download link)
 
 Also download the related `SUT.txt`, `UNIT.txt`, `DEPENDENCIES.txt` files. These are the inputs UnMock needs to turn a unit test into an integration test:
 - **`UNIT.txt`** contains the Mockito-based JUnit unit test to be transformed. It is the main input: UnMock examines the mocked dependencies, their configured behavior, and the interactions being verified.
@@ -93,21 +94,30 @@ Copy the three downloaded files into:
 ```text
 unmock4j/src/main/resources/prompts/human/
 ```
-The directory must contain the files with exactly these names:
+The directory has to contain the files with exactly these names:
 
 ```text
 SUT.txt
 UNIT.txt
 DEPENDENCIES.txt
 ```
-Overwrite existing files with the same names. These files must all correspond to the project you are currently evaluating.
+Overwrite existing files with the same names. All these files have to correspond to the project you are currently evaluating.
 
-### 3. Generate the integration test
+### ?. Check the interaction with the LLM
 
-From the root of `unmock4j`, build and run the application:
+TODO: scrivere script per testare connessione con UnMock.
 
 ```bash
 mvn clean package
+java -jar target/unmock-1.0-SNAPSHOT.jar --llm-check
+```
+Se non va, controllare connessione internet e file `.env`. Se il problema persiste contattare federico.valeri@unicam.it.
+
+### 3. Generate the integration test
+
+From the root of `unmock4j`, run the application:
+
+```bash
 java -jar target/unmock-1.0-SNAPSHOT.jar
 ```
 
@@ -135,7 +145,7 @@ This script will move the UnMock generated files into the target open-source pro
 **Important:** This script checks whether the generated code compiles; it **does not run the integration test**.
 
 ### 5. Inspect and, if necessary, fix the generated code
-Your main goal is to inspect the integration test and proxy classes generated by UnMock and make any necessary changes to get them to **compile successfully** in the target project. Executing the generated integration test is optional as it may require additional services or configuration. If you cannot fix an issue, record the error and what you tried. You can still complete the experiment and questionnaire.
+Your main goal is to inspect the integration test and proxy classes generated by UnMock and make any necessary changes to get them to **compile successfully** in the target project. 
 
 Follow these steps:
 
@@ -146,9 +156,12 @@ Follow these steps:
    - Missing or incorrect dependency initialization.
    - Configuration points marked by `REAL_CONFIGURED_INSTANCE`, where a real dependency instance must be provided.
 4. Make **only the changes needed** to get the generated test compiling, and preserve the intentions of the original unit test as far as possible.
-5. Recompile the code after making changes. From the root of the target project, run the following command, replacing <module> with the module shown in the checking script's output: `mvn clean test-compile -pl <module> -am `
+5. Recompile the code after making changes. From the root of the target project, run the following command, replacing `<module>` with the module shown in the checking script's output: `mvn clean test-compile -pl <module> -am `
  
 Note: Do not run `check-gen` again after editing the copied files: it would overwrite your changes.
+
+### 6. Run the integration test
+Once step is completed successfully, execute the generated integration test. If you cannot fix any issue, record the error and what you tried. You can still complete the experiment and questionnaire.
 
 ## Questionnaire
 
