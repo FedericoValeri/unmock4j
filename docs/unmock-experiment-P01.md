@@ -161,8 +161,8 @@ Follow these steps:
  
 Note: Do not run `check-gen` again after editing the copied files: it would overwrite your changes.
 
-### 6. Run the integration test
-Once step is completed successfully, execute the generated integration test. If you cannot fix any issue, record the error and what you tried. You can still complete the experiment and questionnaire.
+### 7. Run the integration test
+Once step 6 is completed successfully, execute the generated integration test. If you cannot fix any issue, record the error and what you tried. You can still complete the experiment and questionnaire.
 
 ## Questionnaire
 
