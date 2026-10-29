@@ -105,7 +105,7 @@ Overwrite existing files with the same names. All these files have to correspond
 
 ### 3. Check the interaction with the LLM
 
-Run the following commands to check the connection to the LLM, in order to verify UnMock configuration has been done properly.
+From the root of `unmock4j`, run the following commands to check the connection to the LLM, in order to verify UnMock configuration has been done properly.
 
 ```bash
 mvn clean package
