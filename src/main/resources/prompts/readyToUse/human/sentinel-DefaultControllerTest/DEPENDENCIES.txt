@@ -1,0 +1,84 @@
+package com.alibaba.csp.sentinel.node;
+
+import java.util.List;
+import java.util.Map;
+
+import com.alibaba.csp.sentinel.Entry;
+import com.alibaba.csp.sentinel.node.metric.MetricNode;
+import com.alibaba.csp.sentinel.slots.statistic.metric.DebugSupport;
+import com.alibaba.csp.sentinel.util.function.Predicate;
+
+public interface Node extends OccupySupport, DebugSupport {
+
+    long totalRequest();
+
+    long totalPass();
+
+    long totalSuccess();
+
+    long blockRequest();
+
+    long totalException();
+
+    double passQps();
+
+    double blockQps();
+
+    double totalQps();
+
+    double successQps();
+
+    double maxSuccessQps();
+
+    double exceptionQps();
+
+    double avgRt();
+
+    double minRt();
+
+    int curThreadNum();
+
+    double previousBlockQps();
+
+    double previousPassQps();
+
+    Map<Long, MetricNode> metrics();
+
+    List<MetricNode> rawMetricsInMin(Predicate<Long> timePredicate);
+
+    void addPassRequest(int count);
+
+    void addRtAndSuccess(long rt, int success);
+
+    void increaseBlockQps(int count);
+
+    void increaseExceptionQps(int count);
+
+    void increaseThreadNum();
+
+    void decreaseThreadNum();
+
+    void reset();
+}
+
+package com.alibaba.csp.sentinel.node;
+
+public interface OccupySupport {
+
+    long tryOccupyNext(long currentTime, int acquireCount, double threshold);
+
+    long waiting();
+
+    void addWaitingRequest(long futureTime, int acquireCount);
+
+    void addOccupiedPass(int acquireCount);
+
+    double occupiedPassQps();
+}
+
+package com.alibaba.csp.sentinel.slots.statistic.metric;
+
+public interface DebugSupport {
+
+    void debug();
+}

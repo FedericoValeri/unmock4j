@@ -1,73 +1,97 @@
-package com.alibaba.nacos.auth.config;
+package org.apache.shenyu.admin.config.properties;
 
-public interface NacosAuthConfig {
+import org.springframework.boot.context.properties.ConfigurationProperties;
 
-    String getAuthScope();
+@ConfigurationProperties(prefix = "shenyu.ldap")
+public class LdapProperties {
 
-    boolean isAuthEnabled();
+    private boolean enabled = true;
 
-    String getNacosAuthSystemType();
+    private String url;
 
-    boolean isSupportServerIdentity();
+    private String bindDn;
 
-    String getServerIdentityKey();
+    private String password;
 
-    String getServerIdentityValue();
-}
+    private String baseDn;
 
-package com.alibaba.nacos.api.remote.request;
+    private String objectClass = "person";
 
-import com.alibaba.nacos.api.remote.Payload;
-import java.util.Map;
-import java.util.TreeMap;
+    private String loginField = "cn";
 
-public abstract class Request implements Payload {
+    private Integer connectTimeout = 3000;
 
-    private final Map<String, String> headers = new TreeMap<>(String.CASE_INSENSITIVE_ORDER);
+    private Integer readTimeout = 3000;
 
-    private String requestId;
-
-    public void putHeader(String key, String value) {
-        headers.put(key, value);
+    public boolean isEnabled() {
+        return enabled;
     }
 
-    public void putAllHeader(Map<String, String> headers) {
-        if (headers == null || headers.isEmpty()) {
-            return;
-        }
-        this.headers.putAll(headers);
+    public void setEnabled(final boolean enabled) {
+        this.enabled = enabled;
     }
 
-    public String getHeader(String key) {
-        return headers.get(key);
+    public String getUrl() {
+        return url;
     }
 
-    public String getHeader(String key, String defaultValue) {
-        String value = headers.get(key);
-        return (value == null) ? defaultValue : value;
+    public void setUrl(final String url) {
+        this.url = url;
     }
 
-    public String getRequestId() {
-        return requestId;
+    public String getBindDn() {
+        return bindDn;
     }
 
-    public void setRequestId(String requestId) {
-        this.requestId = requestId;
+    public void setBindDn(final String bindDn) {
+        this.bindDn = bindDn;
     }
 
-    public abstract String getModule();
-
-    public Map<String, String> getHeaders() {
-        return headers;
+    public String getPassword() {
+        return password;
     }
 
-    public void clearHeaders() {
-        this.headers.clear();
+    public void setPassword(final String password) {
+        this.password = password;
     }
 
-    @Override
-    public String toString() {
-        return this.getClass().getSimpleName() + "{" + "headers=" + headers + ", requestId='"
-            + requestId + '\'' + '}';
+    public String getBaseDn() {
+        return baseDn;
+    }
+
+    public void setBaseDn(final String baseDn) {
+        this.baseDn = baseDn;
+    }
+
+    public String getObjectClass() {
+        return objectClass;
+    }
+
+    public void setObjectClass(final String objectClass) {
+        this.objectClass = objectClass;
+    }
+
+    public String getLoginField() {
+        return loginField;
+    }
+
+    public void setLoginField(final String loginField) {
+        this.loginField = loginField;
+    }
+
+    public Integer getConnectTimeout() {
+        return connectTimeout;
+    }
+
+    public void setConnectTimeout(final Integer connectTimeout) {
+        this.connectTimeout = connectTimeout;
+    }
+
+    public Integer getReadTimeout() {
+        return readTimeout;
+    }
+
+    public void setReadTimeout(final Integer readTimeout) {
+        this.readTimeout = readTimeout;
     }
 }

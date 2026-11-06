@@ -33,7 +33,6 @@ import java.util.concurrent.ConcurrentMap;
 
 import static com.alibaba.nacos.sys.env.Constants.REQUEST_PATH_SEPARATOR;
 
-
 @Component
 public class ControllerMethodsCache {
 
@@ -125,7 +124,6 @@ public class ControllerMethodsCache {
                     requestMethods = new RequestMethod[1];
                     requestMethods[0] = RequestMethod.GET;
                 }
-                // FIXME: vipserver needs multiple http methods mapping
                 for (RequestMethod requestMethod : requestMethods) {
                     String[] value = requestMapping.value();
                     if (value.length > 0) {
@@ -194,7 +192,6 @@ public class ControllerMethodsCache {
         if (requestMappingInfos == null) {
             urlLookup.putIfAbsent(urlKey, new ArrayList<>());
             requestMappingInfos = urlLookup.get(urlKey);
-            // For issue #4701.
             String urlKeyBackup = urlKey + "/";
             urlLookup.putIfAbsent(urlKeyBackup, requestMappingInfos);
         }

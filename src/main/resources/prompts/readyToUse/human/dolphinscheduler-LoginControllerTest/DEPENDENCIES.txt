@@ -61,8 +61,6 @@ public interface HttpServletRequest extends ServletRequest {
                         + '}';
             }
 
-
-
         };
     }
 
@@ -70,61 +68,44 @@ public interface HttpServletRequest extends ServletRequest {
 
     public String getPathInfo();
 
-
     public String getPathTranslated();
-
 
      default public PushBuilder newPushBuilder() {
          return null;
      }
 
-
     public String getContextPath();
-
 
     public String getQueryString();
 
-
     public String getRemoteUser();
-
 
     public boolean isUserInRole(String role);
 
-
     public java.security.Principal getUserPrincipal();
-
 
     public String getRequestedSessionId();
 
-
     public String getRequestURI();
-
 
     public StringBuffer getRequestURL();
 
-
     public String getServletPath();
-
 
     public HttpSession getSession(boolean create);
 
     public HttpSession getSession();
 
-
     public String changeSessionId();
 
        public boolean isRequestedSessionIdValid();
 
-
     public boolean isRequestedSessionIdFromCookie();
-
 
     public boolean isRequestedSessionIdFromURL();
 
-
     @Deprecated
     public boolean isRequestedSessionIdFromUrl();
-
 
     public boolean authenticate(HttpServletResponse response)
 	throws IOException,ServletException;
@@ -132,9 +113,7 @@ public interface HttpServletRequest extends ServletRequest {
     public void login(String username, String password)
 	throws ServletException;
 
-
     public void logout() throws ServletException;
-
 
     public Collection<Part> getParts() throws IOException, ServletException;
 

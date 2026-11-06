@@ -44,7 +44,6 @@ public interface AnnotationMetadata extends ClassMetadata, AnnotatedTypeMetadata
 
 	Set<MethodMetadata> getDeclaredMethods();
 
-
 	static AnnotationMetadata introspect(Class<?> type) {
 		return StandardAnnotationMetadata.from(type);
 	}
