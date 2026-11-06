@@ -144,6 +144,10 @@ java -jar target/unmock-1.0-SNAPSHOT.jar
 UnMock generates an integration test class and one or more proxy classes (with names ending in `_Proxy`) in its `gen/`
 directory.
 
+If you run UnMock again for the same project, first delete that project's folder inside `gen/`. UnMock does not empty
+`gen/`, and files left over from the previous
+run would be copied and packed with the new ones.
+
 ### 5. Compile the integration test
 
 From the root of `unmock4j`, run the appropriate checking script for your operating system. Replace `<local_repo_path>`
