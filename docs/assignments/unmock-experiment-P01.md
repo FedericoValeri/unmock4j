@@ -33,12 +33,14 @@ Make sure you have installed:
 
 - **Java JDK 21**
 - **Apache Maven 3.9+**
+- **Git**
 
 Check installed versions:
 
 ```bash
 java -version
 mvn -version
+git --version
 ```
 
 ### 2. Download and configure UnMock
