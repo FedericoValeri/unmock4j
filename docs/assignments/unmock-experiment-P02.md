@@ -68,13 +68,22 @@ other applications. Please keep the key confidential and use it only for the UnM
 
 ### 3. Download a target project and its input files
 
-Download each target project into a directory of your choice:
+Clone each target project with git into a short directory of your choice (e.g. `C:\repos` or `~/repos`). Do not download
+the release zip: on Windows its extraction fails because some paths are too long. `core.longpaths=true` lets Git for
+Windows write those paths (it has no effect on Linux/macOS), and `--depth 1` downloads only the tagged release.
 
-- [dolphinscheduler](https://github.com/apache/dolphinscheduler/releases#release-3.4.1):
+```bash
+git clone -c core.longpaths=true --depth 1 --branch 3.4.1 https://github.com/apache/dolphinscheduler.git
+git clone -c core.longpaths=true --depth 1 --branch 3.2.1 https://github.com/alibaba/nacos.git
+```
+
+Input files for each project:
+
+- dolphinscheduler (tag `3.4.1`):
     - [SUT.txt](https://github.com/FedericoValeri/unmock4j/blob/main/src/main/resources/prompts/readyToUse/human/dolphinscheduler-PythonGatewayTest/SUT.txt)
     - [UNIT.txt](https://github.com/FedericoValeri/unmock4j/blob/main/src/main/resources/prompts/readyToUse/human/dolphinscheduler-PythonGatewayTest/UNIT.txt)
     - [DEPENDENCIES.txt](https://github.com/FedericoValeri/unmock4j/blob/main/src/main/resources/prompts/readyToUse/human/dolphinscheduler-PythonGatewayTest/DEPENDENCIES.txt)
-- [nacos](https://github.com/alibaba/nacos/releases#release-3.2.1):
+- nacos (tag `3.2.1`):
     - [SUT.txt](https://github.com/FedericoValeri/unmock4j/blob/main/src/main/resources/prompts/readyToUse/human/nacos-McpConfigurationTest/SUT.txt)
     - [UNIT.txt](https://github.com/FedericoValeri/unmock4j/blob/main/src/main/resources/prompts/readyToUse/human/nacos-McpConfigurationTest/UNIT.txt)
     - [DEPENDENCIES.txt](https://github.com/FedericoValeri/unmock4j/blob/main/src/main/resources/prompts/readyToUse/human/nacos-McpConfigurationTest/DEPENDENCIES.txt)

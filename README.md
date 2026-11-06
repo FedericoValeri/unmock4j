@@ -113,11 +113,30 @@ e.g.
 
 ## Tested repositories
 
-- [dolphinscheduler](https://github.com/apache/dolphinscheduler/releases#release-3.4.1)
-- [nacos](https://github.com/alibaba/nacos/releases#release-3.2.1)
-- [arthas](https://github.com/alibaba/arthas/releases#release-arthas-all-4.3.5)
-- [incubator-seata](https://github.com/apache/incubator-seata)
-- [sentinel](https://github.com/alibaba/Sentinel/releases#release-1.8.8)
-- [openapi-generator](https://github.com/OpenAPITools/openapi-generator/releases#release-v7.24.0)
-- [shenyu](https://github.com/apache/shenyu/releases#release-v2.7.1)
+| Project           | Tag                 | Repository                                    |
+|-------------------|---------------------|-----------------------------------------------|
+| dolphinscheduler  | `3.4.1`             | https://github.com/apache/dolphinscheduler    |
+| nacos             | `3.2.1`             | https://github.com/alibaba/nacos              |
+| arthas            | `arthas-all-4.3.5`  | https://github.com/alibaba/arthas             |
+| incubator-seata   | `v2.0.0`            | https://github.com/apache/incubator-seata     |
+| sentinel          | `1.8.8`             | https://github.com/alibaba/Sentinel           |
+| openapi-generator | `v7.24.0`           | https://github.com/OpenAPITools/openapi-generator |
+| shenyu            | `v2.7.1`            | https://github.com/apache/shenyu              |
+
+Clone them with git rather than downloading the release zips: on Windows, extracting the zips fails because some
+paths are longer than 260 characters. `core.longpaths=true` lets Git for Windows write those paths (it has no effect
+on Linux/macOS), and `--depth 1` downloads only the tagged release, not the full history.
+
+```bash
+git clone -c core.longpaths=true --depth 1 --branch 3.4.1            https://github.com/apache/dolphinscheduler.git
+git clone -c core.longpaths=true --depth 1 --branch 3.2.1            https://github.com/alibaba/nacos.git
+git clone -c core.longpaths=true --depth 1 --branch arthas-all-4.3.5 https://github.com/alibaba/arthas.git
+git clone -c core.longpaths=true --depth 1 --branch v2.0.0           https://github.com/apache/incubator-seata.git
+git clone -c core.longpaths=true --depth 1 --branch 1.8.8            https://github.com/alibaba/Sentinel.git
+git clone -c core.longpaths=true --depth 1 --branch v7.24.0          https://github.com/OpenAPITools/openapi-generator.git
+git clone -c core.longpaths=true --depth 1 --branch v2.7.1           https://github.com/apache/shenyu.git
+```
+
+The same commands work in PowerShell, cmd and bash. On Windows, also clone into a short folder (e.g. `C:\repos`),
+because Maven and some plugins can still fail on very long paths.
 

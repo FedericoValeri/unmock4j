@@ -68,13 +68,22 @@ other applications. Please keep the key confidential and use it only for the UnM
 
 ### 3. Download a target project and its input files
 
-Download each target project into a directory of your choice:
+Clone each target project with git into a short directory of your choice (e.g. `C:\repos` or `~/repos`). Do not download
+the release zip: on Windows its extraction fails because some paths are too long. `core.longpaths=true` lets Git for
+Windows write those paths (it has no effect on Linux/macOS), and `--depth 1` downloads only the tagged release.
 
-- `<PROJECT_1_NAME>` (release `<PROJECT_1_VERSION>`): `<PROJECT_1_RELEASE_URL>`
+```bash
+git clone -c core.longpaths=true --depth 1 --branch <PROJECT_1_TAG> <PROJECT_1_GIT_URL>
+git clone -c core.longpaths=true --depth 1 --branch <PROJECT_2_TAG> <PROJECT_2_GIT_URL>
+```
+
+Input files for each project:
+
+- `<PROJECT_1_NAME>` (tag `<PROJECT_1_TAG>`):
     - SUT.txt: `<PROJECT_1_SUT_URL>`
     - UNIT.txt: `<PROJECT_1_UNIT_URL>`
     - DEPENDENCIES.txt: `<PROJECT_1_DEPENDENCIES_URL>`
-- `<PROJECT_2_NAME>` (release `<PROJECT_2_VERSION>`): `<PROJECT_2_RELEASE_URL>`
+- `<PROJECT_2_NAME>` (tag `<PROJECT_2_TAG>`):
     - SUT.txt: `<PROJECT_2_SUT_URL>`
     - UNIT.txt: `<PROJECT_2_UNIT_URL>`
     - DEPENDENCIES.txt: `<PROJECT_2_DEPENDENCIES_URL>`
