@@ -29,8 +29,8 @@ mvn -version
 Create a `.env` file in the project root directory with the following content:
 
 ```env
-MODEL=gpt-5.4-mini (recommended)
-PROVIDER=openai (recommended)
+MODEL=gpt-6-luna (recommended)
+PROVIDER=openai
 OPENAI_API_KEY=secret_key
 ```
 
@@ -113,15 +113,15 @@ e.g.
 
 ## Tested repositories
 
-| Project           | Tag                 | Repository                                    |
-|-------------------|---------------------|-----------------------------------------------|
-| dolphinscheduler  | `3.4.1`             | https://github.com/apache/dolphinscheduler    |
-| nacos             | `3.2.1`             | https://github.com/alibaba/nacos              |
-| arthas            | `arthas-all-4.3.5`  | https://github.com/alibaba/arthas             |
-| incubator-seata   | `v2.0.0`            | https://github.com/apache/incubator-seata     |
-| sentinel          | `1.8.8`             | https://github.com/alibaba/Sentinel           |
-| openapi-generator | `v7.24.0`           | https://github.com/OpenAPITools/openapi-generator |
-| shenyu            | `v2.7.1`            | https://github.com/apache/shenyu              |
+| Project           | Tag                | Repository                                        |
+|-------------------|--------------------|---------------------------------------------------|
+| dolphinscheduler  | `3.4.1`            | https://github.com/apache/dolphinscheduler        |
+| nacos             | `3.2.1`            | https://github.com/alibaba/nacos                  |
+| arthas            | `arthas-all-4.3.5` | https://github.com/alibaba/arthas                 |
+| incubator-seata   | `v2.0.0`           | https://github.com/apache/incubator-seata         |
+| sentinel          | `1.8.8`            | https://github.com/alibaba/Sentinel               |
+| openapi-generator | `v7.24.0`          | https://github.com/OpenAPITools/openapi-generator |
+| shenyu            | `v2.7.1`           | https://github.com/apache/shenyu                  |
 
 Clone them with git rather than downloading the release zips: on Windows, extracting the zips fails because some
 paths are longer than 260 characters. `core.longpaths=true` lets Git for Windows write those paths (it has no effect
