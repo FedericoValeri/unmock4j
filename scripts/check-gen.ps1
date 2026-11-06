@@ -176,7 +176,15 @@ if ($JavaHome) {
 
 # --- 6. Build ------------------------------------------------------------------------------
 $mvnArgs = @('-B', 'clean', 'test-compile')
-if ($moduleRel) { $mvnArgs += @('-pl', $moduleRel, '-am') }
+if ($moduleRel) {
+    # Modules that compile C/C++ (native-maven-plugin, e.g. arthas-vmtool) need g++; take their
+    # released jar from the Maven repository instead of building them
+    $native = @(Get-ChildItem -Path $Repo -Recurse -File -Filter pom.xml -ErrorAction SilentlyContinue |
+            Where-Object { $_.FullName -notmatch $excluded -and $_.DirectoryName -ne $Repo -and $_.DirectoryName -ne $moduleDir } |
+            Where-Object { Select-String -Path $_.FullName -SimpleMatch 'native-maven-plugin' -Quiet } |
+            ForEach-Object { '!' + $_.DirectoryName.Substring($Repo.Length).TrimStart('\').Replace('\', '/') })
+    $mvnArgs += @('-pl', ((@($moduleRel) + $native) -join ','), '-am')
+}
 $mvnArgs += @(
     '-DskipTests', '-Dcheckstyle.skip=true', '-Drat.skip=true',
     '-Dspotless.check.skip=true', '-Dspotless.apply.skip=true',

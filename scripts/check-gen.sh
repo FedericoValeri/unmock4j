@@ -202,7 +202,16 @@ fi
 
 # --- 6. Build ------------------------------------------------------------------------------
 mvn_args=(-B clean test-compile)
-if [ -n "$MODULE_REL" ]; then mvn_args+=(-pl "$MODULE_REL" -am); fi
+if [ -n "$MODULE_REL" ]; then
+    # Modules that compile C/C++ (native-maven-plugin, e.g. arthas-vmtool) need g++; take their
+    # released jar from the Maven repository instead of building them
+    pl="$MODULE_REL"
+    while IFS= read -r pom; do
+        dir="${pom%/pom.xml}"; rel="${dir#"$REPO"/}"
+        if [ "$dir" != "$REPO" ] && [ "$rel" != "$MODULE_REL" ]; then pl+=",!$rel"; fi
+    done < <(find "$REPO" "${prune[@]}" -type f -name pom.xml -exec grep -lF native-maven-plugin {} +)
+    mvn_args+=(-pl "$pl" -am)
+fi
 mvn_args+=(
     -DskipTests -Dcheckstyle.skip=true -Drat.skip=true
     -Dspotless.check.skip=true -Dspotless.apply.skip=true
