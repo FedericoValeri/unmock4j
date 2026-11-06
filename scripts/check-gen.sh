@@ -7,6 +7,9 @@
 # repository that contains the original test, copies <gen-dir>/<package path>/*.java into that
 # module's src/test/java/<package path>/ and runs "mvn clean test-compile -pl <module> -am".
 # Copied paths are recorded in <repo>/.unmock-copied.txt so that --clean can remove them.
+# The build runs on the lowest installed JDK that satisfies the Java version declared in the
+# repository's root pom.xml. Installed JDKs are discovered by maven-toolchains-plugin 3.2.0
+# plus ~/.m2/toolchains.xml; --java-home overrides the choice.
 #
 # Compatible with the bash 3.2 that ships with macOS (no mapfile, no associative arrays).
 
@@ -15,7 +18,7 @@ set -eo pipefail
 usage() {
     cat <<'EOF'
 Usage: check-gen.sh --repo <dir> [--unit-test <UNIT.txt>] [--gen-dir <dir>]
-                    [--module <relative path>] [--dry-run] [--clean]
+                    [--module <relative path>] [--java-home <dir>] [--dry-run] [--clean]
 
 Examples:
   ./scripts/check-gen.sh --repo ~/repos/shenyu
@@ -28,13 +31,14 @@ EOF
 
 die() { echo "error: $*" >&2; exit 1; }
 
-REPO=""; UNIT_TEST=""; GEN_DIR=""; MODULE=""; DRY_RUN=0; CLEAN=0
+REPO=""; UNIT_TEST=""; GEN_DIR=""; MODULE=""; JAVA_HOME_ARG=""; DRY_RUN=0; CLEAN=0
 while [ $# -gt 0 ]; do
     case "$1" in
         --repo)      REPO="${2:?--repo needs a value}"; shift 2 ;;
         --unit-test) UNIT_TEST="${2:?--unit-test needs a value}"; shift 2 ;;
         --gen-dir)   GEN_DIR="${2:?--gen-dir needs a value}"; shift 2 ;;
         --module)    MODULE="${2:?--module needs a value}"; shift 2 ;;
+        --java-home) JAVA_HOME_ARG="${2:?--java-home needs a value}"; shift 2 ;;
         --dry-run)   DRY_RUN=1; shift ;;
         --clean)     CLEAN=1; shift ;;
         -h|--help)   usage 0 ;;
@@ -142,7 +146,61 @@ if [ "$DRY_RUN" -eq 0 ]; then
     rm -f "$tmp_manifest"
 fi
 
-# --- 5. Build ------------------------------------------------------------------------------
+# --- 5. JDK required by the target project -------------------------------------------------
+java_major() {   # 1.8.0_492 -> 8, 17.0.19 -> 17
+    local v="$1"
+    case "$v" in 1.*) v="${v#1.}" ;; esac
+    echo "${v%%[!0-9]*}"
+}
+
+if [ -n "$JAVA_HOME_ARG" ]; then
+    [ -d "$JAVA_HOME_ARG" ] || die "JDK not found: $JAVA_HOME_ARG"
+    JAVA_HOME_ARG="$(cd "$JAVA_HOME_ARG" && pwd -P)"
+    echo "Java      : $JAVA_HOME_ARG (--java-home)"
+else
+    # Highest version wins: sentinel compiles module-info with release 17 and the rest with 8
+    tags='java\.version|jdk\.version|maven\.compiler\.(release|source|target)|release|source|target'
+    required="$( { grep -oE "<($tags)>[[:space:]]*[0-9.]+[[:space:]]*</" "$REPO/pom.xml" 2>/dev/null || true; } |
+        sed -E 's#.*>[[:space:]]*([0-9.]+)[[:space:]]*</#\1#' |
+        while IFS= read -r v; do java_major "$v"; done | sort -n | tail -1)"
+
+    if [ -z "$required" ]; then
+        echo "Java      : not declared in pom.xml, using JAVA_HOME=${JAVA_HOME:-}"
+    else
+        command -v mvn >/dev/null 2>&1 || die "mvn not found on PATH"
+        # Maven finds the JDKs installed on this machine (JAVA_HOME, JAVAxx_HOME, ~/.jdks, SDKMAN,
+        # /usr/lib/jvm, Program Files, ...); the user's ~/.m2/toolchains.xml adds declared ones
+        discovered="$(mktemp)"
+        # Run away from the repo pom, which Maven would otherwise load
+        (cd "${TMPDIR:-/tmp}" && mvn -B -q org.apache.maven.plugins:maven-toolchains-plugin:3.2.0:generate-jdk-toolchains-xml \
+            "-Dtoolchain.file=$discovered") >/dev/null 2>&1 ||
+            echo "warning: JDK discovery failed (mvn exit $?)." >&2
+
+        # "<major>\t<jdkHome>" per toolchain; version ranges and ${...} give no major and are skipped
+        jdks="$( { cat "$discovered"; cat "$HOME/.m2/toolchains.xml" 2>/dev/null || true; } | awk '
+            /<toolchain>/   { v = ""; h = "" }
+            /<version>/     { v = $0; sub(/.*<version>[[:space:]]*/, "", v); sub(/[[:space:]]*<\/version>.*/, "", v) }
+            /<jdkHome>/     { h = $0; sub(/.*<jdkHome>[[:space:]]*/, "", h); sub(/[[:space:]]*<\/jdkHome>.*/, "", h) }
+            /<\/toolchain>/ { if (v != "" && h != "") print v "\t" h }' |
+            while IFS="$(printf '\t')" read -r v h; do
+                m="$(java_major "$v")"
+                if [ -n "$m" ] && [ -d "$h" ]; then printf '%s\t%s\n' "$m" "$h"; fi
+            done)"
+        rm -f "$discovered"
+
+        # Lowest installed JDK that is >= the required one: old Lombok breaks on newer JDKs
+        pick="$(printf '%s\n' "$jdks" | awk -F'\t' -v req="$required" 'NF == 2 && $1 >= req' |
+            sort -n | head -1 | cut -f2-)"
+        if [ -z "$pick" ]; then
+            found="$(printf '%s\n' "$jdks" | cut -f1 | awk 'NF' | sort -nu | paste -sd, -)"
+            die "pom.xml requires Java $required but no installed JDK >= $required was found (found: ${found:-none}). Install JDK $required or pass --java-home <dir>."
+        fi
+        JAVA_HOME_ARG="$pick"
+        echo "Java      : $required required by pom.xml -> $JAVA_HOME_ARG"
+    fi
+fi
+
+# --- 6. Build ------------------------------------------------------------------------------
 mvn_args=(-B clean test-compile)
 if [ -n "$MODULE_REL" ]; then mvn_args+=(-pl "$MODULE_REL" -am); fi
 mvn_args+=(
@@ -151,6 +209,7 @@ mvn_args+=(
     -Dmaven.javadoc.skip=true -Djacoco.skip=true
 )
 echo
+if [ -n "$JAVA_HOME_ARG" ]; then printf 'JAVA_HOME=%q ' "$JAVA_HOME_ARG"; fi
 printf 'cd %q; mvn' "$REPO"; printf ' %q' "${mvn_args[@]}"; echo
 if [ "$DRY_RUN" -eq 1 ]; then exit 0; fi
 
@@ -159,11 +218,13 @@ log="$(mktemp)"
 trap 'rm -f "$log"' EXIT
 
 set +e
-(cd "$REPO" && mvn "${mvn_args[@]}") 2>&1 | tee "$log"
+# mvn runs on JAVA_HOME, and javac comes from that JVM
+(cd "$REPO" && if [ -n "$JAVA_HOME_ARG" ]; then export JAVA_HOME="$JAVA_HOME_ARG"; fi
+ mvn "${mvn_args[@]}") 2>&1 | tee "$log"
 exit_code=${PIPESTATUS[0]}
 set -e
 
-# --- 6. Report -----------------------------------------------------------------------------
+# --- 7. Report -----------------------------------------------------------------------------
 echo
 echo "mvn exit code: $exit_code"
 name_args=()
