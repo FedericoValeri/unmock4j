@@ -14,18 +14,14 @@ public class HandlebarsEngineAdapterTest {
 
     @Test(description = "verify https://github.com/jknack/handlebars.java/issues/940#issue-1111612043 is fixed")
     public void testHandlePartialTemplate() throws IOException {
-        // Given
         HandlebarsEngineAdapter adapter = new HandlebarsEngineAdapter();
         TemplatingExecutor executorMock = Mockito.mock(TemplatingExecutor.class);
         Mockito.when(executorMock.getFullTemplateContents("outerTemplate.hbs")).thenReturn("Contents: {{>innerTemplate}}");
         Mockito.when(executorMock.getFullTemplateContents("innerTemplate.hbs")).thenReturn("'Specific contents'");
 
-        // When
         String generatedFile = adapter.compileTemplate(executorMock, Map.of(), "outerTemplate.hbs");
 
-        // Then
         assertEquals(generatedFile, "Contents: 'Specific contents'");
     }
-
 
 }

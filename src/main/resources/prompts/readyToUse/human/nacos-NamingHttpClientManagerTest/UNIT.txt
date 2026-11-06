@@ -23,16 +23,13 @@
 
    @Test
     void testShutdown() throws NoSuchFieldException, IllegalAccessException, NacosException, IOException {
-        //given
         NamingHttpClientManager instance = NamingHttpClientManager.getInstance();
 
         HttpClientRequest mockHttpClientRequest = Mockito.mock(HttpClientRequest.class);
         Field requestClient = NacosRestTemplate.class.getDeclaredField("requestClient");
         requestClient.setAccessible(true);
         requestClient.set(instance.getNacosRestTemplate(), mockHttpClientRequest);
-        // when
         NamingHttpClientManager.getInstance().shutdown();
-        // then
         verify(mockHttpClientRequest, times(1)).close();
     }
     }

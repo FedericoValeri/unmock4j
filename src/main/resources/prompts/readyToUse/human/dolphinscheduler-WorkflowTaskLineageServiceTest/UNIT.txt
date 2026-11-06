@@ -46,7 +46,6 @@
 
     @Test
     public void testUpdateWorkflowLineageWithNonEmptyList() {
-        // Test case: Normal update with non-empty lineage list
         long workflowDefinitionCode = 100L;
         List<WorkflowTaskLineage> workflowTaskLineages = new ArrayList<>();
 
@@ -60,14 +59,11 @@
         lineage2.setTaskDefinitionCode(300L);
         workflowTaskLineages.add(lineage2);
 
-        // Mock DAO methods
         when(workflowTaskLineageDao.batchDeleteByWorkflowDefinitionCode(anyList())).thenReturn(2);
         when(workflowTaskLineageDao.batchInsert(workflowTaskLineages)).thenReturn(2);
 
-        // Execute
         int result = workflowLineageService.updateWorkflowLineage(workflowDefinitionCode, workflowTaskLineages);
 
-        // Verify
         Assertions.assertEquals(2, result);
         verify(workflowTaskLineageDao)
                 .batchDeleteByWorkflowDefinitionCode(eq(java.util.Collections.singletonList(workflowDefinitionCode)));
