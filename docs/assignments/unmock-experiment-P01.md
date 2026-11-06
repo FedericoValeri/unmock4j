@@ -14,7 +14,7 @@ For each project, you will:
 * Generate an integration test using UnMock
 * Review the generated code and make corrections where necessary
 * Attempt to compile the generated integration test
-* Attempt to run the generated integration test (TODO: provare a eseguire i test su tutti i 7 progetti, prima)
+* Attempt to run the generated integration test
 
 Your main goal is to get the generated code to compile and run successfully in the target project. If it works without
 modifications, no changes are needed. Otherwise, please make a reasonable effort to resolve any issues you encounter. If
