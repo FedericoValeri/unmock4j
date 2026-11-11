@@ -37,11 +37,15 @@ while [ $# -gt 0 ]; do
     esac
 done
 [ -n "$REPO" ] || { echo "--repo is required" >&2; usage 1; }
-command -v jar >/dev/null 2>&1 || die "jar not found on PATH (it ships with the JDK)"
 
 # --- 1. Copied files, as check-gen.sh resolves them ----------------------------------------
 info="$(bash "$(dirname "$0")/check-gen.sh" --repo "$REPO" ${check_args[@]+"${check_args[@]}"} --dry-run)" ||
     { printf '%s\n' "$info"; die "check-gen.sh --dry-run failed."; }
+
+# jar from the JDK check-gen picked, which may not be the one on PATH
+jdk="$(printf '%s\n' "$info" | sed -n '/^Java *: /{s/^Java *: //;s/^.* -> //;s/^.*JAVA_HOME=//;s/ (--java-home)$//;p;}' | head -n 1)"
+JAR=jar; [ -n "$jdk" ] && [ -x "$jdk/bin/jar" ] && JAR="$jdk/bin/jar"
+command -v "$JAR" >/dev/null 2>&1 || die "jar not found in the JDK (${jdk:-none}) nor on PATH. Pass --java-home <jdk dir>."
 
 TEST_CLASS="$(printf '%s\n' "$info" | sed -n 's/^Unit test : .*\.\([[:alnum:]_]*\)$/\1/p')"
 [ -n "$TEST_CLASS" ] || { printf '%s\n' "$info"; die "check-gen.sh --dry-run did not report the test class."; }
@@ -70,6 +74,6 @@ done < <(printf '%s\n' "$info" | grep '^copy .* -> ')
 
 # --- 3. Zip --------------------------------------------------------------------------------
 rm -f "$ZIP"
-jar -cMf "$ZIP" -C "$stage" original -C "$stage" modified
+"$JAR" -cMf "$ZIP" -C "$stage" original -C "$stage" modified
 echo
 echo "Zip       : $ZIP"
