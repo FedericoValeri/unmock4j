@@ -203,13 +203,14 @@ fi
 # --- 6. Build ------------------------------------------------------------------------------
 mvn_args=(-B clean test-compile)
 if [ -n "$MODULE_REL" ]; then
-    # Modules that compile C/C++ (native-maven-plugin, e.g. arthas-vmtool) need g++; take their
-    # released jar from the Maven repository instead of building them
+    # Modules that compile C/C++ (org.codehaus.mojo:native-maven-plugin, e.g. arthas-vmtool) need g++;
+    # take their released jar from the Maven repository instead of building them. Not GraalVM's
+    # native-maven-plugin (nacos console): Maven rejects '!x' when x is outside the -am set
     pl="$MODULE_REL"
     while IFS= read -r pom; do
         dir="${pom%/pom.xml}"; rel="${dir#"$REPO"/}"
         if [ "$dir" != "$REPO" ] && [ "$rel" != "$MODULE_REL" ]; then pl+=",!$rel"; fi
-    done < <(find "$REPO" "${prune[@]}" -type f -name pom.xml -exec grep -lF native-maven-plugin {} +)
+    done < <(find "$REPO" "${prune[@]}" -type f -name pom.xml -exec grep -lzE 'org\.codehaus\.mojo</groupId>[[:space:]]*<artifactId>native-maven-plugin' {} +)
     mvn_args+=(-pl "$pl" -am)
 fi
 mvn_args+=(

@@ -38,7 +38,7 @@ if (-not $UnitTest) { $UnitTest = Join-Path $root 'src\main\resources\prompts\hu
 if (-not $GenDir) { $GenDir = Join-Path $root 'gen' }
 if (-not [IO.Path]::IsPathRooted($GenDir)) { $GenDir = Join-Path (Get-Location) $GenDir }
 
-$Repo = (Resolve-Path $Repo).Path
+$Repo = (Resolve-Path $Repo).Path.TrimEnd('\')   # tab completion adds '\', which breaks the Substring calls below
 $manifest = Join-Path $Repo '.unmock-copied.txt'
 
 # --- Clean mode: remove files copied by a previous run -------------------------------------
@@ -177,11 +177,12 @@ if ($JavaHome) {
 # --- 6. Build ------------------------------------------------------------------------------
 $mvnArgs = @('-B', 'clean', 'test-compile')
 if ($moduleRel) {
-    # Modules that compile C/C++ (native-maven-plugin, e.g. arthas-vmtool) need g++; take their
-    # released jar from the Maven repository instead of building them
+    # Modules that compile C/C++ (org.codehaus.mojo:native-maven-plugin, e.g. arthas-vmtool) need g++;
+    # take their released jar from the Maven repository instead of building them. Not GraalVM's
+    # native-maven-plugin (nacos console): Maven rejects '!x' when x is outside the -am set
     $native = @(Get-ChildItem -Path $Repo -Recurse -File -Filter pom.xml -ErrorAction SilentlyContinue |
             Where-Object { $_.FullName -notmatch $excluded -and $_.DirectoryName -ne $Repo -and $_.DirectoryName -ne $moduleDir } |
-            Where-Object { Select-String -Path $_.FullName -SimpleMatch 'native-maven-plugin' -Quiet } |
+            Where-Object { (Get-Content -Raw $_.FullName) -match 'org\.codehaus\.mojo</groupId>\s*<artifactId>native-maven-plugin' } |
             ForEach-Object { '!' + $_.DirectoryName.Substring($Repo.Length).TrimStart('\').Replace('\', '/') })
     $mvnArgs += @('-pl', ((@($moduleRel) + $native) -join ','), '-am')
 }
