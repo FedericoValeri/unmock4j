@@ -65,7 +65,7 @@ Replace `secret_key` with the following openai api key:
 - **OPENAI API KEY**: `<OPENAI_API_KEY>`
 
 _The OpenAI API key provided to you is intended exclusively for testing the Unmock project as part of this research
-activity. It is valid for one day and must not be used for any other purpose, shared with third parties, or used in
+activity. It is valid for ten days and must not be used for any other purpose, shared with third parties, or used in
 other applications. Please keep the key confidential and use it only for the UnMock evaluation._
 
 ### 3. Download a target project and its input files
