@@ -2,7 +2,7 @@
 
 Unit tests often use mocks (for example,  `@Mock`, `when(...)`, `verify(...)`) to simulate dependencies (i.e. other
 classes required by the class under test during the execution of the test). Each mock encodes assumptions about how the
-real dependency behaves, but the unit test never checks those assumption against the real implementations. UnMock is a
+real dependency behaves, but the unit test never checks those assumptions against the real implementations. UnMock is a
 framework that uses an LLM to transform existing unit tests into integration tests. It replaces mocked dependencies with
 proxies that call the real dependencies while checking the expectations expressed in the original tests.
 
