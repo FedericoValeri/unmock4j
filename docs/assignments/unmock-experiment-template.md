@@ -54,7 +54,7 @@ cd unmock4j
 
 Create a `.env` file in the root of `unmock4j` with the following contents:
 
-```env
+```
 MODEL=gpt-6-luna
 PROVIDER=openai
 OPENAI_API_KEY=secret_key
@@ -166,7 +166,7 @@ with the path of the target project repository in your machine.
 
 - **Windows** (PowerShell):
 
-```powershell
+```bash
 .\scripts\check-gen.ps1 -Repo <local_repo_path>
 ```
 
@@ -214,8 +214,14 @@ the same `<local_repo_path>` used in step 5:
 
 - **Windows** (PowerShell):
 
-```powershell
+```bash
 .\scripts\pack-gen.ps1 -Repo <local_repo_path>
+```
+
+If execution of script is unavailable in your machine, try to run:
+
+```bash
+Set-ExecutionPolicy -Scope Process -ExecutionPolicy Bypass
 ```
 
 - **Linux / macOS** (bash):
