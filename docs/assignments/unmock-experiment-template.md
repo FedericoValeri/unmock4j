@@ -203,7 +203,7 @@ Follow these steps:
 4. Make **only the changes needed** to get the generated test compiling, and preserve the intentions of the original
    unit test as far as possible.
 5. Recompile the code after making changes. From the root of the target project, run the following command, replacing
-   `<module>` with the module shown in the checking script's output: `mvn clean test-compile -pl <module> -am `
+   `<module>` with the module shown in the checking script's output: `mvn clean test-compile -pl <module> -am`
 
 Note: Do not run `check-gen` again after editing the copied files: it would overwrite your changes.
 
