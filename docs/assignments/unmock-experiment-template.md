@@ -242,7 +242,7 @@ Upload the zip file to the following drive:
 
 ## Questionnaire
 
-Complete the questionnaire once, after finishing both projects. It takes approximately 5 minutes.
+Complete the questionnaire once, after finishing both projects. It takes approximately 10 minutes.
 
 - Enter your participant code, which you find below. Your name is not collected.
     - **Code**: `<PARTICIPANT_CODE>`
