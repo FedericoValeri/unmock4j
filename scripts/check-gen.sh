@@ -217,6 +217,9 @@ mvn_args+=(
     -DskipTests -Dcheckstyle.skip=true -Drat.skip=true
     -Dspotless.check.skip=true -Dspotless.apply.skip=true
     -Dmaven.javadoc.skip=true -Djacoco.skip=true
+    # Poms with an old ${lombok.version} (dolphinscheduler: 1.18.20) crash on JDK 17+ javac
+    # when no JDK 8/11 is installed; 1.18.38 still targets Java 8 and runs on JDK 8-24
+    -Dlombok.version=1.18.38
 )
 echo
 if [ -n "$JAVA_HOME_ARG" ]; then printf 'JAVA_HOME=%q ' "$JAVA_HOME_ARG"; fi
