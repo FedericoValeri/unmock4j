@@ -76,7 +76,7 @@ PACKAGE="${BASH_REMATCH[1]}"
 rest="${source_text#*"${BASH_REMATCH[0]}"}"
 [[ $rest =~ $cls_re ]] || die "Cannot find package/class declaration in $UNIT_TEST"
 TEST_CLASS="${BASH_REMATCH[3]}"
-PACKAGE_PATH="${PACKAGE//./\/}"
+PACKAGE_PATH=$(printf '%s' "$PACKAGE" | tr . /)  # not ${PACKAGE//./\/}: bash 3.2 keeps the backslash
 echo "Unit test : $PACKAGE.$TEST_CLASS"
 
 # --- 2. Generated sources for that package -------------------------------------------------
